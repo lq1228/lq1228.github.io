@@ -1,8 +1,8 @@
 github: {
     "version": {},
-    "author": "yinjie",
-    "hostname": "https://github.com/yj1438/",
-    "pages_hostname": "http://yj1438.github.io/"
+    "author": "liqian",
+    "hostname": "https://github.com/lq1228/",
+    "pages_hostname": "http://lq1228.github.io/"
 }
 #source: ./
 #destination: ./_site
