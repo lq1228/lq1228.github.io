@@ -1,7 +1,7 @@
 {
-  "name": "yj1438.github.io",
+  "name": "lq1228.github.io",
   "version": "1.0.0",
-  "description": "yinjie github IO page",
+  "description": "liqian github IO page",
   //"main": "index.js",
   "dependencies": {},
   "devDependencies": {},
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yj1438/yj1438.github.io.git"
+    "url": "git+https://github.com/lq1228/lq1228.github.io.git"
   },
-  "author": "Yinjie",
+  "author": "Liqian",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yj1438/yj1438.github.io/issues"
+    "url": "https://github.com/lq1228/lq1228.github.io/issues"
   },
-  "homepage": "https://github.com/yj1438/yj1438.github.io#readme"
+  "homepage": "https://github.com/lq1228/lq1228.github.io#readme"
 }
