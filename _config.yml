@@ -1,0 +1,59 @@
+github: {
+    "version": {},
+    "author": "yinjie",
+    "hostname": "https://github.com/yj1438/",
+    "pages_hostname": "http://yj1438.github.io/"
+}
+#source: ./
+#destination: ./_site
+#plugins: ./_plugins
+safe: true
+
+# Conversion
+#highlighter: pygments
+highlighter: rouge
+
+gist:
+   noscript: false
+
+#markdown: rdiscount
+#rdiscount:
+#   extensions:
+#     - footnotes
+markdown: kramdown
+
+kramdown:
+    input: GFM
+    hard_wrap: false
+    math_engine: mathjax
+# kramdown:
+#   auto_ids:       true
+#   footnote_nr:    1
+#   entity_output:  as_char
+#   toc_levels:     1..6
+#   smart_quotes:   lsquo,rsquo,ldquo,rdquo
+#   enable_coderay: true
+
+#   coderay:
+#     coderay_wrap:              div
+#     coderay_line_numbers:      inline
+#     coderay_line_number_start: 1
+#     coderay_tab_width:         4
+#     coderay_bold_every:        10
+#     coderay_css:               style
+    
+lsi: false
+excerpt_separator: "\n\n\n\n"
+incremental: false
+
+# Serving
+detach: false
+port: 4000
+host: 0.0.0.0
+baseurl: "" # does not include hostname
+
+encoding: "utf-8"
+markdown_ext: markdown,mkd,mkdn,md
+
+#plugins
+#gems: [jekyll-less]

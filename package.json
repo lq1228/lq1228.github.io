@@ -1,0 +1,21 @@
+{
+  "name": "yj1438.github.io",
+  "version": "1.0.0",
+  "description": "yinjie github IO page",
+  //"main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yj1438/yj1438.github.io.git"
+  },
+  "author": "Yinjie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yj1438/yj1438.github.io/issues"
+  },
+  "homepage": "https://github.com/yj1438/yj1438.github.io#readme"
+}

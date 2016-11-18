@@ -1,0 +1,12 @@
+---
+layout: homepage
+title: Yinjie的首页
+---
+        <h2>最新文章</h2>
+        {% for post in site.posts %}
+        <h3><a href="{{site.baseurl}}{{post.url}}">{{post.title}}</a><span class="date" style="float: right;">{{post.date | date_to_string}} </span></h3>
+        {% endfor %}
+        <h3><a href="page/flexbox/index1.html">Flexbox构建响应式图片</a><span class="date" style="float: right;">18 Oct 2015 </span></h3>
+        <h3><a href="page/flexbox/index2.html">基于Flex的简单磁贴式布局</a><span class="date" style="float: right;">18 Oct 2015 </span></h3>
+        <h3><a href="page/flexbox/index3.html">基于Flex的简单响应式 Grid 布局</a><span class="date" style="float: right;">18 Oct 2015 </span></h3>
+        <h3><a href="https://scotch.io/demos/visual-guide-to-css3-flexbox-flexbox-playground" target="_blank">Flexbox 属性演示</a></h3>
