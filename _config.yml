@@ -1,59 +1,78 @@
-github: {
-    "version": {},
-    "author": "liqian",
-    "hostname": "https://github.com/lq1228/",
-    "pages_hostname": "http://lq1228.github.io/"
-}
-#source: ./
-#destination: ./_site
-#plugins: ./_plugins
-safe: true
+# Welcome to Jekyll!
+#
+# This config file is meant for settings that affect your whole blog, values
+# which you are expected to set up once and rarely need to edit after that.
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
 
+# Site settings
+title: lq1228.github.io
+email: li_qian008@163.com
+description: > # this means to ignore newlines until "baseurl:"
+    lq1228.github.io
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://lq1228.github.io/" # the base hostname & protocol for your site
+github_username: lq1228
+paginate: 1
+paginate_path: "blog/page:num"
+
+# Build settings
+#markdown: kramdown 
 # Conversion
-#highlighter: pygments
-highlighter: rouge
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids:       true
+  footnote_nr:    1
+  entity_output:  as_char
+  toc_levels:     1..6
+  smart_quotes:   lsquo,rsquo,ldquo,rdquo
+  enable_coderay: true
 
-gist:
-   noscript: false
+  coderay:
+    coderay_wrap:              div
+    coderay_line_numbers:      inline
+    coderay_line_number_start: 1
+    coderay_tab_width:         4
+    coderay_bold_every:        10
+    coderay_css:               style
 
 #markdown: rdiscount
 #rdiscount:
 #   extensions:
 #     - footnotes
-markdown: kramdown
-
-kramdown:
-    input: GFM
-    hard_wrap: false
-    math_engine: mathjax
-# kramdown:
-#   auto_ids:       true
-#   footnote_nr:    1
-#   entity_output:  as_char
-#   toc_levels:     1..6
-#   smart_quotes:   lsquo,rsquo,ldquo,rdquo
-#   enable_coderay: true
-
-#   coderay:
-#     coderay_wrap:              div
-#     coderay_line_numbers:      inline
-#     coderay_line_number_start: 1
-#     coderay_tab_width:         4
-#     coderay_bold_every:        10
-#     coderay_css:               style
-    
-lsi: false
-excerpt_separator: "\n\n\n\n"
-incremental: false
 
 # Serving
 detach: false
-port: 4000
+port: 8000
 host: 0.0.0.0
 baseurl: "" # does not include hostname
 
 encoding: "utf-8"
 markdown_ext: markdown,mkd,mkdn,md
 
+lsi: false
+excerpt_separator: "\n\n\n\n"
+incremental: false
+
+#highlighter: pygments
+highlighter: rouge
+
+safe: true
+
+#markdown: rdiscount
+#rdiscount:
+#   extensions:
+#     - footnotes
+
+github: {
+    "author": "lq1228",
+    "hostname": "https://github.com/lq1228/",
+    "pages_hostname": "http://lq1228.github.io/"
+}
+
 #plugins
-#gems: [jekyll-less]
+gems:
+    - jekyll-coffeescript
+    - jekyll-paginate

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ReactNative Navigator configureScene 自定义动画介绍</title>
+  <meta name="description" content="ReactNative Navigator 自定义过渡动画的实现方式，需要的看过来。妈妈再也不用担心官方提供的动画不好看啦~~~">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://bystep15.github.io//front/article/2016/08/04/SceneConfigs.html">
+  <link rel="alternate" type="application/rss+xml" title="宝宝树前端团队" href="http://bystep15.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>宝宝树前端团队博客</h1>
+        <h2>Bystep15.GitHub.io</h2>
+        <a href="https://github.com/bystep15" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2016/08/04/SceneConfigs.html">ReactNative Navigator configureScene 自定义动画介绍</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ReactNative Navigator configureScene 自定义动画介绍</h1>
+    <p class="post-meta"><time datetime="2016-08-04T14:49:42+08:00" itemprop="datePublished">Aug 4, 2016</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">尹洁</span></span></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1 id="reactnative-navigator-configurescene-">ReactNative Navigator configureScene 自定义动画介绍</h1>
+
+<p style="clear: both;">
+<span style="float: right; margin-right: 20px;"> @version <b>rn 0.31</b> </span>
+</p>
+<p style="clear: both;">
+<span style="float: right; margin-right: 20px;"> @supported by <b>曹楠</b> </span>  
+</p>
+<p><br /></p>
+
+<p>ReactNative 已经发布一年多了，其热更新和统一 andriod + IOS 开发的优点也越来越成熟。值得大家去涉猎研究。</p>
+
+<h2 id="navigator-">Navigator 过渡动画</h2>
+
+<p>Navigator 应该是 RN 的一个核心 component， 相当于 web SPA 的路由。</p>
+
+<p>一般的 APP 在视图“页面”进出栈的时候都会有一个过渡动画，RN 当然也在 Navigator 中有相关的配置。如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="o">&lt;</span><span class="nx">Navigator</span>
+        <span class="nx">initialRoute</span><span class="o">=</span><span class="p">{</span><span class="err">\</span><span class="p">{</span><span class="nl">id</span><span class="p">:</span> <span class="s1">'homepage'</span><span class="p">,</span> <span class="na">params</span><span class="p">:</span> <span class="p">{}}}</span>
+        <span class="c1">// initialRouteStack={Route}</span>
+        <span class="nx">renderScene</span><span class="o">=</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">_renderRoute</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">)}</span>
+        <span class="nx">configureScene</span><span class="o">=</span><span class="p">{(</span><span class="nx">route</span><span class="p">,</span> <span class="nx">routeStack</span><span class="p">)</span> <span class="o">=&gt;</span>
+            <span class="nx">SceneConfigs</span><span class="p">.</span><span class="nx">PushFromRight</span>
+            <span class="c1">// Navigator.SceneConfigs.PushFromRight             &lt;--- RN 提供的过渡动画</span>
+        <span class="p">}</span>
+        <span class="nx">sceneStyle</span><span class="o">=</span>
+        <span class="nx">navigationBar</span><span class="o">=</span><span class="p">{</span>
+            <span class="o">&lt;</span><span class="nx">Navigator</span><span class="p">.</span><span class="nx">NavigationBar</span>
+                <span class="nx">routeMapper</span><span class="o">=</span><span class="p">{</span><span class="nx">NavigationBarMap</span><span class="p">}</span>
+                <span class="nx">style</span><span class="o">=</span>
+            <span class="sr">/</span><span class="err">&gt;
+</span>        <span class="p">}</span>
+    <span class="sr">/</span><span class="err">&gt;
+</span></code></pre>
+</div>
+
+<p>其中 <code class="highlighter-rouge">configureScene</code> 的配置项就用于配置“页面”进出的过渡动画。
+官方默认的配置有这几种：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Navigator.SceneConfigs.PushFromRight (default)
+    Navigator.SceneConfigs.FloatFromRight
+    Navigator.SceneConfigs.FloatFromLeft
+    Navigator.SceneConfigs.FloatFromBottom
+    Navigator.SceneConfigs.FloatFromBottomAndroid
+    Navigator.SceneConfigs.FadeAndroid
+    Navigator.SceneConfigs.HorizontalSwipeJump
+    Navigator.SceneConfigs.HorizontalSwipeJumpFromRight
+    Navigator.SceneConfigs.VerticalUpSwipeJump
+    Navigator.SceneConfigs.VerticalDownSwipeJump
+</code></pre>
+</div>
+
+<p>还是挺丰富的，不过肯定没法满足大众的种类需求啊 T_T。
+所以需要我们自己定义了。</p>
+
+<h2 id="navigatorsceneconfigs">NavigatorSceneConfigs</h2>
+
+<p>先找到官方过渡动画的相关文件。</p>
+
+<p>0.31 版本在这里 <code class="highlighter-rouge">./react-native/Libraries/CustomComponents/Navigator/NavigatorSceneConfigs.js</code></p>
+
+<p>有兴趣的可以自己去看一下。</p>
+
+<h2 id="eg">自定义动画配置 eg</h2>
+
+<p>估计不少人一看到上面文件中一堆代码就没耐心了，实际都是重复的各类动画的配置，关键性的动画实现代码整理如下：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="s1">'use strict'</span><span class="p">;</span>
+    <span class="kr">import</span> <span class="nx">React</span><span class="p">,</span> <span class="p">{</span>
+        <span class="nx">Dimensions</span><span class="p">,</span>
+        <span class="nx">PixelRatio</span>
+    <span class="p">}</span> <span class="nx">from</span> <span class="s1">'react-native'</span><span class="p">;</span>
+
+    <span class="kr">import</span> <span class="nx">buildStyleInterpolator</span> <span class="nx">from</span> <span class="s1">'buildStyleInterpolator'</span><span class="p">;</span>
+
+    <span class="kr">const</span> <span class="nx">SCREEN_WIDTH</span> <span class="o">=</span> <span class="nx">Dimensions</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'window'</span><span class="p">).</span><span class="nx">width</span><span class="p">,</span>
+        <span class="nx">SCREEN_HEIGHT</span> <span class="o">=</span> <span class="nx">Dimensions</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'window'</span><span class="p">).</span><span class="nx">height</span><span class="p">;</span>
+
+    <span class="kr">const</span> <span class="nx">OutToLeft</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">transformTranslate</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">from</span><span class="p">:</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">z</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="na">to</span><span class="p">:</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="o">-</span><span class="nx">SCREEN_WIDTH</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">z</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+            <span class="na">extrapolate</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">round</span><span class="p">:</span> <span class="nx">PixelRatio</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span>
+        <span class="p">},</span>
+        <span class="na">translateX</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">from</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">to</span><span class="p">:</span> <span class="o">-</span><span class="nx">SCREEN_WIDTH</span><span class="p">,</span>
+            <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+            <span class="na">extrapolate</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">round</span><span class="p">:</span> <span class="nx">PixelRatio</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span>
+        <span class="p">},</span>
+        <span class="c1">// transformRotateRadians: {</span>
+        <span class="c1">//   from: {x: 0, y: 0, z: 0, w: 1},</span>
+        <span class="c1">//   to: {x: 0, y: 0, z: -0.47, w: 0.87},</span>
+        <span class="c1">//   min: 0,</span>
+        <span class="c1">//   max: 1,</span>
+        <span class="c1">//   type: 'linear',</span>
+        <span class="c1">//   extrapolate: true</span>
+        <span class="c1">// },</span>
+        <span class="c1">// opacity: {</span>
+        <span class="c1">//     value: 1,</span>
+        <span class="c1">//     type: 'constant'</span>
+        <span class="c1">// },</span>
+        <span class="na">opacity</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">from</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">to</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">max</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+            <span class="na">extrapolate</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="na">round</span><span class="p">:</span> <span class="mi">100</span>
+        <span class="p">},</span>
+        <span class="na">scale</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">value</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'constant'</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="kr">const</span> <span class="nx">InFromRight</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="na">transformTranslate</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">from</span><span class="p">:</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="nx">SCREEN_WIDTH</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">z</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="na">to</span><span class="p">:</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">z</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
+            <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+            <span class="na">extrapolate</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">round</span><span class="p">:</span> <span class="nx">PixelRatio</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span>
+        <span class="p">},</span>
+        <span class="na">translateX</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">from</span><span class="p">:</span> <span class="nx">SCREEN_WIDTH</span><span class="p">,</span>
+            <span class="na">to</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">min</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+            <span class="na">extrapolate</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">round</span><span class="p">:</span> <span class="nx">PixelRatio</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span>
+        <span class="p">},</span>
+        <span class="c1">// opacity: {</span>
+        <span class="c1">//     value: 1,</span>
+        <span class="c1">//     type: 'constant'</span>
+        <span class="c1">// },</span>
+        <span class="na">opacity</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">from</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="na">to</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">min</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
+            <span class="na">max</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'linear'</span><span class="p">,</span>
+            <span class="na">extrapolate</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+            <span class="na">round</span><span class="p">:</span> <span class="nx">PixelRatio</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span>
+        <span class="p">},</span>
+        <span class="na">scale</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">value</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'constant'</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+    
+    <span class="kr">const</span> <span class="nx">BaseLeftToRightGesture</span> <span class="o">=</span> <span class="p">{</span>
+
+        <span class="c1">// If the gesture can end and restart during one continuous touch</span>
+        <span class="na">isDetachable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+
+        <span class="c1">// How far the swipe must drag to start transitioning</span>
+        <span class="na">gestureDetectMovement</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+
+        <span class="c1">// Amplitude of release velocity that is considered still</span>
+        <span class="na">notMoving</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span>
+
+        <span class="c1">// Fraction of directional move required.</span>
+        <span class="na">directionRatio</span><span class="p">:</span> <span class="mf">0.66</span><span class="p">,</span>
+
+        <span class="c1">// Velocity to transition with when the gesture release was "not moving"</span>
+        <span class="na">snapVelocity</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+
+        <span class="c1">// Region that can trigger swipe. iOS default is 30px from the left edge</span>
+        <span class="na">edgeHitWidth</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+
+        <span class="c1">// Ratio of gesture completion when non-velocity release will cause action</span>
+        <span class="na">stillCompletionRatio</span><span class="p">:</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">5</span><span class="p">,</span>
+
+        <span class="na">fullDistance</span><span class="p">:</span> <span class="nx">SCREEN_WIDTH</span><span class="p">,</span>
+
+        <span class="na">direction</span><span class="p">:</span> <span class="s1">'left-to-right'</span>
+
+    <span class="p">};</span>
+
+    <span class="kr">const</span> <span class="nx">MyScene</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1">// 你自定义的输出的动画名称</span>
+        <span class="na">PushFromRight</span><span class="p">:</span> <span class="p">{</span>
+            <span class="c1">// A list of all gestures that are enabled on this scene</span>
+            <span class="na">gestures</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">pop</span><span class="p">:</span> <span class="nx">BaseLeftToRightGesture</span>
+            <span class="p">},</span>
+
+            <span class="c1">// Rebound spring parameters when transitioning FROM this scene</span>
+            <span class="na">springFriction</span><span class="p">:</span> <span class="mi">26</span><span class="p">,</span>
+            <span class="na">springTension</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+
+            <span class="c1">// Velocity to start at when transitioning without gesture</span>
+            <span class="c1">// 默认动画的加速度</span>
+            <span class="na">defaultTransitionVelocity</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+
+            <span class="c1">// Animation interpolators for horizontal transitioning:</span>
+            <span class="na">animationInterpolators</span><span class="p">:</span> <span class="p">{</span>
+                <span class="na">into</span><span class="p">:</span> <span class="nx">buildStyleInterpolator</span><span class="p">(</span><span class="nx">InFromRight</span><span class="p">),</span>
+                <span class="na">out</span><span class="p">:</span> <span class="nx">buildStyleInterpolator</span><span class="p">(</span><span class="nx">OutToLeft</span><span class="p">)</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="kr">export</span> <span class="k">default</span> <span class="nx">MyScene</span><span class="p">;</span>
+
+</code></pre>
+</div>
+
+<p>上述是笔者搞的一个横向无缩放滑动的过渡动画。如果满足你的需要，可以直接拿去用了。下面以此为例简单说明一下。</p>
+
+<p>按接口的输出从后往前简述主要方法。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    gestures
+</code></pre>
+</div>
+
+<p>手势功能动画，用于定义 APP 中的手势，比如 IOS 中大幅的从左向右滑动会退回上一页面，这个只是简单说明，实际行为的配置在 <code class="highlighter-rouge">BaseLeftToRightGesture</code> 里，不再多述。大家可以自己看。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    springFriction
+    springTension
+</code></pre>
+</div>
+
+<p>弹簧类动画的摩擦系数、弹性系数，用于微调动画结尾时的“弹性抖动”效果，自己试一下就有所体会。</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    animationInterpolators
+</code></pre>
+</div>
+
+<p>动画关键配置，具体的动画实现就全在这里啦。</p>
+
+<p>以 <code class="highlighter-rouge">OutToLeft</code> 为例，这是一个返回的过渡动画，效果是页面从左侧平行滑出，无缩放，透明度渐减。</p>
+
+<p>其中有 <code class="highlighter-rouge">translateX</code>、<code class="highlighter-rouge">opacity</code>、<code class="highlighter-rouge">scale</code>、等几个动画属性，看似和 CSS3 的动画很像，这对于前端童鞋来说上手就一下变简单了。</p>
+
+<p>对于不变的属性：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="nx">value</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>                   <span class="c1">//属性值，比如长度、透明度、放缩比例、角度等</span>
+    <span class="nx">type</span><span class="err">:</span> <span class="s1">'constant'</span>            <span class="c1">//类型是常量</span>
+</code></pre>
+</div>
+
+<p>对于变化属性：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="nx">from</span><span class="err">:</span> <span class="p">{</span><span class="nl">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">y</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">z</span><span class="err">:</span> <span class="mi">0</span><span class="p">},</span>                   <span class="c1">// 初始值</span>
+    <span class="nx">to</span><span class="err">:</span> <span class="p">{</span><span class="nl">x</span><span class="p">:</span> <span class="o">-</span><span class="nx">SCREEN_WIDTH</span><span class="p">,</span> <span class="nx">y</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">z</span><span class="err">:</span> <span class="mi">0</span><span class="p">},</span>         <span class="c1">// 终状态值</span>
+    <span class="nx">min</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>                                     <span class="c1">// 变化范围最小值</span>
+    <span class="nx">max</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>                                     <span class="c1">// 变化范围最大值</span>
+    <span class="nx">type</span><span class="err">:</span> <span class="s1">'linear'</span><span class="p">,</span>                             <span class="c1">// 变化速度类型</span>
+    <span class="nx">extrapolate</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span>                          <span class="c1">// 预判断</span>
+    <span class="nx">round</span><span class="err">:</span> <span class="nx">PixelRatio</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span>                     <span class="c1">// 精确范围，eg.: PixelRatio.get() 精确到屏幕像素比倍数</span>
+</code></pre>
+</div>
+
+<p>目前源码中提到的动画属性有：</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    transformTranslate          // 3D 位移变化
+    translateX                  // X 轴位移变化，类比 Y、Z
+    opacity                     // 透明度
+    scale                       // 放缩
+    transformScale              // 兼容性放缩
+    scaleX                      // X 轴放缩比例，类比 Y
+    transformRotateRadians      // 旋转弧度
+</code></pre>
+</div>
+
+<p>还算是比较全的，一般的效果都可以满足。具体就看你怎么实现了。</p>
+
+<h2 id="section">结束</h2>
+
+<p>完成以上自定义动画，引入后，如第一段代码那样引入即可。</p>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2016/08/04/SceneConfigs" data-title="ReactNative Navigator configureScene 自定义动画介绍" data-url="/front/article/2016/08/04/SceneConfigs.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"bystep15"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <!--<h2 class="footer-heading">宝宝树前端团队</h2>-->
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li><a href="/about/">宝宝树前端团队</a></li>
+          <li><a href="mailto:front-end@babytree-inc.com">front-end@babytree-inc.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/bystep15"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">bystep15</span></a>
+
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="https://lq1228.github.io/">
+		李倩
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>宝宝树前端项目组技术博客，欢迎补充
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

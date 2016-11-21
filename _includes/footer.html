@@ -1,0 +1,20 @@
+<footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        {% for friends in site.data.friends %}
+            <a href="{{ friends.href }}">
+		{{ friends.name }}
+	    </a>
+	{% endfor %}
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>

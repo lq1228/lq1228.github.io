@@ -1,8 +1,21 @@
 ---
-layout: homepage
-title: liqian的首页
+layout: default
 ---
-        <h2>最新文章</h2>
-        {% for post in site.posts %}
-        <h3><a href="{{site.baseurl}}{{post.url}}">{{post.title}}</a><span class="date" style="float: right;">{{post.date | date_to_string}} </span></h3>
-        {% endfor %}
+<div class="home">
+  <h1 class="page-heading">博客列表</h1>
+  <ul class="post-list">
+    {% for post in site.posts %}
+      <li>
+	<h2>
+	  <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+	  <span class="post-meta">posted at: {{ post.date | date: "%b %-d, %Y" }}</span>
+	</h2>
+	<p>
+	    简介：{{ post.description }}
+	</p>
+      </li>
+    {% endfor %}
+  </ul>
+
+</div>
+

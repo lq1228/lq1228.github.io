@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ReactNative增量升级方案</title>
+  <meta name="description" content="facebook的react-native给我们带来了用js写出原生应用的同时，也使得使用RN编写的代码的在线升级变得可能，终于可以不通过应用市场来进行升级，极大的提升了app修bug和赋予新功能的能力。----使用h5的方式也可以做到，但是rn的用户体验可要远远超过h5啊。一般使用RN编写的app的线上使用方式...">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://bystep15.github.io//front/article/2016/08/04/ReactNative%E5%A2%9E%E9%87%8F%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88.html">
+  <link rel="alternate" type="application/rss+xml" title="宝宝树前端团队" href="http://bystep15.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>宝宝树前端团队博客</h1>
+        <h2>Bystep15.GitHub.io</h2>
+        <a href="https://github.com/bystep15" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2016/08/04/ReactNative%E5%A2%9E%E9%87%8F%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88.html">ReactNative增量升级方案</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ReactNative增量升级方案</h1>
+    <p class="post-meta"><time datetime="2016-08-04T14:49:42+08:00" itemprop="datePublished">Aug 4, 2016</time> • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">曹楠</span></span></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1 id="reactnative">ReactNative增量升级方案</h1>
+
+<h1 id="section">前言</h1>
+<p>facebook的react-native给我们带来了用js写出原生应用的同时，也使得使用RN编写的代码的在线升级变得可能，终于可以不通过应用市场来进行升级，极大的提升了app修bug和赋予新功能的能力。—-使用h5的方式也可以做到，但是rn的用户体验可要远远超过h5啊。</p>
+
+<p>一般使用RN编写的app的线上使用方式，是将react-native bundle命令打出bundle文件和assets文件夹，直接内置到app中，app在viewcontroller或者activity中直接加载app内部的bundle文件，比如下图。</p>
+
+<p><img src="/images/rn/1.jpg" alt="" />￼</p>
+
+<p>当修改了代码或者图片的时候，只要app使用新的bundle文件和assets文件夹，就完成了一次在线升级。</p>
+
+<p>本文主要基于以上思路，讲解增量升级的解决方案。</p>
+
+<h1 id="section-1">何为增量？</h1>
+
+<p>一个完整的RN-app程序通常包含以下几个部分：</p>
+
+<ol>
+  <li>native代码部分-objc或者java</li>
+  <li>js代码部分-rn代码、依赖的第三方库、业务代码等</li>
+  <li>图片资源部分</li>
+</ol>
+
+<p>native代码别想了，没法在线升级，要是能大家就都不使用应用市场ota升级了。</p>
+
+<p>能进行在线升级的是js代码部分和图片资源部分，具体到代码就是bundle文件和assets文件夹。</p>
+
+<p>因为在线升级是要走网络的，我们要想办法将网络消耗降到最低，所以要使用增量升级的方式。</p>
+
+<p>针对js代码部分（即bundle文件）的增量指的是，代码的改动有多少，增量patch的补丁就有多少，那些没有改动的代码部分是不在补丁的范围内的。</p>
+
+<p>针对图片部分（即assets）的增量指的是，升级补丁包中只包含新增的图片和有改动的图片。</p>
+
+<p>那么在app端，下载升级补丁包，只需要和现有的版本进行合并，就能计算出最新版本的全量包。</p>
+
+<p>总结下流程：()中为例子</p>
+
+<p>首先，计算增量包：新版本(v10) - 旧版本(v1到v9) = 增量包 （会有9个包，v1~v10.zip,v2~v10.zip,,,,,v9-v10.zip）</p>
+
+<p>然后，app根据自己的当前版本(比如V6)，下载对应的增量包（V6-V10.zip）。</p>
+
+<p>最后，app中通过 旧版本(v6) + 增量包(v6~v10.zip) = 新版本(v10) ，计算出了新版本的全量包。</p>
+
+<h1 id="section-2">增量算法</h1>
+
+<p>assets增量算法，比较简单，就是比对，可以很容易的比较出新增的文件，和不同的文件（使用md5）。</p>
+
+<p>bundle文件的增量算法，确实比较复杂，刚开始没有什么头绪，后来在leader的指引下，很幸运的找到了google写的一个开源的库，可以对大字符串进行diff和patch，并且支持java、objc、js等等语言，完全的满足了我们的需求。</p>
+
+<p>只用到2个接口，具体请参考github上的文档</p>
+
+<ol>
+  <li>生成增量包时候：patch_make(text1, text2) =&gt; patches</li>
+  <li>app生成全量包时候：patch_apply(patches, text1) =&gt; [text2, results]</li>
+</ol>
+
+<p>google开源库地址：https://github.com/bystep15/google-diff-match-patch</p>
+
+<h1 id="codepush">codepush</h1>
+
+<p>微软的codepush也做了类似的事情，不过由于以下原因，我们团队没敢使用其作为解决方案。</p>
+
+<ol>
+  <li>其增量升级仅仅是针对图片资源的</li>
+  <li>其升级服务器端程序并不开源</li>
+  <li>其升级服务器在美国，国内访问很慢且不稳定</li>
+</ol>
+
+<p>不过，codepush客户端的源码和文档也给我们提供了很多思路，在此感谢codepush团队。</p>
+
+<p>codepush地址：http://microsoft.github.io/code-push/</p>
+
+<h1 id="bundleapp">bundle要求的app最小版本</h1>
+
+<p>本文中一般用min-v或者appMinV表示。</p>
+
+<p>因为js代码是依赖于native代码的，所以，jsbundle对app的版本有要求，所以有这个概念。</p>
+
+<p>试想，如果bundle依赖了一个native的一个新的接口，这个接口在v3版本的app中才发布，如果v2版本的app升级了这个bundle，那么必然会报错，严重的可能会导致app的崩溃。</p>
+
+<h1 id="section-3">系统结构设计与各模块职责</h1>
+<p><img src="/images/rn/2.png" alt="" />￼</p>
+
+<h1 id="bundle">bundle仓库设计</h1>
+
+<p>存储全量bundle和生成增量patch</p>
+
+<h2 id="node-patch-">node patch 命令</h2>
+
+<p>在bundle目录下放入一个符合要求【参考目录结构说明】的新版本目录，比如0.3.0,然后执行以下命令。</p>
+
+<p>命令：node patch 版本号 ， 示例：node patch 0.3.0</p>
+
+<p>-d参数: node patch 版本号 -d ，如果加入-d参数，会先删除patch目录下的对应版本目录，然后进行patch生成</p>
+
+<p>然后在patch目录中就会生成0.3.0的增量包，同时patch目录下的update.json文件也会重新生成.</p>
+
+<h2 id="node-updatejson-">node update.json 命令</h2>
+
+<p>在patch目录下重新生成update.json文件</p>
+
+<h2 id="section-4">目录结构说明</h2>
+<p><img src="/images/rn/3.jpg" alt="" />￼</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>bundle   存放全量bundle和全量assets的目录,里面的文件基本上是使用react-native bundle命令生成的
+    0.1.0
+        略
+    0.2.0
+        android
+            略，同ios
+        ios
+            config.json    此版本的配置信息，包含要求app的最低版本等，手动配置
+            index.jsbundle    全量jsbundle文件，使用react-native bundle命令生成
+            assets    全量图片目录，使用react-native bundle命令生成
+    0.3.0
+        略
+        
+patch   存放增量补丁的目录，里面文件都是命令生成的，无需手动维护    
+    0.1.0
+        第一版本无文件
+    0.2.0
+        android
+                略，同ios
+        ios
+            0.1.0-0.2.0.zip    增量包.zip
+    0.3.0
+        android
+                略，同ios
+        ios
+            0.1.0-0.3.0.zip    增量包.zip
+            0.2.0-0.3.0.zip    增量包.zip
+    update.json    所有的升级包信息
+src    存放打包用的源码
+lib    存放打包用依赖的第三方的源码
+patch.js    patch命令入口
+update.json.js    update.json命令入口
+</code></pre>
+</div>
+<p>##config.json示例</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"v"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0.3.0"</span><span class="p">,</span><span class="w"> </span><span class="err">//版本</span><span class="w">
+  </span><span class="nt">"min-v"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4.0.0"</span><span class="p">,</span><span class="w"> </span><span class="err">//此版本要求的最小app版本</span><span class="w">
+  </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2016-01-01"</span><span class="p">,</span><span class="w"> </span><span class="err">//打包日期</span><span class="w">
+  </span><span class="nt">"des"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="s2">"修复xxbug"</span><span class="p">,</span><span class="w"> </span><span class="s2">"添加xx功能"</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre>
+</div>
+
+<p>##update.json示例</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>[
+  {
+    "v": "0.1.0",
+    "min-v": "4.0.0",
+    "date": "2016-01-01",
+    "des": [
+      "修复xxbug",
+      "添加xx功能"
+    ],
+    "iosBundleMd5": "11f82563f8fd3f22dccb80ad2297f7bc",
+    "androidBundleMd5": "11f82563f8fd3f22dccb80ad2297f7bc"
+  },
+  {
+    "v": "0.2.0",
+    "min-v": "4.0.0",
+    "date": "2016-01-01",
+    "des": [
+      "修复xxbug",
+      "添加xx功能"
+    ],
+    "iosBundleMd5": "3ca2824b008132cee515c0ea29938ff2",
+    "androidBundleMd5": "3ca2824b008132cee515c0ea29938ff2"
+  },
+  {
+    "v": "0.3.0",
+    "min-v": "4.0.0",
+    "date": "2016-01-01",
+    "des": [
+      "修复xxbug",
+      "添加xx功能"
+    ],
+    "iosBundleMd5": "dbb81d2383112abb50eb19970c486acd",
+    "androidBundleMd5": "dbb81d2383112abb50eb19970c486acd"
+  }
+]
+
+</code></pre>
+</div>
+
+<h1 id="section-5">升级服务器设计</h1>
+
+<h2 id="patchquery">接口patch/query</h2>
+
+<p>例如：http://localhost:3000/patch/query?bundleV=0.2.0&amp;appV=4.0.0&amp;platform=ios</p>
+
+<p>此接口会有以下4个场景的使用情况，每个场景返回的json示例已经提供在后面文档中。</p>
+
+<h3 id="section-6">输入参数</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>```
+bundleV : app中的bundle版本
+appV : app版本
+platform : app的平台
+
+```
+</code></pre>
+</div>
+
+<h3 id="json">返回json各项说明</h3>
+
+<ol>
+  <li>status : 本次请求后台是否发生了错误</li>
+  <li>msg : 给用户看的中文提示信息，静默升级时候没什么用</li>
+  <li>latestBundleV : 当前的最新bundle版本</li>
+  <li>latestAppMinV : 最新bundle要求的app最低版本</li>
+  <li>canUpdate : 能否升级，boolean</li>
+  <li>canUpdateBundleV : 能升级的bundle版本</li>
+  <li>canUpdateAppMinV : 能升级的bundle要求的app最低版本</li>
+  <li>patchUrl : 补丁包相对地址</li>
+  <li>platform : 平台：ios or android</li>
+</ol>
+
+<h3 id="section-7">场景1</h3>
+
+<p>能升级，且能升级到最新版</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+   </span><span class="err">status:</span><span class="w"> </span><span class="err">'success',</span><span class="w">
+   </span><span class="err">msg:</span><span class="w"> </span><span class="err">'可以升级，bundle最新版为0.3.0',</span><span class="w">
+   </span><span class="err">latestBundleV:</span><span class="w"> </span><span class="err">'0.3.0',</span><span class="w">
+   </span><span class="err">latestAppMinV:</span><span class="w"> </span><span class="err">'4.0.0',</span><span class="w">
+   </span><span class="err">canUpdate:</span><span class="w"> </span><span class="err">true,</span><span class="w">
+   </span><span class="err">canUpdateBundleV:</span><span class="w"> </span><span class="err">'0.3.0',</span><span class="w">
+   </span><span class="err">canUpdateAppMinV:</span><span class="w"> </span><span class="err">'4.0.0',</span><span class="w">
+   </span><span class="err">patchUrl:</span><span class="w"> </span><span class="err">'patch/0.3.0/ios/0.2.0-0.3.0.zip',</span><span class="w">
+   </span><span class="err">platform:</span><span class="w"> </span><span class="err">'ios'</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="section-8">场景2</h3>
+<p>无需升级,已经是最新版本</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+   </span><span class="err">status:</span><span class="w"> </span><span class="err">'success',</span><span class="w">
+   </span><span class="err">msg:</span><span class="w"> </span><span class="err">'无需升级，已经是最新版本',</span><span class="w">
+   </span><span class="err">canUpdate:</span><span class="w"> </span><span class="err">false,</span><span class="w">
+   </span><span class="err">platform:</span><span class="w"> </span><span class="err">'ios'</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="section-9">场景3</h3>
+<p>能升级,能升级到当前appMinV的最新bundle版本,但不是最新的bundle,想升最新bundle，必须先升app</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+   </span><span class="err">status:</span><span class="w"> </span><span class="err">'success',</span><span class="w">
+   </span><span class="err">msg:</span><span class="w"> </span><span class="err">'可以升级，但app版本3.0.0太低，只能升到bundleV0.2.0，bundleV最新为0.3.0',</span><span class="w">
+   </span><span class="err">latestBundleV:</span><span class="w"> </span><span class="err">'0.3.0',</span><span class="w">
+   </span><span class="err">latestAppMinV:</span><span class="w"> </span><span class="err">'4.0.0',</span><span class="w">
+   </span><span class="err">canUpdate:</span><span class="w"> </span><span class="err">true,</span><span class="w">
+   </span><span class="err">canUpdateBundleV:</span><span class="w"> </span><span class="err">'0.2.0',</span><span class="w">
+   </span><span class="err">canUpdateAppMinV:</span><span class="w"> </span><span class="err">'3.0.0',</span><span class="w">
+   </span><span class="err">patchUrl:</span><span class="w"> </span><span class="err">'patch/0.2.0/ios/0.1.0-0.2.0.zip',</span><span class="w">
+   </span><span class="err">platform:</span><span class="w"> </span><span class="err">'ios'</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="section-10">场景4</h3>
+<p>不能升级,已经是当前appMinV的最新bundle,但不是最新的bundle,想升最新bundle，必须先升app</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+   </span><span class="err">status:</span><span class="w"> </span><span class="err">'success',</span><span class="w">
+   </span><span class="err">msg:</span><span class="w"> </span><span class="err">'不能升级，当前已经是app3.0.0的最新bundle了，但不是最新bundle0.3.0，想升级bundle到最新，请先升级app',</span><span class="w">
+   </span><span class="err">latestBundleV:</span><span class="w"> </span><span class="err">'0.3.0',</span><span class="w">
+   </span><span class="err">latestAppMinV:</span><span class="w"> </span><span class="err">'4.0.0',</span><span class="w">
+   </span><span class="err">canUpdate:</span><span class="w"> </span><span class="err">false,</span><span class="w">
+   </span><span class="err">platform:</span><span class="w"> </span><span class="err">'ios'</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h1 id="native">native客户端设计</h1>
+
+<p>客户端的主要工作就是发请求到升级服务器询问是否能升级，然后根据返回的信息，下载升级包，解压升级包，安装升级包。</p>
+
+<p>过程中要保证下载的文件是正确的（md5校验），要保证补丁安装之后的全量bundle文件是正确的（md5校验）。</p>
+
+<p>整个过程用户无感知。</p>
+
+<p>此部分详细设计后边会补充。</p>
+
+<h1 id="section-11">遗留问题</h1>
+<p>目前rn将安卓的图片放入到res目录中，导致安卓图片不能使用在线升级的解决方案，但是codepush的作者已经重构了此部分内容，并提pr到rn，rn团队也接受了这个pr，会在近期的版本中发布。</p>
+
+<p>参考地址：https://github.com/facebook/react-native/pull/4527</p>
+
+<h1 id="section-12">近期开源</h1>
+<p>本部分内容核心的几个部分都已经完成，近期完善之后，会开源出来。</p>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2016/08/04/ReactNative增量升级方案" data-title="ReactNative增量升级方案" data-url="/front/article/2016/08/04/ReactNative%E5%A2%9E%E9%87%8F%E5%8D%87%E7%BA%A7%E6%96%B9%E6%A1%88.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"bystep15"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <!--<h2 class="footer-heading">宝宝树前端团队</h2>-->
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li><a href="/about/">宝宝树前端团队</a></li>
+          <li><a href="mailto:front-end@babytree-inc.com">front-end@babytree-inc.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/bystep15"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">bystep15</span></a>
+
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="https://lq1228.github.io/">
+		李倩
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>宝宝树前端项目组技术博客，欢迎补充
+</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

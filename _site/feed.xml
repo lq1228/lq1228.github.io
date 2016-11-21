@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>宝宝树前端团队</title>
+    <description>宝宝树前端项目组技术博客，欢迎补充
+</description>
+    <link>http://bystep15.github.io//</link>
+    <atom:link href="http://bystep15.github.io//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 21 Nov 2016 14:00:24 +0800</pubDate>
+    <lastBuildDate>Mon, 21 Nov 2016 14:00:24 +0800</lastBuildDate>
+    <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>焦点图进阶</title>
+        <description>&lt;p&gt;新新的Show Time ^_^&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;container&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.baidu.com/logo.jpg&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&amp;lt;/li&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/ul&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Wed, 03 Feb 2016 14:49:42 +0800</pubDate>
+        <link>http://bystep15.github.io//front/article/2016/02/03/%E7%84%A6%E7%82%B9%E5%9B%BE%E8%BF%9B%E9%98%B6.html</link>
+        <guid isPermaLink="true">http://bystep15.github.io//front/article/2016/02/03/%E7%84%A6%E7%82%B9%E5%9B%BE%E8%BF%9B%E9%98%B6.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+  </channel>
+</rss>
