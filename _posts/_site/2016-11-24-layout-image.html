@@ -1,0 +1,50 @@
+<p><img src="/images/css-image/img.png" alt="例图" /></p>
+
+<p>图片占位问题</p>
+
+<p>如上图：在一个有多张质量较高的图片的页面上，网速较慢的情况下，如何让页面看起来加载比较流畅，不出现闪屏，跳屏的情况呢，让我们先给图片预留好它加载完成需要占用的位置如何，可以试试</p>
+
+<p>解决思路：</p>
+
+<p>1、一般情况下，我们会为img标签设置width和height属性来解决图片占位问题, 这在pc端可能还能这样解决，但是绝大多数用户都来自于移动端的今天，显然不能用此办法。</p>
+
+<p>2、用占位图或min-height来占位,如果占位图或min-height与需要加载的图片尺寸差别很大的话， 会出现页面的内容跳动,这也不是我们想要的。</p>
+
+<p>以上思路都行不通，我们需要换方向思考下:
+例图中可以看到，banner图宽度100%,高度自适应，列表分为了2列，各自50%，图片在列表中也是宽度100%，高度自适应,现在宽度都有了，如果知道图片的宽高比例的话（在服务器取数据的时候可返回图片的宽高），是不是也相当于知道图片的高度呢, 给图片父容器使用padding-top百分比值,这样就能够纯CSS实现图片的真实高度了。</p>
+
+<p>例如：图片是500*300，那么    宽:高=5:3，可以计算出当宽是100%的时候，高就是宽的60%</p>
+
+<p>所以padding-top应该是60%。</p>
+
+<p>代码如下:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nx">lazyload</span><span class="o">-</span><span class="nx">img</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nx">block</span><span class="p">;</span>
+    <span class="nx">max</span><span class="o">-</span><span class="nx">width</span><span class="err">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="mi">0</span> <span class="nx">auto</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="nx">lazyload</span><span class="o">-</span><span class="nx">img</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="p">{</span> 
+    <span class="nl">position</span><span class="p">:</span> <span class="nx">relative</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nx">block</span><span class="p">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nx">padding</span><span class="o">-</span><span class="nx">top</span><span class="err">:</span> <span class="mi">60</span><span class="o">%</span><span class="p">;</span> <span class="c1">//这里的60%，就是通过上面的算法得出的</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="err">#</span><span class="nx">ccc</span> <span class="nx">no</span><span class="o">-</span><span class="nx">repeat</span> <span class="nx">center</span> <span class="nx">center</span><span class="p">;</span> <span class="c1">//图片未加载完成前可以给个背景色用以占位</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="nx">lazyload</span><span class="o">-</span><span class="nx">img</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="nx">img</span> <span class="p">{</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nx">absolute</span><span class="p">;</span>
+    <span class="nl">top</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nl">left</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nx">block</span><span class="p">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nx">will</span><span class="o">-</span><span class="nx">change</span><span class="err">:</span> <span class="nx">transform</span><span class="p">;</span> <span class="c1">//https://developer.mozilla.org/zh-CN/docs/Web/CSS/will-change</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">i</span> <span class="nx">role</span><span class="o">=</span><span class="s2">"img"</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"lazyload-img"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">i</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"banner.png"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="sr">/i</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/i&gt;</span></code></pre></figure>
+

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>css实现 图片加载前的占位高度预设</title>
+  <meta name="description" content="在一个有多张质量较高的图片的页面上，网速较慢的情况下，如何让页面看起来加载比较流畅，不出现闪屏，跳屏的情况...">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2016/11/24/layout-image.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>lq1228-github.io</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2016/11/24/layout-image.html">css实现 图片加载前的占位高度预设</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">css实现 图片加载前的占位高度预设</h1>
+    <p class="post-meta"><time datetime="2016-11-24T12:49:42+08:00" itemprop="datePublished">Nov 24, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p><img src="/images/css-image/img.png" alt="例图" /></p>
+
+<p>图片占位问题</p>
+
+<p>如上图：在一个有多张质量较高的图片的页面上，网速较慢的情况下，如何让页面看起来加载比较流畅，不出现闪屏，跳屏的情况呢，让我们先给图片预留好它加载完成需要占用的位置如何，可以试试</p>
+
+<p>解决思路：</p>
+
+<p>1、一般情况下，我们会为img标签设置width和height属性来解决图片占位问题, 这在pc端可能还能这样解决，但是绝大多数用户都来自于移动端的今天，显然不能用此办法。</p>
+
+<p>2、用占位图或min-height来占位,如果占位图或min-height与需要加载的图片尺寸差别很大的话， 会出现页面的内容跳动,这也不是我们想要的。</p>
+
+<p>以上思路都行不通，我们需要换方向思考下:
+例图中可以看到，banner图宽度100%,高度自适应，列表分为了2列，各自50%，图片在列表中也是宽度100%，高度自适应,现在宽度都有了，如果知道图片的宽高比例的话（在服务器取数据的时候可返回图片的宽高），是不是也相当于知道图片的高度呢, 给图片父容器使用padding-top百分比值,这样就能够纯CSS实现图片的真实高度了。</p>
+
+<p>例如：图片是500*300，那么    宽:高=5:3，可以计算出当宽是100%的时候，高就是宽的60%</p>
+
+<p>所以padding-top应该是60%。</p>
+
+<p>代码如下:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nx">lazyload</span><span class="o">-</span><span class="nx">img</span> <span class="p">{</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nx">block</span><span class="p">;</span>
+    <span class="nx">max</span><span class="o">-</span><span class="nx">width</span><span class="err">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nl">margin</span><span class="p">:</span> <span class="mi">0</span> <span class="nx">auto</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="nx">lazyload</span><span class="o">-</span><span class="nx">img</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="p">{</span> 
+    <span class="nl">position</span><span class="p">:</span> <span class="nx">relative</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nx">block</span><span class="p">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nx">padding</span><span class="o">-</span><span class="nx">top</span><span class="err">:</span> <span class="mi">60</span><span class="o">%</span><span class="p">;</span> <span class="c1">//这里的60%，就是通过上面的算法得出的</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="err">#</span><span class="nx">ccc</span> <span class="nx">no</span><span class="o">-</span><span class="nx">repeat</span> <span class="nx">center</span> <span class="nx">center</span><span class="p">;</span> <span class="c1">//图片未加载完成前可以给个背景色用以占位</span>
+<span class="p">}</span>
+<span class="p">.</span><span class="nx">lazyload</span><span class="o">-</span><span class="nx">img</span> <span class="o">&gt;</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="nx">img</span> <span class="p">{</span>
+    <span class="nl">position</span><span class="p">:</span> <span class="nx">absolute</span><span class="p">;</span>
+    <span class="nl">top</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nl">left</span><span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nl">display</span><span class="p">:</span> <span class="nx">block</span><span class="p">;</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+    <span class="nx">will</span><span class="o">-</span><span class="nx">change</span><span class="err">:</span> <span class="nx">transform</span><span class="p">;</span> <span class="c1">//https://developer.mozilla.org/zh-CN/docs/Web/CSS/will-change</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">i</span> <span class="nx">role</span><span class="o">=</span><span class="s2">"img"</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"lazyload-img"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">i</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"banner.png"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="sr">/i</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/i&gt;</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2016/11/24/layout-image" data-title="css实现 图片加载前的占位高度预设" data-url="/front/article/2016/11/24/layout-image.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
