@@ -2,7 +2,7 @@
 layout: post
 title:  "input[type='file']打开文件选择框缓慢问题"
 date:   2016-12-02 13:49:42 +0800
-description: "在文件上传控件中使用 accept 属性, 规定了可通过文件上传提交的文件类型"
+description: "在文件上传控件中正确使用 accept 属性，可提高速度，改善用户体验"
 categories: front article
 ---
 
