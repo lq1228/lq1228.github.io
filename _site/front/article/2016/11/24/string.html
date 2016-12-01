@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>javascript基础 字符串</title>
+  <meta name="description" content="查漏补缺，本周做项目时发现自己对字符串的处理容易出错，重新整理，希望能有温故而知新的效果">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2016/11/24/string.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>lq1228-github.io</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2016/11/24/string.html">javascript基础 字符串</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">javascript基础 字符串</h1>
+    <p class="post-meta"><time datetime="2016-11-24T12:49:42+08:00" itemprop="datePublished">Nov 24, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>查漏补缺，本周做项目时发现自己对字符串的处理容易出错，重新整理，希望能有温故而知新的效果</p>
+
+<h2 id="jsstringstring">js区分大小写，string和String不是一回事。</h2>
+
+<p>String 是构造函数,typeof String 是function，可调用new String(stringValue),将参数转换为字符串,并作为一个String 对象。<a href="http://www.w3school.com.cn/jsref/jsref_string.asp">JavaScript String()函数</a></p>
+
+<p>string是变量的一个类型,typeof string 是 string</p>
+
+<h3 id="string-">String 对象属性</h3>
+<table>
+    <tr>
+        <td>属性</td>
+        <td>描述</td>
+    </tr>
+    <tr>
+        <td>constructor</td>
+        <td>对创建该对象的函数的引用</td>
+    </tr>
+    <tr>
+        <td>length</td>
+        <td>字符串的长度</td>
+    </tr>
+    <tr>
+        <td>prototype</td>
+        <td>允许您向对象添加属性和方法</td>
+    </tr>
+</table>
+
+<h3 id="string--1">String 对象方法</h3>
+
+<p>改变字符串样式的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s2">"Hello World!"</span>
+
+<span class="nx">str</span><span class="p">.</span><span class="nx">big</span><span class="p">()</span> 		<span class="c1">//用大号字体显示字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">small</span><span class="p">()</span> 		<span class="c1">//用小号字体显示字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">bold</span><span class="p">()</span> 		<span class="c1">//粗体</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">italics</span><span class="p">()</span> 		<span class="c1">//斜体</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">blink</span><span class="p">()</span> 		<span class="c1">//显示闪动字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">fixed</span><span class="p">()</span> 		<span class="c1">//以打字机文本显示字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">strike</span><span class="p">()</span> 		<span class="c1">//使用删除线来显示字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">fontcolor</span><span class="p">(</span><span class="s2">"Red"</span><span class="p">)</span> 	<span class="c1">//使用指定的颜色来显示字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">fontsize</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> 	<span class="c1">//使用指定的尺寸来显示字符串。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> 	<span class="c1">//把字符串转换为小写。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">()</span> 	<span class="c1">//把字符串转换为大写。</span>
+<span class="c1">//toLocaleLowerCase()与toLowerCase() 不同的是，toLocaleLowerCase() 方法按照本地方式把字符串转换为小写。</span>
+<span class="c1">//只有几种语言（如土耳其语）具有地方特有的大小写映射，所有该方法的返回值通常与 toLowerCase() 一样。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">toLocaleLowerCase</span><span class="p">()</span> 	<span class="c1">//把字符串转换为小写。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">toLocaleUpperCase</span><span class="p">()</span> 	<span class="c1">//把字符串转换为大写。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">sub</span><span class="p">()</span> 	<span class="c1">//把字符串显示为下标。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">sup</span><span class="p">()</span> 	<span class="c1">//把字符串显示为上标。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">link</span><span class="p">(</span><span class="s1">'http://www.baidu.com'</span><span class="p">)</span> <span class="c1">//将字符串显示为链接。</span></code></pre></figure>
+
+<p>检索或截取字符串的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s2">"Hello world!"</span>
+<span class="c1">//indexOf()方法可返回某个指定的字符串值在字符串中首次出现的位置,如果要检索的字符串值没有出现，则该方法返回 -1</span>
+<span class="c1">//indexOf() 方法对大小写敏感。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span> 	<span class="c1">//0</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">"World"</span><span class="p">)</span> 	<span class="c1">//-1</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">"world"</span><span class="p">)</span> 	<span class="c1">//6</span>
+<span class="c1">//lastIndexOf() 方法可返回一个指定的字符串值最后出现的位置，在一个字符串中的指定位置从后向前搜索。</span>
+<span class="c1">//如果要检索的字符串值没有出现，则该方法返回 -1。</span>
+<span class="c1">//lastIndexOf() 方法对大小写敏感！</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span> <span class="c1">//0</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s2">"World"</span><span class="p">)</span> <span class="c1">//-1</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">lastIndexOf</span><span class="p">(</span><span class="s2">"world"</span><span class="p">)</span> <span class="c1">//6</span>
+<span class="c1">//charAt() 方法可返回指定位置的字符。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 		<span class="c1">//e</span>
+<span class="c1">//charCodeAt() 方法可返回指定位置的字符的 Unicode 编码。这个返回值是 0 - 65535 之间的整数。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> 	<span class="c1">//101</span>
+<span class="c1">//substr() 方法可在字符串中抽取从 start 下标开始的指定数目的字符。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> 		<span class="c1">//lo world!</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">substr</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span> 	<span class="c1">//lo worl</span>
+<span class="c1">//slice() 方法可提取字符串的某个部分，并以新的字符串返回被提取的部分。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> 		<span class="c1">//happy world!</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span> 	<span class="c1">//happy</span>
+<span class="c1">//substring() 方法用于提取字符串中介于两个指定下标之间的字符。</span>
+<span class="c1">//substring() 与 slice() 和 substr() 方法不同的是，substring() 不接受负的参数。</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> 	<span class="c1">//lo world!</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span> 	<span class="c1">//lo w</span></code></pre></figure>
+
+<p>连接和分割字符串的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//concat() 方法用于连接两个或多个字符串。</span>
+<span class="kd">var</span> <span class="nx">str1</span><span class="o">=</span><span class="s2">"Hello "</span>
+<span class="kd">var</span> <span class="nx">str2</span><span class="o">=</span><span class="s2">"world!"</span>
+<span class="nx">str1</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nx">str2</span><span class="p">)</span> 	<span class="c1">//Hello world!</span>
+
+<span class="c1">//split() 方法用于把一个字符串分割成字符串数组。</span>
+<span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s2">"How are you doing today?"</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span> 	<span class="c1">//How,are,you,doing,today?</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span> 	<span class="c1">//H,o,w, ,a,r,e, ,y,o,u, ,d,o,i,n,g, ,t,o,d,a,y,?</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> 	<span class="c1">//How,are,you</span>
+<span class="s2">"2:3:4:5"</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span>	<span class="c1">//将返回["2", "3", "4", "5"]</span>
+<span class="s2">"|a|b|c"</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">"|"</span><span class="p">)</span>	<span class="c1">//将返回["", "a", "b", "c"]</span>
+<span class="c1">//使用正则表达式</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/</span><span class="se">\s</span><span class="sr">+/</span><span class="p">)</span>	<span class="c1">//["How", "are", "you", "doing", "today?"]</span></code></pre></figure>
+
+<p>替换和匹配字符串的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//match() 方法可在字符串内检索指定的值，或找到一个或多个正则表达式的匹配。</span>
+<span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s2">"Hello world!"</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="s2">"world"</span><span class="p">)</span>	<span class="c1">//有值:world</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="s2">"World"</span><span class="p">)</span>     <span class="c1">//没有值:null</span>
+<span class="s2">"1 plus 2 equal 3"</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/</span><span class="se">\d</span><span class="sr">+/g</span><span class="p">)</span>   <span class="c1">//1,2,3</span>
+
+<span class="c1">//replace() 方法用于在字符串中用一些字符替换另一些字符，或替换一个与正则表达式匹配的子串。</span>
+<span class="c1">//stringObject.replace(regexp/substr,replacement)</span>
+<span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s2">"Visit Microsoft!"</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/Microsoft/</span><span class="p">,</span><span class="s2">"W3School"</span><span class="p">)</span> <span class="c1">//Visit W3School!</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/Microsoft/g</span><span class="p">,</span> <span class="s2">"W3School"</span><span class="p">)</span> 	<span class="c1">//全局替换</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/Microsoft/i</span><span class="p">,</span> <span class="s2">"W3School"</span><span class="p">)</span> 	<span class="c1">//忽略大小写匹配，替换</span>
+<span class="c1">//转换引号</span>
+<span class="nx">name</span> <span class="o">=</span> <span class="s1">'"a", "b"'</span><span class="p">;</span>
+<span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/"</span><span class="se">([^</span><span class="sr">"</span><span class="se">]</span><span class="sr">*</span><span class="se">)</span><span class="sr">"/g</span><span class="p">,</span> <span class="s2">"'$1'"</span><span class="p">)</span>      <span class="c1">//'a', 'b'</span>
+<span class="c1">//转换姓名的格式</span>
+<span class="nx">name</span> <span class="o">=</span> <span class="s2">"Doe, John"</span><span class="p">;</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">(\w</span><span class="sr">+</span><span class="se">)\s</span><span class="sr">*, </span><span class="se">\s</span><span class="sr">*</span><span class="se">(\w</span><span class="sr">+</span><span class="se">)</span><span class="sr">/</span><span class="p">,</span> <span class="s2">"$2 $1"</span><span class="p">));</span>	<span class="c1">//John Doe</span>
+<span class="c1">//把单词的首字母转换为大写</span>
+<span class="nx">name</span> <span class="o">=</span> <span class="s1">'aaa bbb ccc'</span><span class="p">;</span>
+<span class="nx">uw</span> <span class="o">=</span> <span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">\b\w</span><span class="sr">+</span><span class="se">\b</span><span class="sr">/g</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">word</span><span class="p">){</span>
+	<span class="k">return</span> <span class="nx">word</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">).</span><span class="nx">toUpperCase</span><span class="p">()</span><span class="o">+</span><span class="nx">word</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);}</span>
+	<span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">write</span> <span class="p">(</span><span class="nx">uw</span><span class="p">);</span>	<span class="c1">//Aaa Bbb Ccc</span>
+
+<span class="c1">//search() 方法用于检索字符串中指定的子字符串，或检索与正则表达式相匹配的子字符串。</span>
+<span class="c1">//search() 方法不执行全局匹配，它将忽略标志 g。它同时忽略 regexp 的 lastIndex 属性</span>
+<span class="c1">//并且总是从字符串的开始进行检索，这意味着它总是返回 stringObject 的第一个匹配的位置。</span>
+<span class="kd">var</span> <span class="nx">str</span><span class="o">=</span><span class="s2">"Visit W3School!"</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="sr">/W3School/</span><span class="p">)</span>	<span class="c1">//有值：6</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="sr">/w3school/</span><span class="p">)</span>  <span class="c1">//没有值：-1</span>
+<span class="c1">//忽略大小写的检索</span>
+<span class="nx">str</span><span class="p">.</span><span class="nx">search</span><span class="p">(</span><span class="sr">/w3school/i</span><span class="p">)</span> <span class="c1">//6</span></code></pre></figure>
+
+<p>其他方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//anchor() 方法用于创建 HTML 锚。</span>
+<span class="kd">var</span> <span class="nx">txt</span><span class="o">=</span><span class="s2">"Hello world!"</span>
+<span class="nx">txt</span><span class="p">.</span><span class="nx">anchor</span><span class="p">(</span><span class="s2">"myanchor"</span><span class="p">)</span> 	<span class="c1">//&lt;a name="myanchor"&gt;Hello world!&lt;/a&gt;</span>
+<span class="c1">//fromCharCode() 可接受一个指定的 Unicode 值，然后返回一个字符串。</span>
+<span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span><span class="mi">69</span><span class="p">,</span><span class="mi">76</span><span class="p">,</span><span class="mi">76</span><span class="p">,</span><span class="mi">79</span><span class="p">)</span> 	<span class="c1">//HELLO</span>
+<span class="c1">//valueOf() 方法可返回 String 对象的原始值。</span>
+<span class="c1">//当调用该方法的对象不是 String 时抛出 TypeError 异常。</span>
+<span class="nx">stringObject</span><span class="p">.</span><span class="nx">valueOf</span><span class="p">()</span></code></pre></figure>
+
+<p><a href="http://www.w3school.com.cn/jsref/jsref_localeCompare.asp">localeCompare() 方法,用本地特定的顺序来比较两个字符串。</a></p>
+
+<p><a href="http://www.w3school.com.cn/js/pro_js_typeconversion.asp">ECMAScript 类型转换</a></p>
+
+<p><a href="http://www.w3school.com.cn/jsref/jsref_toString_string.asp">转换成字符串toString()</a></p>
+
+<p>转换成数字parseInt() 和 parseFloat()</p>
+
+<p>ECMAScript 中可用的 3 种强制类型转换：
+Boolean(value) - 把给定的值转换成 Boolean 型；
+Number(value) - 把给定的值转换成数字（可以是整数或浮点数）；
+String(value) - 把给定的值转换成字符串；</p>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2016/11/24/string" data-title="javascript基础 字符串" data-url="/front/article/2016/11/24/string.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
