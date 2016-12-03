@@ -6,9 +6,47 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 01 Dec 2016 13:33:20 +0800</pubDate>
-    <lastBuildDate>Thu, 01 Dec 2016 13:33:20 +0800</lastBuildDate>
+    <pubDate>Sat, 03 Dec 2016 09:56:22 +0800</pubDate>
+    <lastBuildDate>Sat, 03 Dec 2016 09:56:22 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>input[type=&#39;file&#39;]打开文件选择框缓慢问题</title>
+        <description>&lt;p&gt;项目中遇到的问题&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;file&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;file&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;image/*&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;我在代码中使用了HTML5的input[file]标签去上传图片，同时，使用了 accept=”image/*” 去过滤所有非图片的文件。&lt;/p&gt;
+
+&lt;p&gt;点击input之后，会有一定概率出现文件选择框弹出非常慢的问题，正常情况下，不到1S就能弹出文件选择框。但是慢的时候，可能达到7 ~ 10秒。&lt;/p&gt;
+
+&lt;p&gt;当时想这个组件可能存在兼容性问题，在mac电脑上的测试了safari电脑上发现基本没区别，又升级了chrome版本(54)，也未能得到改善。&lt;/p&gt;
+
+&lt;p&gt;无意中在同事电脑操作的时候，发现打开文件选择框的速度比我电脑快多了，也同为chrome浏览器（52）&lt;/p&gt;
+
+&lt;p&gt;那就排查下属性吧，对属性进行逐一排查后，发现是accept=”image/*”的问题。&lt;/p&gt;
+
+&lt;p&gt;将accept=”image/*”改为指定的图片格式就不会出现上述问题，所以我将上传图片的过滤格式指定为了常用的几种格式&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;file&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;file&quot;&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;accept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;image/jpg,image/jpeg,image/png&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;原因初步猜想是当设置accept=”image/*”时，浏览器会在弹出框中处理所有的非图片元素，包含所有的图片格式，如果文件较多会增加处理时间，而这个时候可能在这几个版本的chrome中有bug（也许是底层没实现好），导致概率性时间增长(&amp;lt;52chrome浏览器未测)。&lt;/p&gt;
+
+&lt;p&gt;当然，如果希望过滤所有的非图片格式，那么这个问题还是会存在。&lt;/p&gt;
+
+&lt;p&gt;原文出处：http://www.foreverpx.cn&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 02 Dec 2016 13:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2016/12/02/input-file.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2016/12/02/input-file.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>javascript基础 字符串</title>
