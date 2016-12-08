@@ -845,10 +845,9 @@ footer a:hover {
     margin-top: 15px;
     font-size: 13px;
     line-height: 1;
-    color: #2879d0;
     text-align: center;
-    background-color: #9ddcff;
-    background-image: none;
+    background: none;
+    border: 1px solid #fff;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;

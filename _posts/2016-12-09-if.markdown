@@ -1,0 +1,93 @@
+---
+layout: post
+title:  "在js开发中，如何减少if else语句的使用"
+date:   2016-12-09 13:00:42 +0800
+description: "if语句通常会让代码更加复杂，但凡事无绝对，这不代表可以完全抛弃if语句，存在必有其价值，只要找对合适的使用场景。有深度嵌套或者有扩展和修改需求的可能性，为了便于维护，我们要多一些思考和预备方案。"
+categories: front article
+---
+
+### 问题
+
+代码中if else 语句过多可能会带来的问题: 代码冗余，可读性差，不易维护, 一旦有修改，费时费力，浪费开发者的脑细胞。
+
+### 思考
+
+if语句通常会让代码更加复杂，但凡事无绝对，这不代表可以完全抛弃if语句，存在必有其价值，只要找对合适的使用场景即可。我这里的减少if语句的使用，只针对于代码冗余，有深度嵌套或者有扩展和修改需求的可能性，为了便于维护，我们要多一些思考和预备方案。
+
+### 方案
+
+方案一：
+{% highlight javascript %}
+if (a为真) {
+    a = a
+} else {
+    a = b
+}
+可写成：a = a || b
+或写成：a = a ? a : b
+{% endhighlight %}
+
+方案二：三元运算符替换
+{% highlight javascript %}
+if (a === b) {
+    a = c
+} else {
+    a = d
+}
+可写成：a = (a === b) ? c : d
+{% endhighlight %}
+
+
+方案三：先处理特殊情况尽早return，少使用else
+{% highlight javascript %}
+if (!a) {
+    return;
+}
+code block;
+{% endhighlight %}
+
+方案四：swich语句
+{% highlight javascript %}
+if (a > 1 && result < 10) {
+    return 0;
+} else if (a > 10 && a < 20) {
+    return 1;
+} else {
+    return 2;
+}
+// 可写成:
+switch (a) {
+case (a > 1 && a < 10):
+    return 0;
+    break;
+case (a > 10 && a < 20):
+    return 1;
+    break;
+default:
+    return 2;
+}
+{% endhighlight %}
+
+方案五：对象
+{% highlight javascript %}
+if (a === 1) {
+    return 'one';
+} else if (a === 2) {
+    return 'two';
+} else if (a === 3) {
+    return 'three';
+} else {
+    return '';
+}
+// 可写成：
+aoo = {
+    1: 'one',
+    2: 'two',
+    3: 'three'
+}
+return aoo[result] ? aoo[result] : '';
+{% endhighlight %}
+
+简单整理，欢迎补充～
+
+最后建议，如果需要判断不是很多的话还是使用 if 即可。
