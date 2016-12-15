@@ -1,0 +1,79 @@
+<h3 id="section">问题</h3>
+
+<p>代码中if else 语句过多可能会带来的问题: 代码冗余，可读性差，不易维护, 一旦有修改，费时费力，浪费开发者的脑细胞。</p>
+
+<h3 id="section-1">思考</h3>
+
+<p>if语句通常会让代码更加复杂，但凡事无绝对，这不代表可以完全抛弃if语句，存在必有其价值，只要找对合适的使用场景即可。我这里的减少if语句的使用，只针对于代码冗余，有深度嵌套或者有扩展和修改需求的可能性，为了便于维护，我们要多一些思考和预备方案。</p>
+
+<h3 id="section-2">方案</h3>
+
+<p>方案一：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">a</span><span class="err">为真</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nx">a</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nx">b</span>
+<span class="p">}</span>
+<span class="err">可写成：</span><span class="nx">a</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">||</span> <span class="nx">b</span>
+<span class="err">或写成：</span><span class="nx">a</span> <span class="o">=</span> <span class="nx">a</span> <span class="p">?</span> <span class="nx">a</span> <span class="p">:</span> <span class="nx">b</span></code></pre></figure>
+
+<p>方案二：三元运算符替换</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nx">c</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">a</span> <span class="o">=</span> <span class="nx">d</span>
+<span class="p">}</span>
+<span class="err">可写成：</span><span class="nx">a</span> <span class="o">=</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">?</span> <span class="nx">c</span> <span class="p">:</span> <span class="nx">d</span></code></pre></figure>
+
+<p>方案三：先处理特殊情况尽早return，少使用else</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">code</span> <span class="nx">block</span><span class="p">;</span></code></pre></figure>
+
+<p>方案四：swich语句</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">result</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// 可写成:</span>
+<span class="k">switch</span> <span class="p">(</span><span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">case</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="k">case</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="nx">a</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">break</span><span class="p">;</span>
+<span class="nl">default</span><span class="p">:</span>
+    <span class="k">return</span> <span class="mi">2</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>方案五：对象</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'one'</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'two'</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">'three'</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s1">''</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// 可写成：</span>
+<span class="nx">aoo</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="mi">1</span><span class="p">:</span> <span class="s1">'one'</span><span class="p">,</span>
+    <span class="mi">2</span><span class="p">:</span> <span class="s1">'two'</span><span class="p">,</span>
+    <span class="mi">3</span><span class="p">:</span> <span class="s1">'three'</span>
+<span class="p">}</span>
+<span class="k">return</span> <span class="nx">aoo</span><span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="p">?</span> <span class="nx">aoo</span><span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="p">:</span> <span class="s1">''</span><span class="p">;</span></code></pre></figure>
+
+<p>简单整理，欢迎补充～</p>
+
+<p>最后建议，如果需要判断不是很多的话还是使用 if 即可。</p>

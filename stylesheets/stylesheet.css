@@ -686,7 +686,6 @@ form {
 
 h4:before {
   padding-right: 0.3em;
-  content: "////";
   color: #9ddcff;
 }
 
@@ -699,7 +698,6 @@ h4:before {
 }
 h5:before {
   padding-right: 0.3em;
-  content: "/////";
   color: #9ddcff;
 }
 
@@ -713,7 +711,6 @@ h5:before {
 h6:before {
   padding-right: 0.3em;
   margin-left: -3.7em;
-  content: "//////";
   color: #9ddcff;
 }
 
