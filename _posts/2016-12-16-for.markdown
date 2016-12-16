@@ -2,7 +2,7 @@
 layout: post
 title:  "循环复杂度"
 date:   2016-12-16 13:00:42 +0800
-description: ""
+description: "循环复杂度是指程序的控制流图中，若将结束点到启始点再增加一个边时，控制流图中的圈（几个边形成封闭路径）的个数"
 categories: front article
 ---
 
