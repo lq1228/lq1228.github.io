@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><!-- 默认使用最新浏览器 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><!-- 不被网页(加速)转码 -->
+    <meta name="robots" content="index,follow"/> <!-- 搜索引擎抓取 -->
+    <meta name="renderer" content="webkit" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /><!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-itunes-app" content="app-id=myAppStoreID, affiliate-data=myAffiliateData, app-argument=myURL">
+    <meta name="screen-orientation" content="portrait" /><!-- uc强制竖屏 -->
+    <meta name="full-screen" content="yes" /><!-- UC强制全屏 -->
+    <meta name="browsermode" content="application" /><!-- UC应用模式 -->
+    <meta name="x5-orientation" content="portrait" /><!-- QQ强制竖屏 -->
+    <meta name="x5-fullscreen" content="true" /><!-- QQ强制全屏 -->
+    <meta name="x5-page-mode" content="app" /><!-- QQ应用模式 -->
+    <meta name="format-detection" content="telephone=no, address=no, email=no" /><!-- 忽略页面中的数字识别\email识别\地址识别 -->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+    <title>方向感應簡單示例</title>
+</head>
+<body>
+<style>
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    perspective: 1200px;
+    margin-top: 20vh;
+}
+.stage {
+    /*max-width: 400px;
+    width: 80%;*/
+    position: relative;
+    width: 240px;
+    height: 240px;
+    line-height: 240px;
+    border: 1px solid red;
+    transform-style: preserve-3d;
+    margin-top: 10%;
+}
+.stage section {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: rgba(240, 240, 240, .7);
+    border: 2px solid #666;
+    border-radius: 10%;
+    font-size: 100px;
+    text-align: center;
+    /*transform: translateZ(120px);*/
+}
+</style>
+<div class="wrapper">
+    <div class="stage">
+        <section style="transform: rotateX(90deg) translateZ(120px);">北</section>
+        <section style="transform: rotateY(0deg) translateZ(120px);">天</section>
+        <section style="transform: rotateY(90deg) translateZ(120px);">东</section>
+        <section style="transform: rotateY(180deg) translateZ(120px);">地</section>
+        <section style="transform: rotateY(270deg) translateZ(120px);">西</section>
+        <section style="transform: rotateX(-90deg) translateZ(120px);">南</section>
+    </div>
+</div>
+<div style="display: none;">
+    <p id="alpha"></p>
+    <p id="beta"></p>
+    <p id="gamma"></p>
+</div>
+<script>
+    (function () {
+        var calibration = false;            //是否已经校准
+        var maxAcceleration = {
+            x: 0,
+            y: 0,
+            z: 0
+        };
+        var flag_1 = 0;
+        var flag_2 = 0;
+        window.addEventListener('deviceorientation', function (evt) {
+            var x = evt.alpha,
+                y = evt.beta,
+                z = evt.gamma;
+            var dom = document.querySelector('.stage');
+            dom.style.transform = 'rotateX(' + y + 'deg)'   
+                + ' rotateY(' + (z * -1) + 'deg)' 
+                + ' rotateZ(' + x + 'deg)';     //ok
+            dom.style.webkitTransform = 'rotateX(' + y + 'deg)'   
+                + ' rotateY(' + (z * -1) + 'deg)' 
+                + ' rotateZ(' + x + 'deg)';     //ok
+            document.getElementById('alpha').innerHTML = 'alpha: ' + x;
+            document.getElementById('beta').innerHTML = 'beta: ' + y;
+            document.getElementById('gamma').innerHTML = 'gamma: ' + z;
+            if (!flag_1) {
+                console.log(evt);
+                flag_1 = 1;
+            }
+        }, false);    
+        /*
+        //
+        document.getElementById('mask_tip').addEventListener('click', function (evt) {
+            alert(maxAcceleration.x + '|' + maxAcceleration.y + '|' + maxAcceleration.z);
+        }, false);
+        */
+    })();
+</script>
+</body>
+    
+</html>

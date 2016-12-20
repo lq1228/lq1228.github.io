@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>静态资源https可用性检测</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2016/12/16/https.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2016/12/16/https.html">静态资源https可用性检测</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">静态资源https可用性检测</h1>
+    <p class="post-meta"><time datetime="2016-12-16T12:49:42+08:00" itemprop="datePublished">Dec 16, 2016</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="section">缘起</h3>
+
+<p>随着国内网络环境的持续恶化，各种篡改和劫持层出不穷，越来越多的网站选择了全站 HTTPS。HTTPS 通过 TLS 层和证书机制提供了内容加密、身份认证和数据完整性三大功能，可以有效防止数据被查看或篡改，以及防止中间人冒充。</p>
+
+<p>在可见的未来，HTTP2 只在 HTTPS 环境下被支持，iOS9 要求应用程序必须采用 HTTPS 传输，升级HTTPS迫在眉睫。</p>
+
+<h3 id="section-1">实现</h3>
+
+<p>大概8-9月份的时候，在前端leader的主导，运维协助的情况下，M站已经基本完成HTTPS的升级；有了上次的技术摸底，这次APP全部升级HTTPS就显得顺风顺水了很多；接下来是今天的重点：测试静态资源https可用性检测。</p>
+
+<h3 id="https">静态资源https可用性检测</h3>
+
+<h4 id="section-2">需求</h4>
+
+<p>对静态资源https的支持程度做统计</p>
+
+<ol>
+  <li>
+    <p>记录IP粒度的地域信息；</p>
+  </li>
+  <li>
+    <p>对所有域名(静态文件所有域名)进行测试；</p>
+  </li>
+  <li>
+    <p>劫持，内容是否一致；</p>
+  </li>
+</ol>
+
+<h4 id="section-3">分析</h4>
+
+<p>需求1中提到的记录IP粒度的地域信息，在服务器端很容易就能获取到；</p>
+
+<p>需求2和3需要前端提供每个域名下的返回状态，以接口的方式传给后端，和1整合后统一存入数据库中</p>
+
+<h4 id="section-4">前端实现方案</h4>
+
+<ol>
+  <li>
+    <p>图片所有域名需要返回加载状态</p>
+  </li>
+  <li>
+    <p>js或css文件所有域名需要返回加载状态外，还需要对比是否被劫持</p>
+  </li>
+  <li>
+    <p>图片和js统一返回状态：0为加载失败，1为成功，2为被劫持</p>
+  </li>
+  <li>
+    <p>将返回状态存入data中，以便后端调用</p>
+  </li>
+</ol>
+
+<p>返回所有域名下同一张图片访问状态</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">returnImgStatus</span><span class="p">()</span> <span class="p">{</span>
+	    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
+		<span class="nx">imgArr</span> <span class="o">=</span> <span class="p">[],</span>
+	    	<span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'pic01'</span><span class="p">,</span> <span class="s1">'pic02'</span><span class="p">,</span> <span class="s1">'pic03'</span><span class="p">,</span> <span class="s1">'pic04'</span><span class="p">,</span> <span class="s1">'pic05'</span><span class="p">],</span>
+		<span class="nx">i</span><span class="p">;</span>
+	    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.default.png'</span><span class="p">;</span>
+	    <span class="p">}</span>
+            <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">imgArr</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="p">}</span>
+            <span class="p">});</span>
+	    <span class="k">return</span> <span class="nx">domainStatus</span><span class="p">;</span>
+	<span class="p">}</span></code></pre></figure>
+
+<p>返回所有域名下同一张图片访问状态</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">returnJsStatus</span><span class="p">()</span> <span class="p">{</span>
+	    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
+		<span class="nx">dataHttpJs</span> <span class="o">=</span> <span class="p">[],</span>
+	        <span class="nx">dataHttpsJs</span> <span class="o">=</span> <span class="p">[],</span>
+	        <span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'static01'</span><span class="p">,</span> <span class="s1">'static02'</span><span class="p">],</span>
+		<span class="nx">i</span><span class="p">;</span>
+	    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+	        <span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.zepto/1.0.0/zepto.min.js'</span><span class="p">);</span>
+	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		    <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">404</span> <span class="o">||</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">500</span><span class="p">)</span> <span class="p">{</span>
+			<span class="c1">//加载失败	</span>
+		        <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		    <span class="p">}</span>
+		    <span class="nx">dataHttpsJs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
+		<span class="p">};</span>
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+
+		<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="s1">'http://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.zepto/1.0.0/zepto.min.js'</span><span class="p">);</span>
+	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		    <span class="nx">dataHttpJs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
+		<span class="p">};</span>
+	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+
+		<span class="c1">//对比https和http状态下返回的文件是否相同，以此判断是否被劫持</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">dataHttpsJs</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="nx">dataHttpJs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
+		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+		<span class="p">}</span>
+	    <span class="p">}</span>
+	    <span class="k">return</span> <span class="nx">domainStatus</span><span class="p">;</span>
+	<span class="p">}</span></code></pre></figure>
+
+<p>将以上返回状态，存入data中，方便后端调用</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="na">js</span><span class="p">:</span> <span class="nx">returnJsStatus</span><span class="p">(),</span>
+	<span class="na">img</span><span class="p">:</span> <span class="nx">returnImgStatus</span><span class="p">()</span>
+    <span class="p">};</span> </code></pre></figure>
+
+<p>和后端合作人员确定api后，可转成对应格式，配合使用</p>
+
+<ul>
+  <li><a href="/page/https/https.html">例子</a></li>
+</ul>
+
+<p>升级HTTPS可参考如下：</p>
+
+<p><a href="http://www.tuicool.com/articles/rMv6b2q">HTTPS 改造初探</a></p>
+
+<p><a href="http://www.cnblogs.com/xuan52rock/p/6178240.html">启用 HTTPS 过程中，如何与一些新出的安全规范配合使用</a></p>
+
+<p><a href="http://www.cnblogs.com/webARM/p/5728695.html">前端静态文件如何应对HTTPS的到来</a></p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2016/12/16/https" data-title="静态资源https可用性检测" data-url="/front/article/2016/12/16/https.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

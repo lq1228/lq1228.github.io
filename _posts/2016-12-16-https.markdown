@@ -1,0 +1,127 @@
+---
+layout: post
+title:  "静态资源https可用性检测"
+date:   2016-12-16 12:49:42 +0800
+description: ""
+categories: front article
+---
+
+### 缘起
+
+随着国内网络环境的持续恶化，各种篡改和劫持层出不穷，越来越多的网站选择了全站 HTTPS。HTTPS 通过 TLS 层和证书机制提供了内容加密、身份认证和数据完整性三大功能，可以有效防止数据被查看或篡改，以及防止中间人冒充。
+
+在可见的未来，HTTP2 只在 HTTPS 环境下被支持，iOS9 要求应用程序必须采用 HTTPS 传输，升级HTTPS迫在眉睫。
+
+### 实现
+
+大概8-9月份的时候，在前端leader的主导，运维协助的情况下，M站已经基本完成HTTPS的升级；有了上次的技术摸底，这次APP全部升级HTTPS就显得顺风顺水了很多；接下来是今天的重点：测试静态资源https可用性检测。
+
+### 静态资源https可用性检测
+
+#### 需求
+
+对静态资源https的支持程度做统计
+
+1. 记录IP粒度的地域信息；
+
+2. 对所有域名(静态文件所有域名)进行测试；
+
+3. 劫持，内容是否一致；
+
+#### 分析
+
+需求1中提到的记录IP粒度的地域信息，在服务器端很容易就能获取到；
+
+需求2和3需要前端提供每个域名下的返回状态，以接口的方式传给后端，和1整合后统一存入数据库中
+
+#### 前端实现方案
+
+1. 图片所有域名需要返回加载状态
+
+2. js或css文件所有域名需要返回加载状态外，还需要对比是否被劫持
+
+3. 图片和js统一返回状态：0为加载失败，1为成功，2为被劫持
+
+4. 将返回状态存入data中，以便后端调用 
+
+返回所有域名下同一张图片访问状态
+{% highlight javascript %}
+	function returnImgStatus() {
+	    var domainStatus = {},
+		imgArr = [],
+	    	domain = ['pic01', 'pic02', 'pic03', 'pic04', 'pic05'],
+		i;
+	    for (i = 0; i < domain.length; i = i + 1) {
+		imgArr[i] = new Image();
+		imgArr[i].src = 'https://' + domain[i] + '.default.png';
+	    }
+            $.each(imgArr, function (index) {
+		this.onload = function () {
+		    domainStatus[domain[index]] = 1;
+		}
+		this.onerror = function () {
+		    domainStatus[domain[index]] = 0;
+		}
+            });
+	    return domainStatus;
+	}
+{% endhighlight %}
+
+返回所有域名下同一张图片访问状态
+{% highlight javascript %}
+	function returnJsStatus() {
+	    var domainStatus = {},
+		dataHttpJs = [],
+	        dataHttpsJs = [],
+	        domain = ['static01', 'static02'],
+		i;
+	    for (i = 0; i < domain.length; i = i + 1) {
+	        var xhr = new XMLHttpRequest();
+		xhr.open('GET','https://' + domain[i] + '.zepto/1.0.0/zepto.min.js');
+	        xhr.onload = function () {
+		    if (xhr.status === 404 || xhr.status === 500) {
+			//加载失败	
+		        domainStatus[domain[i]] = 0;
+		    }
+		    dataHttpsJs.push(xhr.responseText);
+		};
+		xhr.send();
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET','http://' + domain[i] + '.zepto/1.0.0/zepto.min.js');
+	        xhr.onload = function () {
+		    dataHttpJs.push(xhr.responseText);
+		};
+	        xhr.send();
+
+		//对比https和http状态下返回的文件是否相同，以此判断是否被劫持
+		if (dataHttpsJs[i] === dataHttpJs[i]) {
+		    domainStatus[domain[i]] = 1;
+		} else {
+		    domainStatus[domain[i]] = 2;
+		}
+	    }
+	    return domainStatus;
+	}
+{% endhighlight %}
+
+将以上返回状态，存入data中，方便后端调用
+
+{% highlight javascript %}
+    var data = {
+	js: returnJsStatus(),
+	img: returnImgStatus()
+    }; 
+{% endhighlight %}
+
+和后端合作人员确定api后，可转成对应格式，配合使用
+
+* [例子](/page/https/https.html)
+
+升级HTTPS可参考如下：
+
+[HTTPS 改造初探](http://www.tuicool.com/articles/rMv6b2q)
+
+[启用 HTTPS 过程中，如何与一些新出的安全规范配合使用](http://www.cnblogs.com/xuan52rock/p/6178240.html)
+
+[前端静态文件如何应对HTTPS的到来](http://www.cnblogs.com/webARM/p/5728695.html)

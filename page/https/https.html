@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><!-- 默认使用最新浏览器 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp" /><!-- 不被网页(加速)转码 -->
+    <meta name="robots" content="index,follow"/> <!-- 搜索引擎抓取 -->
+    <meta name="renderer" content="webkit" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui" />
+    <meta name="apple-mobile-web-app-capable" content="yes" /><!-- 删除苹果默认的工具栏和菜单栏 -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /><!-- 设置苹果工具栏颜色 -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-itunes-app" content="app-id=myAppStoreID, affiliate-data=myAffiliateData, app-argument=myURL">
+    <meta name="screen-orientation" content="portrait" /><!-- uc强制竖屏 -->
+    <meta name="full-screen" content="yes" /><!-- UC强制全屏 -->
+    <meta name="browsermode" content="application" /><!-- UC应用模式 -->
+    <meta name="x5-orientation" content="portrait" /><!-- QQ强制竖屏 -->
+    <meta name="x5-fullscreen" content="true" /><!-- QQ强制全屏 -->
+    <meta name="x5-page-mode" content="app" /><!-- QQ应用模式 -->
+    <meta name="format-detection" content="telephone=no, address=no, email=no" /><!-- 忽略页面中的数字识别\email识别\地址识别 -->
+    <link rel="shortcut icon" type="image/ico" href="/favicon.ico"/>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+    <title>静态资源https可用性检测</title>
+</head>
+<body>
+<div class="wrapper">
+</div>
+
+<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+<script>
+    (function () {
+	function returnJsStatus() {
+	    var domainStatus = {},
+		dataHttpJs = [],
+	        dataHttpsJs = [],
+	        domain = ['static01', 'static02'],
+		i;
+	    for (i = 0; i < domain.length; i = i + 1) {
+	        var xhr = new XMLHttpRequest();
+		xhr.open('GET','https://' + domain[i] + '.babytreeimg.com/img/ng/lib/zepto/1.0.0/zepto.min.js');
+	        xhr.onload = function () {
+		    if (xhr.status === 404 || xhr.status === 500) {
+			//加载失败	
+		        domainStatus[domain[i]] = 0;
+		    }
+		    dataHttpsJs.push(xhr.responseText);
+		};
+		xhr.send();
+
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET','http://' + domain[i] + '.babytreeimg.com/img/ng/lib/zepto/1.0.0/zepto.min.js');
+	        xhr.onload = function () {
+		    dataHttpJs.push(xhr.responseText);
+		};
+	        xhr.send();
+
+		//对比https和http状态下返回的文件是否相同，以此判断是否被劫持
+		if (dataHttpsJs[i] === dataHttpJs[i]) {
+		    domainStatus[domain[i]] = 1;
+		} else {
+		    domainStatus[domain[i]] = 2;
+		}
+	    }
+	    return domainStatus;
+	}
+	function returnImgStatus() {
+	    var domainStatus = {},
+		imgArr = [],
+	    	domain = ['pic01', 'pic02', 'pic03', 'pic04', 'pic05', 'img01', 'img02', 'img03', 'static01', 'staitc02'],
+		i;
+	    for (i = 0; i < domain.length; i = i + 1) {
+		imgArr[i] = new Image();
+		imgArr[i].src = 'https://' + domain[i] + '.babytreeimg.com/img/lg/dist/baby_comeon/img/default-avatar.png';
+	    }
+            $.each(imgArr, function (index) {
+		this.onload = function () {
+		    domainStatus[domain[index]] = 1;
+		}
+		this.onerror = function () {
+		    domainStatus[domain[index]] = 0;
+		}
+            });
+	    return domainStatus;
+	}
+	function init() {
+	    var data = {
+	        js: returnJsStatus(),
+		img: returnImgStatus()
+	    }; 
+	    console.log(data);
+	    //0加载失败，1成功，2被劫持
+	}
+	init();
+    })();
+</script>
+</body>
+</html>
