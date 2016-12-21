@@ -94,71 +94,103 @@
   </li>
 </ol>
 
-<p>返回所有域名下同一张图片访问状态</p>
+<p>返回所有域名下js文件访问状态</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">returnImgStatus</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">returnJsStatus</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
 	    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
-		<span class="nx">imgArr</span> <span class="o">=</span> <span class="p">[],</span>
-	    	<span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'pic01'</span><span class="p">,</span> <span class="s1">'pic02'</span><span class="p">,</span> <span class="s1">'pic03'</span><span class="p">,</span> <span class="s1">'pic04'</span><span class="p">,</span> <span class="s1">'pic05'</span><span class="p">],</span>
-		<span class="nx">i</span><span class="p">;</span>
-	    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
-		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
-		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.default.png'</span><span class="p">;</span>
-	    <span class="p">}</span>
-            <span class="nx">$</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">imgArr</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-		<span class="p">}</span>
-		<span class="k">this</span><span class="p">.</span><span class="nx">onerror</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-		<span class="p">}</span>
-            <span class="p">});</span>
-	    <span class="k">return</span> <span class="nx">domainStatus</span><span class="p">;</span>
-	<span class="p">}</span></code></pre></figure>
-
-<p>返回所有域名下同一张图片访问状态</p>
-
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">returnJsStatus</span><span class="p">()</span> <span class="p">{</span>
-	    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
-		<span class="nx">dataHttpJs</span> <span class="o">=</span> <span class="p">[],</span>
-	        <span class="nx">dataHttpsJs</span> <span class="o">=</span> <span class="p">[],</span>
 	        <span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'static01'</span><span class="p">,</span> <span class="s1">'static02'</span><span class="p">],</span>
 		<span class="nx">i</span><span class="p">;</span>
 	    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
 	        <span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
-		<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.zepto/1.0.0/zepto.min.js'</span><span class="p">);</span>
-	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-		    <span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">404</span> <span class="o">||</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">500</span><span class="p">)</span> <span class="p">{</span>
-			<span class="c1">//加载失败	</span>
-		        <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.babytreeimg.com/img/ng/lib/zepto/1.0.0/zepto.min.js'</span><span class="p">);</span>
+	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">404</span> <span class="o">||</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">500</span><span class="p">)</span> <span class="p">{</span>
+		            <span class="c1">//加载失败	</span>
+			    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">25768</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+			<span class="p">}</span>
+
+			<span class="k">if</span> <span class="p">(</span><span class="nx">count</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">)</span> <span class="o">===</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="nx">callback</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">);</span>
+			<span class="p">}</span>
 		    <span class="p">}</span>
-		    <span class="nx">dataHttpsJs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
-		<span class="p">};</span>
+		<span class="p">})(</span><span class="nx">i</span><span class="p">);</span>
 		<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
-
-		<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
-		<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="s1">'http://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.zepto/1.0.0/zepto.min.js'</span><span class="p">);</span>
-	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-		    <span class="nx">dataHttpJs</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span>
-		<span class="p">};</span>
-	        <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
-
-		<span class="c1">//对比https和http状态下返回的文件是否相同，以此判断是否被劫持</span>
-		<span class="k">if</span> <span class="p">(</span><span class="nx">dataHttpsJs</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="nx">dataHttpJs</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="p">{</span>
-		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
-		<span class="p">}</span>
 	    <span class="p">}</span>
-	    <span class="k">return</span> <span class="nx">domainStatus</span><span class="p">;</span>
+	<span class="p">}</span></code></pre></figure>
+
+<p>返回所有域名下同一张图片访问状态</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">returnImgStatus</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+	    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
+		<span class="nx">imgArr</span> <span class="o">=</span> <span class="p">[],</span>
+	    	<span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'pic01'</span><span class="p">,</span> <span class="s1">'pic02'</span><span class="p">,</span> <span class="s1">'pic03'</span><span class="p">,</span> <span class="s1">'pic04'</span><span class="p">,</span> <span class="s1">'pic05'</span><span class="p">,</span> <span class="s1">'img01'</span><span class="p">,</span> <span class="s1">'img02'</span><span class="p">,</span> <span class="s1">'img03'</span><span class="p">,</span> <span class="s1">'static01'</span><span class="p">,</span> <span class="s1">'staitc02'</span><span class="p">],</span>
+		<span class="nx">i</span><span class="p">;</span>
+	    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.babytreeimg.com/img/lg/dist/baby_comeon/img/default-avatar.png'</span><span class="p">;</span>
+		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">onload</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+			<span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">count</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">)</span> <span class="o">===</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="nx">callback</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">);</span>
+			<span class="p">}</span>
+		    <span class="p">}</span>
+		<span class="p">})(</span><span class="nx">i</span><span class="p">);</span>
+		<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">onerror</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">){</span>
+		    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+			<span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">count</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">)</span> <span class="o">===</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+			    <span class="nx">callback</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">);</span>
+			<span class="p">}</span>
+		    <span class="p">}</span>
+		<span class="p">})(</span><span class="nx">i</span><span class="p">);</span>
+	    <span class="p">}</span>
 	<span class="p">}</span></code></pre></figure>
 
 <p>将以上返回状态，存入data中，方便后端调用</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span>
-	<span class="na">js</span><span class="p">:</span> <span class="nx">returnJsStatus</span><span class="p">(),</span>
-	<span class="na">img</span><span class="p">:</span> <span class="nx">returnImgStatus</span><span class="p">()</span>
-    <span class="p">};</span> </code></pre></figure>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
+
+	<span class="kd">function</span> <span class="nx">result</span> <span class="p">()</span> <span class="p">{</span>
+	    <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">js</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">img</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+	    <span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+	    <span class="nx">returnJsStatus</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">js</span> <span class="o">=</span> <span class="nx">status</span><span class="p">;</span>
+		<span class="nx">result</span><span class="p">();</span>
+	    <span class="p">});</span>
+	    <span class="nx">returnImgStatus</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">img</span> <span class="o">=</span> <span class="nx">status</span><span class="p">;</span>
+		<span class="nx">result</span><span class="p">();</span>
+	    <span class="p">});</span>
+	    <span class="c1">//0加载失败，1成功，2被劫持</span>
+	<span class="p">}</span>
+	<span class="nx">init</span><span class="p">();</span></code></pre></figure>
+
+<p>获取对象长度的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">function</span> <span class="nx">count</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
+	    <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">o</span><span class="p">,</span>
+		<span class="nx">n</span><span class="p">,</span>
+		<span class="nx">i</span><span class="p">;</span>
+	    <span class="k">if</span> <span class="p">(</span><span class="nx">t</span> <span class="o">===</span> <span class="s1">'object'</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">o</span><span class="p">){</span>
+		    <span class="nx">n</span><span class="o">++</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">n</span><span class="p">;</span>
+	    <span class="p">}</span>
+	    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">};</span> </code></pre></figure>
 
 <p>和后端合作人员确定api后，可转成对应格式，配合使用</p>
 

@@ -30,44 +30,49 @@
 <div class="wrapper">
 </div>
 
-<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
 <script>
     (function () {
-	function returnJsStatus() {
+	function count(o){
+	    var t = typeof o,
+		n,
+		i;
+	    if (t === 'object') {
+		n = 0;
+		for(i in o){
+		    n++;
+		}
+		return n;
+	    }
+	    return false;
+	}; 
+	function returnJsStatus(callback) {
 	    var domainStatus = {},
-		dataHttpJs = [],
-	        dataHttpsJs = [],
 	        domain = ['static01', 'static02'],
 		i;
 	    for (i = 0; i < domain.length; i = i + 1) {
 	        var xhr = new XMLHttpRequest();
 		xhr.open('GET','https://' + domain[i] + '.babytreeimg.com/img/ng/lib/zepto/1.0.0/zepto.min.js');
-	        xhr.onload = function () {
-		    if (xhr.status === 404 || xhr.status === 500) {
-			//加载失败	
-		        domainStatus[domain[i]] = 0;
+	        xhr.onload = (function (index) {
+		    return function () {
+			if (xhr.status === 404 || xhr.status === 500) {
+		            //加载失败	
+			    domainStatus[domain[i]] = 0;
+			}
+			if (xhr.responseText.length === 25768) {
+			    domainStatus[domain[index]] = 1;
+			} else {
+			    domainStatus[domain[index]] = 2;
+			}
+
+			if (count(domainStatus) === domain.length) {
+			    callback(domainStatus);
+			}
 		    }
-		    dataHttpsJs.push(xhr.responseText);
-		};
+		})(i);
 		xhr.send();
-
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET','http://' + domain[i] + '.babytreeimg.com/img/ng/lib/zepto/1.0.0/zepto.min.js');
-	        xhr.onload = function () {
-		    dataHttpJs.push(xhr.responseText);
-		};
-	        xhr.send();
-
-		//对比https和http状态下返回的文件是否相同，以此判断是否被劫持
-		if (dataHttpsJs[i] === dataHttpJs[i]) {
-		    domainStatus[domain[i]] = 1;
-		} else {
-		    domainStatus[domain[i]] = 2;
-		}
 	    }
-	    return domainStatus;
 	}
-	function returnImgStatus() {
+	function returnImgStatus(callback) {
 	    var domainStatus = {},
 		imgArr = [],
 	    	domain = ['pic01', 'pic02', 'pic03', 'pic04', 'pic05', 'img01', 'img02', 'img03', 'static01', 'staitc02'],
@@ -75,23 +80,42 @@
 	    for (i = 0; i < domain.length; i = i + 1) {
 		imgArr[i] = new Image();
 		imgArr[i].src = 'https://' + domain[i] + '.babytreeimg.com/img/lg/dist/baby_comeon/img/default-avatar.png';
+		imgArr[i].onload = (function (index) {
+		    return function () {
+			domainStatus[domain[index]] = 1;
+			if (count(domainStatus) === domain.length) {
+			    callback(domainStatus);
+			}
+		    }
+		})(i);
+		imgArr[i].onerror = (function(index){
+		    return function () {
+			domainStatus[domain[index]] = 0;
+			if (count(domainStatus) === domain.length) {
+			    callback(domainStatus);
+			}
+		    }
+		})(i);
 	    }
-            $.each(imgArr, function (index) {
-		this.onload = function () {
-		    domainStatus[domain[index]] = 1;
-		}
-		this.onerror = function () {
-		    domainStatus[domain[index]] = 0;
-		}
-            });
-	    return domainStatus;
 	}
+
+	var data = {};
+
+	function result () {
+	    if (data.js && data.img) {
+		console.log(data);
+	    }
+	}
+
 	function init() {
-	    var data = {
-	        js: returnJsStatus(),
-		img: returnImgStatus()
-	    }; 
-	    console.log(data);
+	    returnJsStatus(function (status) {
+		data.js = status;
+		result();
+	    });
+	    returnImgStatus(function (status) {
+		data.img = status;
+		result();
+	    });
 	    //0加载失败，1成功，2被劫持
 	}
 	init();
