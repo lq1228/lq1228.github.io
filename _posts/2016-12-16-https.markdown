@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "静态资源https可用性检测"
-date:   2016-12-16 12:49:42 +0800
-description: ""
+date:   2016-12-22 12:49:42 +0800
+description: "https升级后我们需要做些什么？"
 categories: front article
 ---
 
@@ -46,110 +46,114 @@ categories: front article
 
 返回所有域名下js文件访问状态
 {% highlight javascript %}
-	function returnJsStatus(callback) {
-	    var domainStatus = {},
-	        domain = ['static01', 'static02'],
-		i;
-	    for (i = 0; i < domain.length; i = i + 1) {
-	        var xhr = new XMLHttpRequest();
-		xhr.open('GET','https://' + domain[i] + '.babytreeimg.com/img/ng/lib/zepto/1.0.0/zepto.min.js');
-	        xhr.onload = (function (index) {
-		    return function () {
-			if (xhr.status === 404 || xhr.status === 500) {
-		            //加载失败	
-			    domainStatus[domain[i]] = 0;
-			}
-			if (xhr.responseText.length === 25768) {
-			    domainStatus[domain[index]] = 1;
-			} else {
-			    domainStatus[domain[index]] = 2;
-			}
+function returnJsStatus(callback) {
+    var domainStatus = {},
+	domain = ['static01', 'static02'],
+	i;
+    for (i = 0; i < domain.length; i = i + 1) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET','https://' + domain[i] + '.zepto/1.0.0/zepto.min.js');
+	xhr.onload = (function (index) {
+	    return function () {
+		if (xhr.responseText.length !== 25768) {
+		    domainStatus[domain[index]] = -200;
+		} else {
+		    domainStatus[domain[index]] = xhr.status;
+		}
 
-			if (count(domainStatus) === domain.length) {
-			    callback(domainStatus);
-			}
-		    }
-		})(i);
-		xhr.send();
+		if (count(domainStatus) === domain.length) {
+		    callback(domainStatus);
+		}
 	    }
-	}
+	})(i);
+	xhr.send();
+    }
+}
 {% endhighlight %}
 
 返回所有域名下同一张图片访问状态
 {% highlight javascript %}
-	function returnImgStatus(callback) {
-	    var domainStatus = {},
-		imgArr = [],
-	    	domain = ['pic01', 'pic02', 'pic03', 'pic04', 'pic05', 'img01', 'img02', 'img03', 'static01', 'staitc02'],
-		i;
-	    for (i = 0; i < domain.length; i = i + 1) {
-		imgArr[i] = new Image();
-		imgArr[i].src = 'https://' + domain[i] + '.babytreeimg.com/img/lg/dist/baby_comeon/img/default-avatar.png';
-		imgArr[i].onload = (function (index) {
-		    return function () {
-			domainStatus[domain[index]] = 1;
-			if (count(domainStatus) === domain.length) {
-			    callback(domainStatus);
-			}
-		    }
-		})(i);
-		imgArr[i].onerror = (function(index){
-		    return function () {
-			domainStatus[domain[index]] = 0;
-			if (count(domainStatus) === domain.length) {
-			    callback(domainStatus);
-			}
-		    }
-		})(i);
+function returnImgStatus(callback) {
+    var domainStatus = {},
+	imgArr = [],
+	domain = ['pic01', 'pic02', 'pic03', 'pic04', 'pic05'],
+	i;
+    for (i = 0; i < domain.length; i = i + 1) {
+	imgArr[i] = new Image();
+	imgArr[i].src = 'https://' + domain[i] + './img/default-avatar.png';
+	imgArr[i].onload = (function (index) {
+	    return function () {
+		domainStatus[domain[index]] = 200;
+		if (count(domainStatus) === domain.length) {
+		    callback(domainStatus);
+		}
 	    }
-	}
+	})(i);
+	imgArr[i].onerror = (function(index){
+	    return function () {
+		domainStatus[domain[index]] = 404;
+		if (count(domainStatus) === domain.length) {
+		    callback(domainStatus);
+		}
+	    }
+	})(i);
+    }
+}
 {% endhighlight %}
 
 将以上返回状态，存入data中，方便后端调用
 
 {% highlight javascript %}
-	var data = {};
+var data = {};
 
-	function result () {
-	    if (data.js && data.img) {
-		console.log(data);
-	    }
+function result () {
+    if (data.js && data.img) {
+	console.log(data);
+	//最终返回的结果格式如下：
+	/*
+	{
+	img:{ pic01: XXX, pic02: XXX, pic03: XXX, pic04: XXX, pic05: XXX },
+	js:{ static01: XXX, static02: XXX }
 	}
+	*/
+    }
+}
 
-	function init() {
-	    returnJsStatus(function (status) {
-		data.js = status;
-		result();
-	    });
-	    returnImgStatus(function (status) {
-		data.img = status;
-		result();
-	    });
-	    //0加载失败，1成功，2被劫持
-	}
-	init();
+function init() {
+    returnJsStatus(function (status) {
+	data.js = status;
+	result();
+    });
+    returnImgStatus(function (status) {
+	data.img = status;
+	result();
+    });
+}
+init();
 {% endhighlight %}
 
-获取对象长度的方法
+上面用到的获取对象长度的方法
 {% highlight javascript %}
-	function count(o){
-	    var t = typeof o,
-		n,
-		i;
-	    if (t === 'object') {
-		n = 0;
-		for(i in o){
-		    n++;
-		}
-		return n;
-	    }
-	    return false;
-	}; 
+function count(o){
+    var t = typeof o,
+	n,
+	i;
+    if (t === 'object') {
+	n = 0;
+	for(i in o){
+	    n++;
+	}
+	return n;
+    }
+    return false;
+}; 
 {% endhighlight %}
 
-和后端合作人员确定api后，可转成对应格式，配合使用
+当然最终返回的数据格式需要和后端合作人员确定api后，转成对应格式，配合使用
 
+<!--
 * [例子](/page/https/https.html)
+-->
 
 升级HTTPS可参考如下：
 
