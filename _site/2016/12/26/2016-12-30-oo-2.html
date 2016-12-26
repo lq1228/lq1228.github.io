@@ -1,0 +1,277 @@
+<p>面向对象的三个基本特征是：封装、继承、多态。</p>
+
+<h3 id="section">继承</h3>
+
+<p>OO语言中，继承概念的实现方式有三类：实现继承、接口继承和可视继承。</p>
+
+<p>ECMAScript只支持实现继承，而且其实现继承主要是依靠原型链来实现的。<a href="http://www.ruanyifeng.com/blog/2011/06/designing_ideas_of_inheritance_mechanism_in_javascript.html">Javascript继承机制的设计思想</a></p>
+
+<p>下面展开理解JavaScript的6种继承方式:</p>
+
+<p>约定</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//约定</span>
+<span class="kd">function</span> <span class="nx">Fun</span><span class="p">(){</span>
+    <span class="c1">// 私有属性</span>
+    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>        <span class="c1">// 私有基本属性</span>
+    <span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>      <span class="c1">// 私有引用属性</span>
+    <span class="kd">function</span> <span class="nx">fun</span><span class="p">(){}</span>    <span class="c1">// 私有函数（引用属性）</span>
+ 
+    <span class="c1">// 实例属性</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>               <span class="c1">// 实例基本属性</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>             <span class="c1">// 实例引用属性</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">fun</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>    <span class="c1">// 实例函数（引用属性）</span>
+<span class="p">}</span>
+ 
+<span class="c1">// 原型属性</span>
+<span class="nx">Fun</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>              <span class="c1">// 原型基本属性</span>
+<span class="nx">Fun</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>            <span class="c1">// 原型引用属性</span></code></pre></figure>
+
+<h4 id="section-1">一、 原型链 （不推荐使用）</h4>
+
+<p>基本思想：利用原型让一个引用类型继承另外一个引用类型的属性和方法。</p>
+
+<p>核心：拿父类实例来充当子类原型对象</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Super</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Sub</span><span class="p">(){</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="nx">Sub</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Super</span><span class="p">();</span>    <span class="c1">// 核心</span>
+ 
+<span class="kd">var</span> <span class="nx">sub1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">sub2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">();</span>
+<span class="nx">sub1</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="nx">sub1</span><span class="p">.</span><span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub1</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>    <span class="c1">// 2</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub2</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>    <span class="c1">// 1</span>
+ 
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub1</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span>    <span class="c1">// 1, 2</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub2</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span>    <span class="c1">// 1, 2</span></code></pre></figure>
+
+<p>优点：简单，易于实现</p>
+
+<p>缺点：</p>
+
+<ol>
+  <li>
+    <p>修改sub1.arr后sub2.arr也变了，因为来自原型对象的引用属性是所有实例共享的。可以这样理解：执行sub1.arr.push(2);先对sub1进行属性查找，找遍了实例属性（在本例中没有实例属性），没找到，就开始顺着原型链向上找，拿到了sub1的原型对象，一搜身，发现有arr属性。于是给arr末尾插入了2，所以sub2.arr也变了;</p>
+  </li>
+  <li>
+    <p>创建子类实例时，无法向父类构造函数传参</p>
+  </li>
+</ol>
+
+<h4 id="section-2">二、 借用构造函数 （不推荐使用）</h4>
+
+<p>基本思想：在子类型构造函数的内部调用超类构造函数，通过使用call()和apply()方法可以在新创建的对象上执行构造函数。</p>
+
+<p>核心：借父类的构造函数来增强子类实例，等于是把父类的实例属性复制了一份给子类实例装上了（完全没有用到原型）</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Super</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="nx">val</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+ 
+    <span class="k">this</span><span class="p">.</span><span class="nx">fun</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="c1">// ...</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Sub</span><span class="p">(</span><span class="nx">val</span><span class="p">){</span>
+    <span class="nx">Super</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">val</span><span class="p">);</span>   <span class="c1">// 核心</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+ 
+<span class="kd">var</span> <span class="nx">sub1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">sub2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nx">sub1</span><span class="p">.</span><span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub1</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>    <span class="c1">// 1</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub2</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>    <span class="c1">// 2</span>
+ 
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub1</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span>    <span class="c1">// 1, 2</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub2</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span>    <span class="c1">// 1</span>
+ 
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub1</span><span class="p">.</span><span class="nx">fun</span> <span class="o">===</span> <span class="nx">sub2</span><span class="p">.</span><span class="nx">fun</span><span class="p">);</span>   <span class="c1">// false</span></code></pre></figure>
+
+<p>优点：</p>
+
+<ol>
+  <li>
+    <p>解决了子类实例共享父类引用属性的问题</p>
+  </li>
+  <li>
+    <p>创建子类实例时，可以向父类构造函数传参</p>
+  </li>
+</ol>
+
+<p>缺点：</p>
+
+<p>无法实现函数复用，每个子类实例都持有一个新的fun函数，太多了就会影响性能，内存爆炸。。</p>
+
+<h4 id="section-3">三、 组合继承 （最常用）</h4>
+
+<p>基本思想：将原型链和借用构造函数的技术组合在一块，从而发挥两者之长的一种继承模式。</p>
+
+<p>核心：把实例函数都放在原型对象上，以实现函数复用。同时还要保留借用构造函数方式的优点，通过Super.call(this);继承父类的基本属性和引用属性并保留能传参的优点；通过Sub.prototype = new Super();继承父类函数，实现函数复用</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Super</span><span class="p">(){</span>
+    <span class="c1">// 只在此处声明基本属性和引用属性</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="c1">//  在此处声明函数</span>
+<span class="nx">Super</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">fun1</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+<span class="nx">Super</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">fun2</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+<span class="c1">//Super.prototype.fun3...</span>
+<span class="kd">function</span> <span class="nx">Sub</span><span class="p">(){</span>
+    <span class="nx">Super</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>   <span class="c1">// 核心</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="nx">Sub</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Super</span><span class="p">();</span>    <span class="c1">// 核心</span>
+ 
+<span class="kd">var</span> <span class="nx">sub1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">sub2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub1</span><span class="p">.</span><span class="nx">fun</span> <span class="o">===</span> <span class="nx">sub2</span><span class="p">.</span><span class="nx">fun</span><span class="p">);</span>   <span class="c1">// true</span></code></pre></figure>
+
+<p>优点：</p>
+
+<ol>
+  <li>
+    <p>不存在引用属性共享问题</p>
+  </li>
+  <li>
+    <p>可传参</p>
+  </li>
+  <li>
+    <p>函数可复用</p>
+  </li>
+</ol>
+
+<p>缺点:</p>
+
+<p>子类原型上有一份多余的父类实例属性，因为父类构造函数被调用了两次，生成了两份，而子类实例上的那一份屏蔽了子类原型上的。。。又是内存浪费，比刚才情况好点，不过确实是瑕疵。<a href="http://www.ayqy.net/blog/JS%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B02_%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">JS面向对象-帮助理解</a></p>
+
+<h4 id="section-4">四、 原型式继承 （不推荐使用）</h4>
+
+<p>基本思想：借助原型可以基于已有的对象创建新对象，同时还不必须因此创建自定义的类型。</p>
+
+<p>核心：用生孩子函数得到一个“纯洁”的新对象（没有实例属性），再逐步增强之（填充实例属性）。ES5提供了Object.create()函数，内部就是原型式继承，IE9+支持</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">beget</span><span class="p">(</span><span class="nx">obj</span><span class="p">){</span>   <span class="c1">// 生孩子函数 beget</span>
+    <span class="kd">var</span> <span class="nx">F</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+    <span class="nx">F</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">F</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Super</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+ 
+<span class="c1">// 拿到父类对象</span>
+<span class="kd">var</span> <span class="nx">sup</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Super</span><span class="p">();</span>
+<span class="c1">// 生孩子</span>
+<span class="kd">var</span> <span class="nx">sub</span> <span class="o">=</span> <span class="nx">beget</span><span class="p">(</span><span class="nx">sup</span><span class="p">);</span>   <span class="c1">// 核心</span>
+<span class="c1">// 增强</span>
+<span class="nx">sub</span><span class="p">.</span><span class="nx">attr1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nx">sub</span><span class="p">.</span><span class="nx">attr2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="c1">//sub.attr3...</span>
+ 
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>     <span class="c1">// 1</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span>     <span class="c1">// 1</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">attr1</span><span class="p">);</span>   <span class="c1">// 1</span></code></pre></figure>
+
+<p>优点：</p>
+
+<p>从已有对象衍生新对象，不需要创建自定义类型（更像是对象复制，而不是继承。。）</p>
+
+<p>缺点：</p>
+
+<ol>
+  <li>
+    <p>原型引用属性会被所有实例共享，因为是用整个父类对象来充当了子类原型对象，所以这个缺陷无可避免</p>
+  </li>
+  <li>
+    <p>无法实现代码复用（新对象是现取的，属性是现添的，都没用函数封装，怎么复用）</p>
+  </li>
+</ol>
+
+<h4 id="section-5">五、 寄生式继承 （不推荐使用）</h4>
+
+<p>基本思想：创建一个仅用于封装继承过程的函数，该函数在内部以某种方式来增强对象，最后再像真正是它做了所有工作一样返回对象。</p>
+
+<p>核心：给原型式继承穿了个马甲而已，看起来更像继承了（上面介绍的原型式继承更像是对象复制）。</p>
+
+<p>注意：beget函数并不是必须的，换言之，创建新对象 -&gt; 增强 -&gt; 返回该对象，这样的过程叫寄生式继承，新对象是如何创建的并不重要（用beget生的，new出来的，字面量现做的。。都可以）</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">beget</span><span class="p">(</span><span class="nx">obj</span><span class="p">){</span>   <span class="c1">// 生孩子函数 beget</span>
+    <span class="kd">var</span> <span class="nx">F</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+    <span class="nx">F</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">F</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Super</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">getSubObject</span><span class="p">(</span><span class="nx">obj</span><span class="p">){</span>
+    <span class="c1">// 创建新对象</span>
+    <span class="kd">var</span> <span class="nx">clone</span> <span class="o">=</span> <span class="nx">beget</span><span class="p">(</span><span class="nx">obj</span><span class="p">);</span> <span class="c1">// 核心</span>
+    <span class="c1">// 增强</span>
+    <span class="nx">clone</span><span class="p">.</span><span class="nx">attr1</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="nx">clone</span><span class="p">.</span><span class="nx">attr2</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="c1">//clone.attr3...</span>
+ 
+    <span class="k">return</span> <span class="nx">clone</span><span class="p">;</span>
+<span class="p">}</span>
+ 
+<span class="kd">var</span> <span class="nx">sub</span> <span class="o">=</span> <span class="nx">getSubObject</span><span class="p">(</span><span class="k">new</span> <span class="nx">Super</span><span class="p">());</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>     <span class="c1">// 1</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span>     <span class="c1">// 1</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">attr1</span><span class="p">);</span>   <span class="c1">// 1</span></code></pre></figure>
+
+<p>优点：还是不需要创建自定义类型</p>
+
+<p>缺点：
+无法实现函数复用（没用到原型，当然不行）</p>
+
+<h4 id="section-6">六、寄生组合式继承  （最佳方式）</h4>
+
+<p>基本思想：通过借用函数来继承属性，通过原型链的混成形式来继承方法</p>
+
+<p>核心：用beget(Super.prototype);切掉了原型对象上多余的那份父类实例属性</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">beget</span><span class="p">(</span><span class="nx">obj</span><span class="p">){</span>   <span class="c1">// 生孩子函数 beget</span>
+    <span class="kd">var</span> <span class="nx">F</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+    <span class="nx">F</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">F</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">Super</span><span class="p">(){</span>
+    <span class="c1">// 只在此处声明基本属性和引用属性</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">val</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="c1">//  在此处声明函数</span>
+<span class="nx">Super</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">fun1</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+<span class="nx">Super</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">fun2</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){};</span>
+<span class="c1">//Super.prototype.fun3...</span>
+<span class="kd">function</span> <span class="nx">Sub</span><span class="p">(){</span>
+    <span class="nx">Super</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>   <span class="c1">// 核心</span>
+    <span class="c1">// ...</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">proto</span> <span class="o">=</span> <span class="nx">beget</span><span class="p">(</span><span class="nx">Super</span><span class="p">.</span><span class="nx">prototype</span><span class="p">);</span> <span class="c1">// 核心</span>
+<span class="nx">proto</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">Sub</span><span class="p">;</span>            <span class="c1">// 核心</span>
+<span class="nx">Sub</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">proto</span><span class="p">;</span>              <span class="c1">// 核心</span>
+ 
+<span class="kd">var</span> <span class="nx">sub</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Sub</span><span class="p">();</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">val</span><span class="p">);</span>
+<span class="nx">alert</span><span class="p">(</span><span class="nx">sub</span><span class="p">.</span><span class="nx">arr</span><span class="p">);</span></code></pre></figure>
+
+<p>优点：完美了
+缺点：理论上没有了（如果用起来麻烦不算缺点的话。。）</p>
+
+<h4 id="section-7">七、6种继承方式的联系</h4>
+
+<p><img src="/images/oo/oo-2.jpg" alt="6种继承方式的联系" /></p>
+
+<p>P.S.虚线表示辅助作用，实线表示决定性作用</p>
