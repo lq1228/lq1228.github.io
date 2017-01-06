@@ -2,7 +2,7 @@
 layout: post
 title:  "UEditor上传图片问题"
 date:   2017-1-5 10:49:42 +0800
-description: ""
+description: "UEditor上传图片问题是很多前端同学都遇到的坑，遇坑要冷静，多读文档才是王道"
 categories: front article
 ---
 
