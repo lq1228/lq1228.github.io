@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>面向对象的七大基本原则</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/01/03/Basic-principle-2.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/01/03/Basic-principle-2.html">面向对象的七大基本原则</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">面向对象的七大基本原则</h1>
+    <p class="post-meta"><time datetime="2017-01-03T10:49:42+08:00" itemprop="datePublished">Jan 3, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="ocp">1. OCP</h3>
+
+<h4 id="open-closed-principle-">全称：“Open-Closed Principle” 开放－封闭原则</h4>
+
+<p>说明：对扩展开放，对修改关闭。</p>
+
+<p>优点：按照OCP原则设计出来的系统，降低了程序各部分之间的耦合性，其适应性、灵活性、稳定性都比较好。当已有软件系统需要增加新的功能时，不需要对作为系统基础的抽象层进行修改，只需要在原有基础上附加新的模块就能实现所需要添加的功能。增加的新模块对原有的模块完全没有影响或影响很小，这样就无须为原有模块进行重新测试。 
+如何实现“开-闭”原则 ？
+在面向对象设计中，不允许更改的是系统的抽象层，而允许扩展的是系统的实现层。换言之，定义一个一劳永逸的抽象设计层，允许尽可能多的行为在实现层被实现。 
+解决问题关键在于抽象化，抽象化是面向对象设计的第一个核心本质。 
+对一个事物抽象化，实质上是在概括归纳总结它的本质。抽象让我们抓住最最重要的东西，从更高一层去思考。这降低了思考的复杂度，我们不用同时考虑那么多的东西。换言之，我们封装了事物的本质，看不到任何细节。 
+在面向对象编程中，通过抽象类及接口，规定了具体类的特征作为抽象层，相对稳定，不需更改，从而满足“对修改关闭”；而从抽象类导出的具体类可以改变系统的行为，从而满足“对扩展开放”。 
+对实体进行扩展时，不必改动软件的源代码或者二进制代码。关键在于抽象。</p>
+
+<p><a href="https://github.com/cnsnake11/blog/blob/master/%E5%85%B6%E5%AE%83/%E5%89%8D%E7%AB%AF%E5%92%8C%E5%BC%80%E9%97%AD%E5%8E%9F%E5%88%99.md">详解</a></p>
+
+<h3 id="lsp">2. LSP</h3>
+
+<h4 id="liskov-substitution-principle-">全称：“Liskov Substitution Principle” 里氏代换原则</h4>
+
+<p>说明：子类型必须能够替换它们的基类型。一个软件实体如果使用的是一个基类，那么当把这个基类替换成继承该基类的子类，程序的行为不会发生任何变化。软件实体察觉不出基类对象和子类对象的区别。</p>
+
+<p>优点：可以很容易的实现同一父类下各个子类的互换，而客户端可以毫不察觉。</p>
+
+<p><a href="">详解</a></p>
+
+<h3 id="dip">3. DIP</h3>
+
+<h4 id="dependence-inversion-principle">全称：“Dependence Inversion Principle”依赖倒置原则</h4>
+
+<p>说明：</p>
+
+<ol>
+  <li>要依赖于抽象，不要依赖于具体。客户端依赖于抽象耦合。</li>
+  <li>抽象不应当依赖于细节；细节应当依赖于抽象；</li>
+  <li>要针对接口编程，不针对实现编程。</li>
+</ol>
+
+<p>优点：使用传统过程化程序设计所创建的依赖关系，策略依赖于细节，这是糟糕的，因为策略受到细节改变的影响。依赖倒置原则使细节和策略都依赖于抽象，抽象的稳定性决定了系统的稳定性。 
+怎样做到依赖倒置？</p>
+
+<p>以抽象方式耦合是依赖倒转原则的关键。抽象耦合关系总要涉及具体类从抽象类继承，并且需要保证在任何引用到基类的地方都可以改换成其子类，因此，里氏代换原则是依赖倒转原则的基础。</p>
+
+<p>在抽象层次上的耦合虽然有灵活性，但也带来了额外的复杂性，如果一个具体类发生变化的可能性非常小，那么抽象耦合能发挥的好处便十分有限，这时可以用具体耦合反而会更好。</p>
+
+<p>层次化：所有结构良好的面向对象构架都具有清晰的层次定义，每个层次通过一个定义良好的、受控的接口向外提供一组内聚的服务。</p>
+
+<p>依赖于抽象：建议不依赖于具体类，即程序中所有的依赖关系都应该终止于抽象类或者接口。尽量做到：</p>
+
+<ol>
+  <li>任何变量都不应该持有一个指向具体类的指针或者引用。</li>
+  <li>任何类都不应该从具体类派生。</li>
+  <li>任何方法都不应该覆写它的任何基类中的已经实现的方法。</li>
+</ol>
+
+<p><a href="">详解</a></p>
+
+<h3 id="isp">4. ISP</h3>
+
+<h4 id="interface-segregation-principle-">全称：“Interface Segregation Principle” 接口隔离原则</h4>
+
+<p>说明：使用多个专一功能的接口比使用一个的总接口总要好。从一个客户类的角度来讲：一个类对另外一个类的依赖性应当是建立在最小接口上的。过于臃肿的接口是对接口的污染，不应该强迫客户依赖于它们不用的方法。</p>
+
+<p>优点：会使一个软件系统功能扩展时，修改的压力不会传到别的对象那里。 
+如何实现接口隔离原则 
+不应该强迫用户依赖于他们不用的方法。</p>
+
+<ol>
+  <li>利用委托分离接口。</li>
+  <li>利用多继承分离接口。</li>
+</ol>
+
+<p><a href="">详解</a></p>
+
+<h3 id="carp-or-crp">5. CARP or CRP</h3>
+
+<h4 id="compositeaggregate-reuse-principle--or-composite-reuse-principle-">全称：“Composite/Aggregate Reuse Principle” 合成/聚合复用原则 or “Composite Reuse Principle” 合成复用原则</h4>
+
+<p>说明：如果新对象的某些功能在别的已经创建好的对象里面已经实现，那么尽量使用别的对象提供的功能，使之成为新对象的一部分，而不要自己再重新创建。新对象通过向这些对象的委派达到复用已有功能的。 
+简而言之，要尽量使用合成/聚合，尽量不要使用继承。</p>
+
+<p>优点：</p>
+
+<ol>
+  <li>新对象存取成分对象的唯一方法是通过成分对象的接口。</li>
+  <li>这种复用是黑箱复用，因为成分对象的内部细节是新对象所看不见的。</li>
+  <li>这种复用支持包装。</li>
+  <li>这种复用所需的依赖较少。</li>
+  <li>每一个新的类可以将焦点集中在一个任务上。</li>
+  <li>这种复用可以在运行时间内动态进行，新对象可以动态的引用与成分对象类型相同的对象。</li>
+  <li>作为复用手段可以应用到几乎任何环境中去。</li>
+</ol>
+
+<p>缺点: 
+就是系统中会有较多的对象需要管理。</p>
+
+<p><a href="">详解</a></p>
+
+<h3 id="lod-or-lkp">6. LOD or LKP</h3>
+
+<h4 id="law-of-demeter--or-least-knowledge-principle-">全称：“Law of Demeter” 迪米特原则 or “Least Knowledge Principle” 最少知识原则</h4>
+
+<p>说明：对象与对象之间应该使用尽可能少的方法来关联，避免千丝万缕的关系。</p>
+
+<p>如何实现迪米特法则 
+迪米特法则的主要用意是控制信息的过载，在将其运用到系统设计中应注意以下几点：</p>
+
+<ol>
+  <li>在类的划分上，应当创建有弱耦合的类。类之间的耦合越弱，就越有利于复用。</li>
+  <li>在类的结构设计上，每一个类都应当尽量降低成员的访问权限。一个类不应当public自己的属性，而应当提供取值和赋值的方法让外界间接访问自己的属性。</li>
+  <li>在类的设计上，只要有可能，一个类应当设计成不变类。</li>
+  <li>在对其它对象的引用上，一个类对其它对象的引用应该降到最低。</li>
+</ol>
+
+<p><a href="">详解</a></p>
+
+<h3 id="srp">7. SRP：</h3>
+
+<h4 id="srpsrp--single-responsibility-principle">SRP简介（SRP–Single-Responsibility Principle）：单一职责原则，就一个类而言，应该只专注于做一件事和仅有一个引起它变化的原因。所谓职责，我们可以理解他为功能，就是设计的这个类功能应该只有一个，而不是两个或更多。也可以理解为引用变化的原因，当你发现有两个变化会要求我们修改这个类，那么你就要考虑撤分这个类了。因为职责是变化的一个轴线，当需求变化时，该变化会反映类的职责的变化。</h4>
+
+<p>使用SRP注意点：</p>
+
+<ol>
+  <li>一个合理的类，应该仅有一个引起它变化的原因，即单一职责；</li>
+  <li>在没有变化征兆的情况下应用SRP或其他原则是不明智的；</li>
+  <li>在需求实际发生变化时就应该应用SRP等原则来重构代码；</li>
+  <li>使用测试驱动开发会迫使我们在设计出现臭味之前分离不合理代码；</li>
+  <li>如果测试不能迫使职责分离，僵化性和脆弱性的臭味会变得很强烈，那就应该用Facade或Proxy模式对代码重构；SRP优点：消除耦合，减小因需求变化引起代码僵化。</li>
+</ol>
+
+<p><a href="">详解</a></p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/01/03/Basic-principle-2-" data-title="面向对象的七大基本原则" data-url="/front/article/2017/01/03/Basic-principle-2.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

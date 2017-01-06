@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>UEditor上传图片问题</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/01/05/ueditor-uploadimg.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/01/05/ueditor-uploadimg.html">UEditor上传图片问题</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">UEditor上传图片问题</h1>
+    <p class="post-meta"><time datetime="2017-01-05T10:49:42+08:00" itemprop="datePublished">Jan 5, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="section">问题</h3>
+
+<p>我厂在做一个后台需求的时候选用了<a href="http://ueditor.baidu.com/website/">UEditor</a>富文本编辑器，近期运维同事为了安全起见，对上传图片的域名做了限制，只允许upload的域名做上传操作,故出现上传图片失败的问题。</p>
+
+<h3 id="section-1">思考</h3>
+<p>那就修改成upload域名吧！然，UEditor是一个多页面都在调用的组件，不能修改全局的配置，会影响到其他调用该控件的页面，后果不好估量。只能考虑<a href="http://fex.baidu.com/ueditor/#qa-customurl">单独修改该页面的请求接口</a>，由于所有ueditor请求都通过editor对象的getActionUrl方法获取请求地址，可以直接通过复写这个方法实现。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">UE</span><span class="p">.</span><span class="nx">Editor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">_bkGetActionUrl</span> <span class="o">=</span> <span class="nx">UE</span><span class="p">.</span><span class="nx">Editor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getActionUrl</span><span class="p">;</span>
+<span class="nx">UE</span><span class="p">.</span><span class="nx">Editor</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getActionUrl</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">==</span> <span class="s1">'uploadimage'</span> <span class="o">||</span> <span class="nx">action</span> <span class="o">==</span> <span class="s1">'uploadscrawl'</span> <span class="o">||</span> <span class="nx">action</span> <span class="o">==</span> <span class="s1">'uploadimage'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">'http://upload.*.com/controller.php'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">action</span> <span class="o">==</span> <span class="s1">'uploadvideo'</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="s1">'http://upload.*.com/video.php'</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_bkGetActionUrl</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="section-2">单图上传问题</h3>
+
+<p>上面的代码生效后，跨域问题跟着就来了，单图上传暂时不支持跨域设置，为了兼容低版本浏览器，使用了提交表单到iframe提交。通过iframe的onload事件，触发回调函数，这时候再读取iframe里面的内容，得到的服务器返回数据。 跨域情况下，产生了跨域的iframe访问，可以解决方法都需要前后端一起改变。要解决这个问题，百度还未给出解决方案。（此刻，心中已是万马奔腾，淡定淡定～～）</p>
+
+<h3 id="section-3">多图方案</h3>
+
+<p>“楠神”说了用多图上传吧，多图不是用的iframe。<a href="http://fex.baidu.com/ueditor/#dev-crossdomain">UEditor 的 dialogs 主要使用webuploader做上传请求</a>。默认情况下，使用webuploader时，如果浏览器支持html5上传，会使用html5的形式上传，否则使用flash上传。</p>
+
+<p>果然，查看了该控件的配置文件，在‘ueditor/1.4.3/dialogs/image/image.js’这个文件中已经配置了多图上传域名‘upload.*.com’，看来前人已经踩过这些坑了，路已铺好。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">uploader</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'all'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">type</span><span class="p">,</span> <span class="nx">files</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s1">'uploadFinished'</span><span class="err">:</span>
+	    <span class="nx">setState</span><span class="p">(</span><span class="s1">'confirm'</span><span class="p">,</span> <span class="nx">files</span><span class="p">);</span>
+	    <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s1">'startUpload'</span><span class="err">:</span>
+	    <span class="cm">/* 添加额外的GET参数 */</span>
+	    <span class="kd">var</span> <span class="nx">params</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">serializeParam</span><span class="p">(</span><span class="nx">editor</span><span class="p">.</span><span class="nx">queryCommandValue</span><span class="p">(</span><span class="s1">'serverparam'</span><span class="p">))</span> <span class="o">||</span> <span class="s1">''</span><span class="p">,</span>
+	        <span class="nx">url</span> <span class="o">=</span> <span class="nx">utils</span><span class="p">.</span><span class="nx">formatUrl</span><span class="p">(</span><span class="nx">actionUrl</span> <span class="o">+</span> <span class="p">(</span><span class="nx">actionUrl</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">'?'</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">?</span> <span class="s1">'?'</span><span class="p">:</span><span class="s1">'&amp;'</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'encode=utf-8&amp;'</span> <span class="o">+</span> <span class="nx">params</span><span class="p">);</span>
+	    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="sr">/baidu</span><span class="se">\-</span><span class="sr">test|</span><span class="se">\.</span><span class="sr">test</span><span class="se">\.</span><span class="sr">/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">))</span> <span class="p">{</span>
+	        <span class="nx">url</span> <span class="o">=</span> <span class="s1">'http://upload.*.com'</span> <span class="o">+</span> <span class="nx">url</span><span class="p">;</span> 
+	        <span class="nx">uploader</span><span class="p">.</span><span class="nx">option</span><span class="p">(</span><span class="s1">'withCredentials'</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+	    <span class="p">}</span>    
+	    <span class="nx">uploader</span><span class="p">.</span><span class="nx">option</span><span class="p">(</span><span class="s1">'server'</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
+	    <span class="nx">setState</span><span class="p">(</span><span class="s1">'uploading'</span><span class="p">,</span> <span class="nx">files</span><span class="p">);</span>
+	    <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s1">'stopUpload'</span><span class="err">:</span>
+	    <span class="nx">setState</span><span class="p">(</span><span class="s1">'paused'</span><span class="p">,</span> <span class="nx">files</span><span class="p">);</span>
+	    <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>    
+<span class="p">});</span>  </code></pre></figure>
+
+<p>接下来，只需要解决一下跨域问题，就ok啦～～～</p>
+
+<p>跨域情况下，假如不做任何修改，使用html5上传，会有一个提示：</p>
+
+<p><img src="/images/ueditor-uploadimg/error.png" alt="跨域提示" /></p>
+
+<p>这个时候需要在后端设置允许跨域的header，php设置方式如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">header</span><span class="p">(</span><span class="s2">"Access-Control-Allow-Origin: http://a.com"</span><span class="p">);</span> <span class="c1">// 允许a.com发起的跨域请求</span>
+<span class="c1">//如果需要设置允许所有域名发起的跨域请求，可以使用通配符 *</span>
+<span class="nx">header</span><span class="p">(</span><span class="s2">"Access-Control-Allow-Origin: *"</span><span class="p">);</span> <span class="c1">// 允许任意域名发起的跨域请求</span></code></pre></figure>
+
+<p>做了以上的修改之后，有一些请求还是会出错，例如下面这种，某些header属性不支持跨域：</p>
+
+<p><img src="/images/ueditor-uploadimg/error2.png" alt="跨域提示" /></p>
+
+<p>解决这个错误，需要在后端设置允许跨域的header属性，php设置方式如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">header</span><span class="p">(</span><span class="s1">'Access-Control-Allow-Headers: X-Requested-With,X_Requested_With'</span><span class="p">);</span> <span class="c1">//多个值用逗号隔开</span></code></pre></figure>
+
+<p>至此，ueditor上传图片问题就解决啦，可以回家看娃啦～</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/01/05/ueditor-uploadimg" data-title="UEditor上传图片问题" data-url="/front/article/2017/01/05/ueditor-uploadimg.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
