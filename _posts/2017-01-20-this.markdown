@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "this关键字"
-date:   2017-1-16 10:49:42 +0800
-description: ""
+date:   2017-1-20 10:49:42 +0800
+description: "在JavaScript中，函数的this关键字的行为与其他语言相比有很多不同。在JavaScript的严格模式和非严格模式下也略有区别"
 categories: front article
 ---
 
