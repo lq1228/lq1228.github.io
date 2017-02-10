@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ES6语法之五（数值的扩展）</title>
+  <meta name="description" content="数值的扩展">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/02/03/es6-5.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/02/03/es6-5.html">ES6语法之五（数值的扩展）</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ES6语法之五（数值的扩展）</h1>
+    <p class="post-meta"><time datetime="2017-02-03T10:49:42+08:00" itemprop="datePublished">Feb 3, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="section">1. 二进制和八进制表示法</h3>
+
+<p>ES6 提供了二进制和八进制数值的新的写法，分别用前缀0b（或0B）和0o（或0O）表示。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">0</span><span class="nx">b111110111</span> <span class="o">===</span> <span class="mi">503</span> <span class="c1">// true</span>
+<span class="mi">0</span><span class="nx">o767</span> <span class="o">===</span> <span class="mi">503</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>从 ES5 开始，在严格模式之中，八进制就不再允许使用前缀0表示，ES6 进一步明确，要使用前缀0o表示。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 非严格模式</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">0</span><span class="nx">o11</span> <span class="o">===</span> <span class="mi">011</span><span class="p">);</span>
+<span class="p">})()</span> <span class="c1">// true</span>
+
+<span class="c1">// 严格模式</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">0</span><span class="nx">o11</span> <span class="o">===</span> <span class="mi">011</span><span class="p">);</span>
+<span class="p">})()</span> <span class="c1">// Uncaught SyntaxError: Octal literals are not allowed in strict mode.</span></code></pre></figure>
+
+<p>如果要将0b和0o前缀的字符串数值转为十进制，要使用Number方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">(</span><span class="s1">'0b111'</span><span class="p">)</span>  <span class="c1">// 7</span>
+<span class="nb">Number</span><span class="p">(</span><span class="s1">'0o10'</span><span class="p">)</span>  <span class="c1">// 8</span></code></pre></figure>
+
+<h3 id="numberisfinite-numberisnan">2. Number.isFinite(), Number.isNaN()</h3>
+
+<p>ES6在Number对象上，新提供了Number.isFinite()和Number.isNaN()两个方法。</p>
+
+<p>Number.isFinite()用来检查一个数值是否为有限的（finite）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="kc">NaN</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="kc">Infinity</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="o">-</span><span class="kc">Infinity</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="s1">'15'</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> <span class="c1">// false</span></code></pre></figure>
+
+<p>ES5可以通过下面的代码，部署Number.isFinite方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">global_isFinite</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">;</span>
+
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Number</span><span class="p">,</span> <span class="s1">'isFinite'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">value</span><span class="p">:</span> <span class="kd">function</span> <span class="nb">isFinite</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">typeof</span> <span class="nx">value</span> <span class="o">===</span> <span class="s1">'number'</span> <span class="o">&amp;&amp;</span> <span class="nx">global_isFinite</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="na">configurable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">enumerable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">writable</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">});</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code></pre></figure>
+
+<p>Number.isNaN()用来检查一个值是否为NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s1">'15'</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="mi">9</span><span class="o">/</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s1">'true'</span><span class="o">/</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s1">'true'</span><span class="o">/</span><span class="s1">'true'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>ES5通过下面的代码，部署Number.isNaN()。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">global_isNaN</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">;</span>
+
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Number</span><span class="p">,</span> <span class="s1">'isNaN'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">value</span><span class="p">:</span> <span class="kd">function</span> <span class="nb">isNaN</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">typeof</span> <span class="nx">value</span> <span class="o">===</span> <span class="s1">'number'</span> <span class="o">&amp;&amp;</span> <span class="nx">global_isNaN</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="na">configurable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">enumerable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">writable</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">});</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code></pre></figure>
+
+<p>它们与传统的全局方法isFinite()和isNaN()的区别在于，传统方法先调用Number()将非数值的值转为数值，再进行判断，而这两个新方法只对数值有效，非数值一律返回false。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">isFinite</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">isFinite</span><span class="p">(</span><span class="s2">"25"</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="s2">"25"</span><span class="p">)</span> <span class="c1">// false</span>
+
+<span class="nb">isNaN</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">isNaN</span><span class="p">(</span><span class="s2">"NaN"</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s2">"NaN"</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<h3 id="numberparseint-numberparsefloat">3. Number.parseInt(), Number.parseFloat()</h3>
+
+<h3 id="numberisinteger">4. Number.isInteger()</h3>
+
+<h3 id="numberepsilon">5. Number.EPSILON</h3>
+
+<h3 id="numberissafeinteger">6. 安全整数和Number.isSafeInteger()</h3>
+
+<h3 id="math">7. Math对象的扩展</h3>
+
+<h3 id="mathsignbit">8. Math.signbit()</h3>
+
+<h3 id="section-1">9. 指数运算符</h3>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/02/03/es6-5" data-title="ES6语法之五（数值的扩展）" data-url="/front/article/2017/02/03/es6-5.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
