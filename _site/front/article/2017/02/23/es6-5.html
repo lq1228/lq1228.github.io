@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ES6语法之五（数值的扩展）</title>
+  <meta name="description" content="数值的扩展">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/02/23/es6-5.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/02/23/es6-5.html">ES6语法之五（数值的扩展）</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ES6语法之五（数值的扩展）</h1>
+    <p class="post-meta"><time datetime="2017-02-23T10:49:42+08:00" itemprop="datePublished">Feb 23, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="section">1. 二进制和八进制表示法</h3>
+
+<p>ES6 提供了二进制和八进制数值的新的写法，分别用前缀0b（或0B）和0o（或0O）表示。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">0</span><span class="nx">b111110111</span> <span class="o">===</span> <span class="mi">503</span> <span class="c1">// true</span>
+<span class="mi">0</span><span class="nx">o767</span> <span class="o">===</span> <span class="mi">503</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>从 ES5 开始，在严格模式之中，八进制就不再允许使用前缀0表示，ES6 进一步明确，要使用前缀0o表示。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 非严格模式</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">0</span><span class="nx">o11</span> <span class="o">===</span> <span class="mi">011</span><span class="p">);</span>
+<span class="p">})()</span> <span class="c1">// true</span>
+
+<span class="c1">// 严格模式</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">0</span><span class="nx">o11</span> <span class="o">===</span> <span class="mi">011</span><span class="p">);</span>
+<span class="p">})()</span> <span class="c1">// Uncaught SyntaxError: Octal literals are not allowed in strict mode.</span></code></pre></figure>
+
+<p>如果要将0b和0o前缀的字符串数值转为十进制，要使用Number方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">(</span><span class="s1">'0b111'</span><span class="p">)</span>  <span class="c1">// 7</span>
+<span class="nb">Number</span><span class="p">(</span><span class="s1">'0o10'</span><span class="p">)</span>  <span class="c1">// 8</span></code></pre></figure>
+
+<h3 id="numberisfinite-numberisnan">2. Number.isFinite(), Number.isNaN()</h3>
+
+<p>ES6在Number对象上，新提供了Number.isFinite()和Number.isNaN()两个方法。</p>
+
+<p>Number.isFinite()用来检查一个数值是否为有限的（finite）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="mf">0.8</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="kc">NaN</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="kc">Infinity</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="o">-</span><span class="kc">Infinity</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="s1">'15'</span><span class="p">);</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> <span class="c1">// false</span></code></pre></figure>
+
+<p>ES5可以通过下面的代码，部署Number.isFinite方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">global_isFinite</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">;</span>
+
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Number</span><span class="p">,</span> <span class="s1">'isFinite'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">value</span><span class="p">:</span> <span class="kd">function</span> <span class="nb">isFinite</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">typeof</span> <span class="nx">value</span> <span class="o">===</span> <span class="s1">'number'</span> <span class="o">&amp;&amp;</span> <span class="nx">global_isFinite</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="na">configurable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">enumerable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">writable</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">});</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code></pre></figure>
+
+<p>Number.isNaN()用来检查一个值是否为NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s1">'15'</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="mi">9</span><span class="o">/</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s1">'true'</span><span class="o">/</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s1">'true'</span><span class="o">/</span><span class="s1">'true'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>ES5通过下面的代码，部署Number.isNaN()。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">global_isNaN</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">;</span>
+
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Number</span><span class="p">,</span> <span class="s1">'isNaN'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">value</span><span class="p">:</span> <span class="kd">function</span> <span class="nb">isNaN</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">typeof</span> <span class="nx">value</span> <span class="o">===</span> <span class="s1">'number'</span> <span class="o">&amp;&amp;</span> <span class="nx">global_isNaN</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="na">configurable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">enumerable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">writable</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">});</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code></pre></figure>
+
+<p>它们与传统的全局方法isFinite()和isNaN()的区别在于，传统方法先调用Number()将非数值的值转为数值，再进行判断，而这两个新方法只对数值有效，非数值一律返回false。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">isFinite</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">isFinite</span><span class="p">(</span><span class="s2">"25"</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">(</span><span class="s2">"25"</span><span class="p">)</span> <span class="c1">// false</span>
+
+<span class="nb">isNaN</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">isNaN</span><span class="p">(</span><span class="s2">"NaN"</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">isNaN</span><span class="p">(</span><span class="s2">"NaN"</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<h3 id="numberparseint-numberparsefloat">3. Number.parseInt(), Number.parseFloat()</h3>
+
+<p>ES6将全局方法parseInt()和parseFloat()，移植到Number对象上面，行为完全保持不变。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// ES5的写法</span>
+<span class="nb">parseInt</span><span class="p">(</span><span class="s1">'12.34'</span><span class="p">)</span> <span class="c1">// 12</span>
+<span class="nb">parseFloat</span><span class="p">(</span><span class="s1">'123.45#'</span><span class="p">)</span> <span class="c1">// 123.45</span>
+
+<span class="c1">// ES6的写法</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">parseInt</span><span class="p">(</span><span class="s1">'12.34'</span><span class="p">)</span> <span class="c1">// 12</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">parseFloat</span><span class="p">(</span><span class="s1">'123.45#'</span><span class="p">)</span> <span class="c1">// 123.45</span></code></pre></figure>
+
+<p>这样做的目的，是逐步减少全局性方法，使得语言逐步模块化。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nb">parseInt</span> <span class="o">===</span> <span class="nb">parseInt</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nb">parseFloat</span> <span class="o">===</span> <span class="nb">parseFloat</span> <span class="c1">// true</span></code></pre></figure>
+
+<h3 id="numberisinteger">4. Number.isInteger()</h3>
+
+<p>Number.isInteger()用来判断一个值是否为整数。需要注意的是，在JavaScript内部，整数和浮点数是同样的储存方法，所以3和3.0被视为同一个值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nx">isInteger</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isInteger</span><span class="p">(</span><span class="mf">25.0</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isInteger</span><span class="p">(</span><span class="mf">25.1</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isInteger</span><span class="p">(</span><span class="s2">"15"</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isInteger</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<p>ES5可以通过下面的代码，部署Number.isInteger()。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">global</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">floor</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">,</span>
+    <span class="nb">isFinite</span> <span class="o">=</span> <span class="nx">global</span><span class="p">.</span><span class="nb">isFinite</span><span class="p">;</span>
+
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nb">Number</span><span class="p">,</span> <span class="s1">'isInteger'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">value</span><span class="p">:</span> <span class="kd">function</span> <span class="nx">isInteger</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">typeof</span> <span class="nx">value</span> <span class="o">===</span> <span class="s1">'number'</span> <span class="o">&amp;&amp;</span> <span class="nb">isFinite</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">value</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">9007199254740992</span> <span class="o">&amp;&amp;</span> <span class="nx">value</span> <span class="o">&lt;</span> <span class="mi">9007199254740992</span> <span class="o">&amp;&amp;</span>
+        <span class="nx">floor</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">===</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">},</span>
+    <span class="na">configurable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="na">enumerable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">writable</span><span class="p">:</span> <span class="kc">true</span>
+  <span class="p">});</span>
+<span class="p">})(</span><span class="k">this</span><span class="p">);</span></code></pre></figure>
+
+<h3 id="numberepsilon">5. Number.EPSILON</h3>
+
+<p>ES6在Number对象上面，新增一个极小的常量Number.EPSILON。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nx">EPSILON</span>
+<span class="c1">// 2.220446049250313e-16</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">EPSILON</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="c1">// '0.00000000000000022204'</span></code></pre></figure>
+
+<p>引入一个这么小的量的目的，在于为浮点数计算，设置一个误差范围。我们知道浮点数计算是不精确的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.2</span>
+<span class="c1">// 0.30000000000000004</span>
+
+<span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">-</span> <span class="mf">0.3</span>
+<span class="c1">// 5.551115123125783e-17</span>
+
+<span class="mf">5.551115123125783</span><span class="nx">e</span><span class="o">-</span><span class="mi">17</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="c1">// '0.00000000000000005551'</span></code></pre></figure>
+
+<p>但是如果这个误差能够小于Number.EPSILON，我们就可以认为得到了正确结果。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mf">5.551115123125783</span><span class="nx">e</span><span class="o">-</span><span class="mi">17</span> <span class="o">&lt;</span> <span class="nb">Number</span><span class="p">.</span><span class="nx">EPSILON</span>	<span class="c1">// true</span></code></pre></figure>
+
+<p>因此，Number.EPSILON的实质是一个可以接受的误差范围。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">withinErrorMargin</span> <span class="p">(</span><span class="nx">left</span><span class="p">,</span> <span class="nx">right</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">left</span> <span class="o">-</span> <span class="nx">right</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">Number</span><span class="p">.</span><span class="nx">EPSILON</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">withinErrorMargin</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>	<span class="c1">// true</span>
+<span class="nx">withinErrorMargin</span><span class="p">(</span><span class="mf">0.2</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>	<span class="c1">// false</span></code></pre></figure>
+
+<p>上面的代码为浮点数运算，部署了一个误差检查函数。</p>
+
+<h3 id="numberissafeinteger">6. 安全整数和Number.isSafeInteger()</h3>
+
+<p>JavaScript能够准确表示的整数范围在-2^53到2^53之间（不含两个端点），超过这个范围，无法精确表示这个值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">53</span><span class="p">)</span> <span class="c1">// 9007199254740992</span>
+
+<span class="mi">9007199254740992</span>  <span class="c1">// 9007199254740992</span>
+<span class="mi">9007199254740993</span>  <span class="c1">// 9007199254740992</span>
+
+<span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">53</span><span class="p">)</span> <span class="o">===</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">53</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>	   <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，超出2的53次方之后，一个数就不精确了。</p>
+
+<p>ES6引入了Number.MAX_SAFE_INTEGER和Number.MIN_SAFE_INTEGER这两个常量，用来表示这个范围的上下限。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span> <span class="o">===</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">53</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>	<span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span> <span class="o">===</span> <span class="mi">9007199254740991</span>	<span class="c1">// true</span>
+
+<span class="nb">Number</span><span class="p">.</span><span class="nx">MIN_SAFE_INTEGER</span> <span class="o">===</span> <span class="o">-</span><span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span>	<span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">MIN_SAFE_INTEGER</span> <span class="o">===</span> <span class="o">-</span><span class="mi">9007199254740991</span>	<span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，可以看到JavaScript能够精确表示的极限。</p>
+
+<p>Number.isSafeInteger()则是用来判断一个整数是否落在这个范围之内。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="kc">Infinity</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="o">-</span><span class="kc">Infinity</span><span class="p">)</span> <span class="c1">// false</span>
+
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mf">1.2</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mi">9007199254740990</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mi">9007199254740992</span><span class="p">)</span> <span class="c1">// false</span>
+
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nb">Number</span><span class="p">.</span><span class="nx">MIN_SAFE_INTEGER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nb">Number</span><span class="p">.</span><span class="nx">MIN_SAFE_INTEGER</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<p>这个函数的实现很简单，就是跟安全整数的两个边界值比较一下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">n</span> <span class="o">===</span> <span class="s1">'number'</span> <span class="o">&amp;&amp;</span>
+    <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="o">===</span> <span class="nx">n</span> <span class="o">&amp;&amp;</span>
+    <span class="nb">Number</span><span class="p">.</span><span class="nx">MIN_SAFE_INTEGER</span> <span class="o">&lt;=</span> <span class="nx">n</span> <span class="o">&amp;&amp;</span>
+    <span class="nx">n</span> <span class="o">&lt;=</span> <span class="nb">Number</span><span class="p">.</span><span class="nx">MAX_SAFE_INTEGER</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>实际使用这个函数时，需要注意。验证运算结果是否落在安全整数的范围内，不要只验证运算结果，而要同时验证参与运算的每个值</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mi">9007199254740993</span><span class="p">)</span>	<span class="c1">// false</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mi">990</span><span class="p">)</span>	<span class="c1">// true</span>
+<span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="mi">9007199254740993</span> <span class="o">-</span> <span class="mi">990</span><span class="p">)</span>	<span class="c1">// true</span>
+<span class="mi">9007199254740993</span> <span class="o">-</span> <span class="mi">990</span>
+<span class="c1">// 返回结果 9007199254740002</span>
+<span class="c1">// 正确答案应该是 9007199254740003</span></code></pre></figure>
+
+<p>上面代码中，9007199254740993不是一个安全整数，但是Number.isSafeInteger会返回结果，显示计算结果是安全的。这是因为，这个数超出了精度范围，导致在计算机内部，以9007199254740992的形式储存。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">9007199254740993</span> <span class="o">===</span> <span class="mi">9007199254740992</span>	<span class="c1">// true</span></code></pre></figure>
+
+<p>所以，如果只验证运算结果是否为安全整数，很可能得到错误结果。下面的函数可以同时验证两个运算数和运算结果。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">trusty</span> <span class="p">(</span><span class="nx">left</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span>
+    <span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nx">left</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nx">right</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+    <span class="nb">Number</span><span class="p">.</span><span class="nx">isSafeInteger</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+  <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">throw</span> <span class="k">new</span> <span class="nx">RangeError</span><span class="p">(</span><span class="s1">'Operation cannot be trusted!'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">trusty</span><span class="p">(</span><span class="mi">9007199254740993</span><span class="p">,</span> <span class="mi">990</span><span class="p">,</span> <span class="mi">9007199254740993</span> <span class="o">-</span> <span class="mi">990</span><span class="p">)</span>
+<span class="c1">// RangeError: Operation cannot be trusted!</span>
+
+<span class="nx">trusty</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>	<span class="c1">// 3</span></code></pre></figure>
+
+<h3 id="math">7. Math对象的扩展</h3>
+
+<p>ES6在Math对象上新增了17个与数学相关的方法。所有这些方法都是静态方法，只能在Math对象上调用。</p>
+
+<h4 id="mathtrunc">Math.trunc()</h4>
+
+<p>Math.trunc方法用于去除一个数的小数部分，返回整数部分。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="mf">4.1</span><span class="p">)</span> <span class="c1">// 4</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="mf">4.9</span><span class="p">)</span> <span class="c1">// 4</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="o">-</span><span class="mf">4.1</span><span class="p">)</span> <span class="c1">// -4</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="o">-</span><span class="mf">4.9</span><span class="p">)</span> <span class="c1">// -4</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1234</span><span class="p">)</span> <span class="c1">// -0</span></code></pre></figure>
+
+<p>对于非数值，Math.trunc内部使用Number方法将其先转为数值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="s1">'123.456'</span><span class="p">)</span>	<span class="c1">// 123</span></code></pre></figure>
+
+<p>对于空值和无法截取整数的值，返回NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="kc">NaN</span><span class="p">);</span>      <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span>    <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span><span class="p">();</span>         <span class="c1">// NaN</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">trunc</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">?</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathsign">Math.sign()</h4>
+
+<p>Math.sign方法用来判断一个数到底是正数、负数、还是零。</p>
+
+<p>它会返回五种值。</p>
+
+<p>参数为正数，返回+1；</p>
+
+<p>参数为负数，返回-1；</p>
+
+<p>参数为0，返回0；</p>
+
+<p>参数为-0，返回-0;</p>
+
+<p>其他值，返回NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span> <span class="c1">// -1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">// +1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// +0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// -0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span> <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">();</span>      <span class="c1">// NaN</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="o">+</span><span class="nx">x</span><span class="p">;</span> <span class="c1">// convert to a number</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="nb">isNaN</span><span class="p">(</span><span class="nx">x</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">?</span> <span class="mi">1</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathcbrt">Math.cbrt()</h4>
+
+<p>Math.cbrt方法用于计算一个数的立方根。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// -1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1">// 1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1">// 1.2599210498948734</span></code></pre></figure>
+
+<p>对于非数值，Math.cbrt方法内部也是先使用Number方法将其转为数值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span><span class="p">(</span><span class="s1">'8'</span><span class="p">)</span> <span class="c1">// 2</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">)</span> <span class="c1">// NaN</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">cbrt</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">x</span><span class="p">),</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">?</span> <span class="o">-</span><span class="nx">y</span> <span class="p">:</span> <span class="nx">y</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathclz32">Math.clz32()</h4>
+
+<p>JavaScript的整数使用32位二进制形式表示，Math.clz32方法返回一个数的32位无符号整数形式有多少个前导0。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// 31</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="c1">// 22</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">0</span><span class="nx">b01000000000000000000000000000000</span><span class="p">)</span> <span class="c1">// 1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">0</span><span class="nx">b00100000000000000000000000000000</span><span class="p">)</span> <span class="c1">// 2</span></code></pre></figure>
+
+<p>上面代码中，0的二进制形式全为0，所以有32个前导0；1的二进制形式是0b1，只占1位，所以32位之中有31个前导0；1000的二进制形式是0b1111101000，一共有10位，所以32位之中有22个前导0。</p>
+
+<p>clz32这个函数名就来自”count leading zero bits in 32-bit binary representations of a number“（计算32位整数的前导0）的缩写。</p>
+
+<p>左移运算符（«）与Math.clz32方法直接相关。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// 31</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// 30</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="c1">// 29</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">29</span><span class="p">)</span> <span class="c1">// 2</span></code></pre></figure>
+
+<p>对于小数，Math.clz32方法只考虑整数部分。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mf">3.2</span><span class="p">)</span> <span class="c1">// 30</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="mf">3.9</span><span class="p">)</span> <span class="c1">// 30</span></code></pre></figure>
+
+<p>对于空值或其他类型的值，Math.clz32方法会将它们先转为数值，然后再计算。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">()</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="kc">Infinity</span><span class="p">)</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="kc">null</span><span class="p">)</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">([])</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">({})</span> <span class="c1">// 32</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">clz32</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="c1">// 31</span></code></pre></figure>
+
+<h4 id="mathimul">Math.imul()</h4>
+
+<p>Math.imul方法返回两个数以32位带符号整数形式相乘的结果，返回的也是一个32位的带符号整数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>   <span class="c1">// 8</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>  <span class="c1">// -8</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="c1">// 4</span></code></pre></figure>
+
+<table>
+  <tbody>
+    <tr>
+      <td>如果只考虑最后32位，大多数情况下，Math.imul(a, b)与a * b的结果是相同的，即该方法等同于(a * b)</td>
+      <td>0的效果（超过32位的部分溢出）。之所以需要部署这个方法，是因为JavaScript有精度限制，超过2的53次方的值无法精确表示。这就是说，对于那些很大的数的乘法，低位数值往往都是不精确的，Math.imul方法可以返回正确的低位数值。</td>
+    </tr>
+  </tbody>
+</table>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="mh">0x7fffffff</span> <span class="o">*</span> <span class="mh">0x7fffffff</span><span class="p">)</span><span class="o">|</span><span class="mi">0</span> <span class="c1">// 0</span></code></pre></figure>
+
+<p>上面这个乘法算式，返回结果为0。但是由于这两个二进制数的最低位都是1，所以这个结果肯定是不正确的，因为根据二进制乘法，计算结果的二进制最低位应该也是1。这个错误就是因为它们的乘积超过了2的53次方，JavaScript无法保存额外的精度，就把低位的值都变成了0。Math.imul方法可以返回正确的值1。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">imul</span><span class="p">(</span><span class="mh">0x7fffffff</span><span class="p">,</span> <span class="mh">0x7fffffff</span><span class="p">)</span> <span class="c1">// 1</span></code></pre></figure>
+
+<h4 id="mathfround">Math.fround()</h4>
+
+<p>Math.fround方法返回一个数的单精度浮点数形式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>     <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>     <span class="c1">// 1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span><span class="p">(</span><span class="mf">1.337</span><span class="p">)</span> <span class="c1">// 1.3370000123977661</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>   <span class="c1">// 1.5</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span>   <span class="c1">// NaN</span></code></pre></figure>
+
+<p>对于整数来说，Math.fround方法返回结果不会有任何不同，区别主要是那些无法用64个二进制位精确表示的小数。这时，Math.fround方法会返回最接近这个小数的单精度浮点数。</p>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">fround</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">Float32Array</span><span class="p">([</span><span class="nx">x</span><span class="p">])[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathhypot">Math.hypot()</h4>
+
+<p>Math.hypot方法返回所有参数的平方和的平方根。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>        <span class="c1">// 5</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>     <span class="c1">// 7.0710678118654755</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">();</span>            <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">(</span><span class="kc">NaN</span><span class="p">);</span>         <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">);</span> <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">'5'</span><span class="p">);</span>   <span class="c1">// 7.0710678118654755</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">hypot</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">);</span>          <span class="c1">// 3</span></code></pre></figure>
+
+<p>上面代码中，3的平方加上4的平方，等于5的平方。</p>
+
+<p>如果参数不是数值，Math.hypot方法会将其转为数值。只要有一个参数无法转为数值，就会返回NaN。</p>
+
+<h4 id="section-1">对数方法</h4>
+
+<p>ES6新增了4个对数相关方法。</p>
+
+<h4 id="mathexpm1">（1） Math.expm1()</h4>
+
+<p>Math.expm1(x)返回ex - 1，即Math.exp(x) - 1。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">expm1</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// -0.6321205588285577</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">expm1</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">expm1</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1">// 1.718281828459045</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">expm1</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">expm1</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">exp</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathlog1p">（2）Math.log1p()</h4>
+
+<p>Math.log1p(x)方法返回1 + x的自然对数，即Math.log(1 + x)。如果x小于-1，返回NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">log1p</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1">// 0.6931471805599453</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log1p</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log1p</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// -Infinity</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log1p</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="c1">// NaN</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">log1p</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log1p</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nx">x</span><span class="p">);</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathlog10">（3）Math.log10()</h4>
+
+<p>Math.log10(x)返回以10为底的x的对数。如果x小于0，则返回NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>      <span class="c1">// 0.3010299956639812</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>      <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c1">// -Infinity</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>     <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span> <span class="c1">// 5</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log10</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">LN10</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="mathlog2">（4）Math.log2()</h4>
+
+<p>Math.log2(x)返回以2为底的x的对数。如果x小于0，则返回NaN。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>       <span class="c1">// 1.584962500721156</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>       <span class="c1">// 1</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>       <span class="c1">// 0</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>       <span class="c1">// -Infinity</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>      <span class="c1">// NaN</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>    <span class="c1">// 10</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">29</span><span class="p">)</span> <span class="c1">// 29</span></code></pre></figure>
+
+<p>对于没有部署这个方法的环境，可以用下面的代码模拟。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log2</span> <span class="o">||</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">LN2</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="section-2">三角函数方法</h4>
+
+<p>ES6新增了6个三角函数方法。</p>
+
+<p>Math.sinh(x) 返回x的双曲正弦（hyperbolic sine）</p>
+
+<p>Math.cosh(x) 返回x的双曲余弦（hyperbolic cosine）</p>
+
+<p>Math.tanh(x) 返回x的双曲正切（hyperbolic tangent）</p>
+
+<p>Math.asinh(x) 返回x的反双曲正弦（inverse hyperbolic sine）</p>
+
+<p>Math.acosh(x) 返回x的反双曲余弦（inverse hyperbolic cosine）</p>
+
+<p>Math.atanh(x) 返回x的反双曲正切（inverse hyperbolic tangent）</p>
+
+<h3 id="mathsignbit">8. Math.signbit()</h3>
+
+<p>Math.sign()用来判断一个值的正负，但是如果参数是-0，它会返回-0。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// -0</span></code></pre></figure>
+
+<p>这导致对于判断符号位的正负，Math.sign()不是很有用。JavaScript 内部使用64位浮点数（国际标准IEEE 754）表示数值，IEEE 754规定第一位是符号位，0表示正数，1表示负数。所以会有两种零，+0是符号位为0时的零值，-0是符号位为1时的零值。实际编程中，判断一个值是+0还是-0非常麻烦，因为它们是相等的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">+</span><span class="mi">0</span> <span class="o">===</span> <span class="o">-</span><span class="mi">0</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>目前，有一个提案，引入了Math.signbit()方法判断一个数的符号位是否设置了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">signbit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1">//false</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">signbit</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="c1">//true</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">signbit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">//false</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">signbit</span><span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span> <span class="c1">//true</span></code></pre></figure>
+
+<p>可以看到，该方法正确返回了-0的符号位是设置了的。</p>
+
+<p>该方法的算法如下。</p>
+
+<p>如果参数是NaN，返回false</p>
+
+<p>如果参数是-0，返回true</p>
+
+<p>如果参数是负值，返回true</p>
+
+<p>其他情况返回false</p>
+
+<h3 id="section-3">9. 指数运算符</h3>
+
+<p>ES2016 新增了一个指数运算符（**）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">2</span> <span class="o">**</span> <span class="mi">2</span> <span class="c1">// 4</span>
+<span class="mi">2</span> <span class="o">**</span> <span class="mi">3</span> <span class="c1">// 8</span></code></pre></figure>
+
+<p>指数运算符可以与等号结合，形成一个新的赋值运算符（**=）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="nx">a</span> <span class="o">**=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="c1">// 等同于 a = a * a;</span>
+
+<span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="nx">b</span> <span class="o">**=</span> <span class="mi">3</span><span class="p">;</span>
+<span class="c1">// 等同于 b = b * b * b;</span></code></pre></figure>
+
+<p>注意，在 V8 引擎中，指数运算符与Math.pow的实现不相同，对于特别大的运算结果，两者会有细微的差异。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+<span class="c1">// 3.697296376497263e+197</span>
+
+<span class="mi">99</span> <span class="o">**</span> <span class="mi">99</span>
+<span class="c1">// 3.697296376497268e+197</span></code></pre></figure>
+
+<p>上面代码中，两个运算结果的最后一位有效数字是有差异的。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/02/23/es6-5" data-title="ES6语法之五（数值的扩展）" data-url="/front/article/2017/02/23/es6-5.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ES6语法之四（正则的扩展）</title>
+  <meta name="description" content="正则的扩展">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/02/17/es6-4.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/02/17/es6-4.html">ES6语法之四（正则的扩展）</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ES6语法之四（正则的扩展）</h1>
+    <p class="post-meta"><time datetime="2017-02-17T10:49:42+08:00" itemprop="datePublished">Feb 17, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="regexp">1. RegExp构造函数</h3>
+
+<p>在ES5中，RegExp构造函数的参数有两种情况。</p>
+
+<p>第一种情况是，参数是字符串，这时第二个参数表示正则表达式的修饰符（flag）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="s1">'xyz'</span><span class="p">,</span> <span class="s1">'i'</span><span class="p">);</span>
+<span class="c1">// 等价于</span>
+<span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/xyz/i</span><span class="p">;</span></code></pre></figure>
+
+<p>第二种情况是，参数是一个正则表示式，这时会返回一个原有正则表达式的拷贝。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/xyz/i</span><span class="p">);</span>
+<span class="c1">// 等价于</span>
+<span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/xyz/i</span><span class="p">;</span></code></pre></figure>
+
+<p>但是，ES5不允许此时使用第二个参数，添加修饰符，否则会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/xyz/</span><span class="p">,</span> <span class="s1">'i'</span><span class="p">);</span>
+<span class="c1">// Uncaught TypeError: Cannot supply flags when constructing one RegExp from another</span></code></pre></figure>
+
+<p>ES6改变了这种行为。如果RegExp构造函数第一个参数是一个正则对象，那么可以使用第二个参数指定修饰符。而且，返回的正则表达式会忽略原有的正则表达式的修饰符，只使用新指定的修饰符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="sr">/abc/ig</span><span class="p">,</span> <span class="s1">'i'</span><span class="p">).</span><span class="nx">flags</span>
+<span class="c1">// "i"</span></code></pre></figure>
+
+<p>上面代码中，原有正则对象的修饰符是ig，它会被第二个参数i覆盖。</p>
+
+<h3 id="section">2. 字符串的正则方法</h3>
+
+<p>字符串对象共有4个方法，可以使用正则表达式：match()、replace()、search()和split()。</p>
+
+<p>ES6将这4个方法，在语言内部全部调用RegExp的实例方法，从而做到所有与正则相关的方法，全都定义在RegExp对象上。</p>
+
+<p>String.prototype.match 调用 RegExp.prototype[Symbol.match]</p>
+
+<p>String.prototype.replace 调用 RegExp.prototype[Symbol.replace]</p>
+
+<p>String.prototype.search 调用 RegExp.prototype[Symbol.search]</p>
+
+<p>String.prototype.split 调用 RegExp.prototype[Symbol.split]</p>
+
+<h3 id="u">3. u修饰符</h3>
+
+<p>ES6对正则表达式添加了u修饰符，含义为“Unicode模式”，用来正确处理大于\uFFFF的Unicode字符。也就是说，会正确处理四个字节的UTF-16编码。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/^</span><span class="err">\</span><span class="nx">uD83D</span><span class="o">/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'\uD83D\uDC2A'</span><span class="p">)</span>
+<span class="c1">// false</span>
+<span class="sr">/^</span><span class="se">\u</span><span class="sr">D83D/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'\uD83D\uDC2A'</span><span class="p">)</span>
+<span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，\uD83D\uDC2A是一个四个字节的UTF-16编码，代表一个字符。但是，ES5不支持四个字节的UTF-16编码，会将其识别为两个字符，导致第二行代码结果为true。加了u修饰符以后，ES6就会识别其为一个字符，所以第一行代码结果为false。</p>
+
+<p>一旦加上u修饰符号，就会修改下面这些正则表达式的行为。</p>
+
+<h4 id="section-1">(1). 点字符</h4>
+
+<p>点（.）字符在正则表达式中，含义是除了换行符以外的任意单个字符。对于码点大于0xFFFF的Unicode字符，点字符不能识别，必须加上u修饰符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'𠮷'</span><span class="p">;</span>
+
+<span class="sr">/^.$/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="sr">/^.$/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码表示，如果不添加u修饰符，正则表达式就会认为字符串为两个字符，从而匹配失败。</p>
+
+<h4 id="unicode">(2). Unicode字符表示法</h4>
+
+<p>ES6新增了使用大括号表示Unicode字符，这种表示法在正则表达式中必须加上u修饰符，才能识别。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="err">\</span><span class="nx">u</span><span class="p">{</span><span class="mi">61</span><span class="p">}</span><span class="sr">/.test</span><span class="se">(</span><span class="sr">'a'</span><span class="se">)</span><span class="sr"> /</span><span class="o">/</span> <span class="kc">false</span>
+<span class="sr">/</span><span class="se">\u{61}</span><span class="sr">/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="sr">/</span><span class="se">\u</span><span class="sr">{20BB7}/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'𠮷'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码表示，如果不加u修饰符，正则表达式无法识别\u{61}这种表示法，只会认为这匹配61个连续的u。</p>
+
+<h4 id="section-2">(3). 量词</h4>
+
+<p>使用u修饰符后，所有量词都会正确识别码点大于0xFFFF的Unicode字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="nx">a</span><span class="p">{</span><span class="mi">2</span><span class="p">}</span><span class="sr">/.test</span><span class="se">(</span><span class="sr">'aa'</span><span class="se">)</span><span class="sr"> /</span><span class="o">/</span> <span class="kc">true</span>
+<span class="sr">/a</span><span class="se">{2}</span><span class="sr">/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'aa'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="sr">/𠮷</span><span class="se">{2}</span><span class="sr">/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'𠮷𠮷'</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="sr">/𠮷</span><span class="se">{2}</span><span class="sr">/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'𠮷𠮷'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>另外，只有在使用u修饰符的情况下，Unicode表达式当中的大括号才会被正确解读，否则会被解读为量词。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/^</span><span class="err">\</span><span class="nx">u</span><span class="p">{</span><span class="mi">3</span><span class="p">}</span><span class="nx">$</span><span class="o">/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'uuu'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，由于正则表达式没有u修饰符，所以大括号被解读为量词。加上u修饰符，就会被解读为Unicode表达式。</p>
+
+<h4 id="section-3">(4). 预定义模式</h4>
+
+<p>u修饰符也影响到预定义模式，能否正确识别码点大于0xFFFF的Unicode字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/^</span><span class="err">\</span><span class="nx">S$</span><span class="o">/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'𠮷'</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="sr">/^</span><span class="se">\S</span><span class="sr">$/</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'𠮷'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码的\S是预定义模式，匹配所有不是空格的字符。只有加了u修饰符，它才能正确匹配码点大于0xFFFF的Unicode字符。</p>
+
+<p>利用这一点，可以写出一个正确返回字符串长度的函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">codePointLength</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">text</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/</span><span class="se">[\s\S]</span><span class="sr">/g</span><span class="nx">u</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">result</span> <span class="p">?</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'𠮷𠮷'</span><span class="p">;</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">length</span> <span class="c1">// 4</span>
+<span class="nx">codePointLength</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// 2</span></code></pre></figure>
+
+<h4 id="i">(5).i修饰符</h4>
+
+<p>有些Unicode字符的编码不同，但是字型很相近，比如，\u004B与\u212A都是大写的K。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="p">[</span><span class="nx">a</span><span class="o">-</span><span class="nx">z</span><span class="p">]</span><span class="o">/</span><span class="nx">i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'\u212A'</span><span class="p">)</span> <span class="c1">// false</span>
+<span class="sr">/</span><span class="se">[</span><span class="sr">a-z</span><span class="se">]</span><span class="sr">/i</span><span class="nx">u</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'\u212A'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，不加u修饰符，就无法识别非规范的K字符。</p>
+
+<h3 id="y-">4. y 修饰符</h3>
+
+<p>除了u修饰符，ES6还为正则表达式添加了y修饰符，叫做“粘连”（sticky）修饰符。</p>
+
+<p>y修饰符的作用与g修饰符类似，也是全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始。不同之处在于，g修饰符只要剩余位置中存在匹配就可，而y修饰符确保匹配必须从剩余的第一个位置开始，这也就是“粘连”的涵义。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'aaa_aa_a'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">r1</span> <span class="o">=</span> <span class="sr">/a+/g</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">r2</span> <span class="o">=</span> <span class="sr">/a+/</span><span class="nx">y</span><span class="p">;</span>
+
+<span class="nx">r1</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// ["aaa"]</span>
+<span class="nx">r2</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// ["aaa"]</span>
+
+<span class="nx">r1</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// ["aa"]</span>
+<span class="nx">r2</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// null</span></code></pre></figure>
+
+<p>上面代码有两个正则表达式，一个使用g修饰符，另一个使用y修饰符。这两个正则表达式各执行了两次，第一次执行的时候，两者行为相同，剩余字符串都是_aa_a。由于g修饰没有位置要求，所以第二次执行会返回结果，而y修饰符要求匹配必须从头部开始，所以返回null。</p>
+
+<p>如果改一下正则表达式，保证每次都能头部匹配，y修饰符就会返回结果了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'aaa_aa_a'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="sr">/a+_/</span><span class="nx">y</span><span class="p">;</span>
+
+<span class="nx">r</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// ["aaa_"]</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="c1">// ["aa_"]</span></code></pre></figure>
+
+<p>上面代码每次匹配，都是从剩余字符串的头部开始。</p>
+
+<p>使用lastIndex属性，可以更好地说明y修饰符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">REGEX</span> <span class="o">=</span> <span class="sr">/a/g</span><span class="p">;</span>
+
+<span class="c1">// 指定从2号位置（y）开始匹配</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">lastIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="c1">// 匹配成功</span>
+<span class="kr">const</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">REGEX</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'xaya'</span><span class="p">);</span>
+
+<span class="c1">// 在3号位置匹配成功</span>
+<span class="nx">match</span><span class="p">.</span><span class="nx">index</span> <span class="c1">// 3</span>
+
+<span class="c1">// 下一次匹配从4号位开始</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">lastIndex</span> <span class="c1">// 4</span>
+
+<span class="c1">// 4号位开始匹配失败</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'xaxa'</span><span class="p">)</span> <span class="c1">// null</span></code></pre></figure>
+
+<p>上面代码中，lastIndex属性指定每次搜索的开始位置，g修饰符从这个位置开始向后搜索，直到发现匹配为止。</p>
+
+<p>y修饰符同样遵守lastIndex属性，但是要求必须在lastIndex指定的位置发现匹配。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">REGEX</span> <span class="o">=</span> <span class="sr">/a/</span><span class="nx">y</span><span class="p">;</span>
+
+<span class="c1">// 指定从2号位置开始匹配</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">lastIndex</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="c1">// 不是粘连，匹配失败</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'xaya'</span><span class="p">)</span> <span class="c1">// null</span>
+
+<span class="c1">// 指定从3号位置开始匹配</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">lastIndex</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">// 3号位置是粘连，匹配成功</span>
+<span class="kr">const</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">REGEX</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'xaxa'</span><span class="p">);</span>
+<span class="nx">match</span><span class="p">.</span><span class="nx">index</span> <span class="c1">// 3</span>
+<span class="nx">REGEX</span><span class="p">.</span><span class="nx">lastIndex</span> <span class="c1">// 4</span></code></pre></figure>
+
+<p>进一步说，y修饰符号隐含了头部匹配的标志^。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="nx">b</span><span class="o">/</span><span class="nx">y</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'aba'</span><span class="p">)</span>
+<span class="c1">// null</span></code></pre></figure>
+
+<p>上面代码由于不能保证头部匹配，所以返回null。y修饰符的设计本意，就是让头部匹配的标志^在全局匹配中都有效。</p>
+
+<p>在split方法中使用y修饰符，原字符串必须以分隔符开头。这也意味着，只要匹配成功，数组的第一个成员肯定是空字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 没有找到匹配</span>
+<span class="s1">'x##'</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/#/</span><span class="nx">y</span><span class="p">)</span>
+<span class="c1">// [ 'x##' ]</span>
+
+<span class="c1">// 找到两个匹配</span>
+<span class="s1">'##x'</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/#/</span><span class="nx">y</span><span class="p">)</span>
+<span class="c1">// [ '', '', 'x' ]</span></code></pre></figure>
+
+<p>后续的分隔符只有紧跟前面的分隔符，才会被识别。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'#x#'</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/#/</span><span class="nx">y</span><span class="p">)</span>
+<span class="c1">// [ '', 'x#' ]</span>
+
+<span class="s1">'##'</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="sr">/#/</span><span class="nx">y</span><span class="p">)</span>
+<span class="c1">// [ '', '', '' ]</span></code></pre></figure>
+
+<p>下面是字符串对象的replace方法的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">REGEX</span> <span class="o">=</span> <span class="sr">/a/g</span><span class="nx">y</span><span class="p">;</span>
+<span class="s1">'aaxa'</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">REGEX</span><span class="p">,</span> <span class="s1">'-'</span><span class="p">)</span> <span class="c1">// '--xa'</span></code></pre></figure>
+
+<p>上面代码中，最后一个a因为不是出现下一次匹配的头部，所以不会被替换。</p>
+
+<p>单单一个y修饰符对match方法，只能返回第一个匹配，必须与g修饰符联用，才能返回所有匹配。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'a1a2a3'</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/a</span><span class="se">\d</span><span class="sr">/</span><span class="nx">y</span><span class="p">)</span> <span class="c1">// ["a1"]</span>
+<span class="s1">'a1a2a3'</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/a</span><span class="se">\d</span><span class="sr">/g</span><span class="nx">y</span><span class="p">)</span> <span class="c1">// ["a1", "a2", "a3"]</span></code></pre></figure>
+
+<p>y修饰符的一个应用，是从字符串提取token（词元），y修饰符确保了匹配之间不会有漏掉的字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">TOKEN_Y</span> <span class="o">=</span> <span class="sr">/</span><span class="se">\s</span><span class="sr">*</span><span class="se">(\+</span><span class="sr">|</span><span class="se">[</span><span class="sr">0-9</span><span class="se">]</span><span class="sr">+</span><span class="se">)\s</span><span class="sr">*/</span><span class="nx">y</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">TOKEN_G</span>  <span class="o">=</span> <span class="sr">/</span><span class="se">\s</span><span class="sr">*</span><span class="se">(\+</span><span class="sr">|</span><span class="se">[</span><span class="sr">0-9</span><span class="se">]</span><span class="sr">+</span><span class="se">)\s</span><span class="sr">*/g</span><span class="p">;</span>
+
+<span class="nx">tokenize</span><span class="p">(</span><span class="nx">TOKEN_Y</span><span class="p">,</span> <span class="s1">'3 + 4'</span><span class="p">)</span>
+<span class="c1">// [ '3', '+', '4' ]</span>
+<span class="nx">tokenize</span><span class="p">(</span><span class="nx">TOKEN_G</span><span class="p">,</span> <span class="s1">'3 + 4'</span><span class="p">)</span>
+<span class="c1">// [ '3', '+', '4' ]</span>
+
+<span class="kd">function</span> <span class="nx">tokenize</span><span class="p">(</span><span class="nx">TOKEN_REGEX</span><span class="p">,</span> <span class="nx">str</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">let</span> <span class="nx">match</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">match</span> <span class="o">=</span> <span class="nx">TOKEN_REGEX</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">str</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">match</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，如果字符串里面没有非法字符，y修饰符与g修饰符的提取结果是一样的。但是，一旦出现非法字符，两者的行为就不一样了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tokenize</span><span class="p">(</span><span class="nx">TOKEN_Y</span><span class="p">,</span> <span class="s1">'3x + 4'</span><span class="p">)</span>
+<span class="c1">// [ '3' ]</span>
+<span class="nx">tokenize</span><span class="p">(</span><span class="nx">TOKEN_G</span><span class="p">,</span> <span class="s1">'3x + 4'</span><span class="p">)</span>
+<span class="c1">// [ '3', '+', '4' ]</span></code></pre></figure>
+
+<p>上面代码中，g修饰符会忽略非法字符，而y修饰符不会，这样就很容易发现错误。</p>
+
+<h3 id="sticky">5. sticky属性</h3>
+
+<p>与y修饰符相匹配，ES6的正则对象多了sticky属性，表示是否设置了y修饰符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">r</span> <span class="o">=</span> <span class="sr">/hello</span><span class="se">\d</span><span class="sr">/</span><span class="nx">y</span><span class="p">;</span>
+<span class="nx">r</span><span class="p">.</span><span class="nx">sticky</span> <span class="c1">// true</span></code></pre></figure>
+
+<h3 id="flags">6. flags属性</h3>
+
+<p>ES6为正则表达式新增了flags属性，会返回正则表达式的修饰符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// ES5的source属性</span>
+<span class="c1">// 返回正则表达式的正文</span>
+<span class="sr">/abc/ig</span><span class="p">.</span><span class="nx">source</span>
+<span class="c1">// "abc"</span>
+
+<span class="c1">// ES6的flags属性</span>
+<span class="c1">// 返回正则表达式的修饰符</span>
+<span class="sr">/abc/ig</span><span class="p">.</span><span class="nx">flags</span>
+<span class="c1">// 'gi'</span></code></pre></figure>
+
+<h3 id="regexpescape">7. RegExp.escape()</h3>
+
+<p>字符串必须转义，才能作为正则模式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">escapeRegExp</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">str</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]</span><span class="sr">/g</span><span class="p">,</span> <span class="s1">'\\$&amp;'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">str</span> <span class="o">=</span> <span class="s1">'/path/to/resource.html?search=query'</span><span class="p">;</span>
+<span class="nx">escapeRegExp</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span>
+<span class="c1">// "\/path\/to\/resource\.html\?search=query"</span></code></pre></figure>
+
+<p>上面代码中，str是一个正常字符串，必须使用反斜杠对其中的特殊字符转义，才能用来作为一个正则匹配的模式。</p>
+
+<p>已经有提议将这个需求标准化，作为RegExp对象的静态方法RegExp.escape()，放入ES7。2015年7月31日，TC39认为，这个方法有安全风险，又不愿这个方法变得过于复杂，没有同意将其列入ES7，但这不失为一个真实的需求。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">RegExp</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span><span class="s1">'The Quick Brown Fox'</span><span class="p">);</span>
+<span class="c1">// "The Quick Brown Fox"</span>
+
+<span class="nb">RegExp</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span><span class="s1">'Buy it. use it. break it. fix it.'</span><span class="p">);</span>
+<span class="c1">// "Buy it\. use it\. break it\. fix it\."</span>
+
+<span class="nb">RegExp</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span><span class="s1">'(*.*)'</span><span class="p">);</span>
+<span class="c1">// "\(\*\.\*\)"</span></code></pre></figure>
+
+<p>字符串转义以后，可以使用RegExp构造函数生成正则模式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">str</span> <span class="o">=</span> <span class="s1">'hello. how are you?'</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span><span class="nb">RegExp</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span><span class="nx">str</span><span class="p">),</span> <span class="s1">'g'</span><span class="p">);</span>
+<span class="nx">assert</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="nb">String</span><span class="p">(</span><span class="nx">regex</span><span class="p">),</span> <span class="s1">'/hello\. how are you\?/g'</span><span class="p">);</span></code></pre></figure>
+
+<p>目前，该方法可以用上文的escapeRegExp函数或者垫片模块regexp.escape实现。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">escape</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'regexp.escape'</span><span class="p">);</span>
+<span class="nx">escape</span><span class="p">(</span><span class="s1">'hi. how are you?'</span><span class="p">);</span>
+<span class="c1">// "hi\\. how are you\\?"</span></code></pre></figure>
+
+<h3 id="s-dotall-">8. s 修饰符：dotAll 模式</h3>
+
+<p>正则表达式中，点（.）是一个特殊字符，代表任意的单个字符，但是行终止符（line terminator character）除外。</p>
+
+<p>以下四个字符属于”行终止符“。</p>
+
+<p>U+000A 换行符（\n）</p>
+
+<p>U+000D 回车符（\r）</p>
+
+<p>U+2028 行分隔符（line separator）</p>
+
+<p>U+2029 段分隔符（paragraph separator）</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="o">/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'foo\nbar'</span><span class="p">)</span>
+<span class="c1">// false</span></code></pre></figure>
+
+<p>上面代码中，因为.不匹配\n，所以正则表达式返回false。</p>
+
+<p>但是，很多时候我们希望匹配的是任意单个字符，这时有一种变通的写法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="nx">foo</span><span class="p">[</span><span class="o">^</span><span class="p">]</span><span class="nx">bar</span><span class="o">/</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'foo\nbar'</span><span class="p">)</span>
+<span class="c1">// true</span></code></pre></figure>
+
+<p>这种解决方案毕竟不太符合直觉，所以现在有一个提案，引入/s修饰符，使得.可以匹配任意单个字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="o">/</span><span class="nx">s</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'foo\nbar'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>这被称为dotAll模式，即点（dot）代表一切字符。所以，正则表达式还引入了一个dotAll属性，返回一个布尔值，表示该正则表达式是否处在dotAll模式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">re</span> <span class="o">=</span> <span class="sr">/foo.bar/</span><span class="nx">s</span><span class="p">;</span>
+<span class="c1">// 另一种写法</span>
+<span class="c1">// const re = new RegExp('foo.bar', 's');</span>
+
+<span class="nx">re</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'foo\nbar'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">re</span><span class="p">.</span><span class="nx">dotAll</span> <span class="c1">// true</span>
+<span class="nx">re</span><span class="p">.</span><span class="nx">flags</span> <span class="c1">// 's'</span></code></pre></figure>
+
+<p>const re = /foo.bar/s;
+// 另一种写法
+// const re = new RegExp(‘foo.bar’, ‘s’);</p>
+
+<p>re.test(‘foo\nbar’) // true
+re.dotAll // true
+re.flags // ‘s’</p>
+
+<h3 id="section-4">9. 后行断言</h3>
+
+<p>JavaScript 语言的正则表达式，只支持先行断言（lookahead）和先行否定断言（negative lookahead），不支持后行断言（lookbehind）和后行否定断言（negative lookbehind）。</p>
+
+<p>目前，有一个提案，引入后行断言。V8 引擎4.9版已经支持，Chrome 浏览器49版打开”experimental JavaScript features“开关（地址栏键入about:flags），就可以使用这项功能。</p>
+
+<p>”先行断言“指的是，x只有在y前面才匹配，必须写成/x(?=y)/。比如，只匹配百分号之前的数字，要写成/\d+(?=%)/。”先行否定断言“指的是，x只有不在y前面才匹配，必须写成/x(?!y)/。比如，只匹配不在百分号之前的数字，要写成/\d+(?!%)/。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="err">\</span><span class="nx">d</span><span class="o">+</span><span class="p">(?</span><span class="o">=%</span><span class="p">)</span><span class="o">/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'100% of US presidents have been male'</span><span class="p">)</span>  <span class="c1">// ["100"]</span>
+<span class="sr">/</span><span class="se">\d</span><span class="sr">+</span><span class="se">(?!</span><span class="sr">%</span><span class="se">)</span><span class="sr">/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'that’s all 44 of them'</span><span class="p">)</span>                 <span class="c1">// ["44"]</span></code></pre></figure>
+
+<p>上面两个字符串，如果互换正则表达式，就会匹配失败。另外，还可以看到，”先行断言“括号之中的部分（(?=%)），是不计入返回结果的。</p>
+
+<p>“后行断言”正好与“先行断言”相反，x只有在y后面才匹配，必须写成/(?&lt;=y)x/。比如，只匹配美元符号之后的数字，要写成/(?&lt;=$)\d+/。”后行否定断言“则与”先行否定断言“相反，x只有不在y后面才匹配，必须写成/(?&lt;!y)x/。比如，只匹配不在美元符号后面的数字，要写成/(?&lt;!$)\d+/。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="p">(?</span><span class="o">&lt;=</span><span class="err">\</span><span class="nx">$</span><span class="p">)</span><span class="err">\</span><span class="nx">d</span><span class="o">+</span><span class="sr">/.exec</span><span class="se">(</span><span class="sr">'Benjamin Franklin is on the $100 bill'</span><span class="se">)</span><span class="sr">  /</span><span class="o">/</span> <span class="p">[</span><span class="s2">"100"</span><span class="p">]</span>
+<span class="sr">/</span><span class="se">(?&lt;</span><span class="sr">!</span><span class="se">\$)\d</span><span class="sr">+/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'it’s is worth about €90'</span><span class="p">)</span>                <span class="c1">// ["90"]</span></code></pre></figure>
+
+<p>上面的例子中，“后行断言”的括号之中的部分（(?&lt;=$)），也是不计入返回结果。</p>
+
+<p>“后行断言”的实现，需要先匹配/(?&lt;=y)x/的x，然后再回到左边，匹配y的部分。这种“先右后左”的执行顺序，与所有其他正则操作相反，导致了一些不符合预期的行为。</p>
+
+<p>首先，”后行断言“的组匹配，与正常情况下结果是不一样的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="p">(?</span><span class="o">&lt;=</span><span class="p">(</span><span class="err">\</span><span class="nx">d</span><span class="o">+</span><span class="p">)(</span><span class="err">\</span><span class="nx">d</span><span class="o">+</span><span class="p">))</span><span class="nx">$</span><span class="o">/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'1053'</span><span class="p">)</span> <span class="c1">// ["", "1", "053"]</span>
+<span class="sr">/^</span><span class="se">(\d</span><span class="sr">+</span><span class="se">)(\d</span><span class="sr">+</span><span class="se">)</span><span class="sr">$/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'1053'</span><span class="p">)</span> <span class="c1">// ["1053", "105", "3"]</span></code></pre></figure>
+
+<p>上面代码中，需要捕捉两个组匹配。没有”后行断言”时，第一个括号是贪婪模式，第二个括号只能捕获一个字符，所以结果是105和3。而”后行断言”时，由于执行顺序是从右到左，第二个括号是贪婪模式，第一个括号只能捕获一个字符，所以结果是1和053。</p>
+
+<p>其次，”后行断言”的反斜杠引用，也与通常的顺序相反，必须放在对应的那个括号之前。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">/</span><span class="p">(?</span><span class="o">&lt;=</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span><span class="nx">d</span><span class="err">\</span><span class="mi">1</span><span class="p">)</span><span class="nx">r</span><span class="o">/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'hodor'</span><span class="p">)</span>  <span class="c1">// null</span>
+<span class="sr">/</span><span class="se">(?&lt;</span><span class="sr">=</span><span class="se">\1</span><span class="sr">d</span><span class="se">(</span><span class="sr">o</span><span class="se">))</span><span class="sr">r/</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="s1">'hodor'</span><span class="p">)</span>  <span class="c1">// ["r", "o"]</span></code></pre></figure>
+
+<p>上面代码中，如果后行断言的反斜杠引用（\1）放在括号的后面，就不会得到匹配结果，必须放在前面才可以。</p>
+
+<h3 id="unicode-1">10. Unicode属性类</h3>
+
+<p>目前，有一个提案，引入了一种新的类的写法\p{…}和\P{…}，允许正则表达式匹配符合Unicode某种属性的所有字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">regexGreekSymbol</span> <span class="o">=</span> <span class="sr">/</span><span class="se">\p</span><span class="sr">{Script=Greek}/</span><span class="nx">u</span><span class="p">;</span>
+<span class="nx">regexGreekSymbol</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'π'</span><span class="p">)</span> <span class="c1">// u</span></code></pre></figure>
+
+<p>上面代码中，\p{Script=Greek}指定匹配一个希腊文字母，所以匹配π成功。</p>
+
+<p>Unicode属性类要指定属性名和属性值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">UnicodePropertyName</span><span class="o">=</span><span class="nx">UnicodePropertyValue</span><span class="p">}</span></code></pre></figure>
+
+<p>对于某些属性，可以只写属性名。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">UnicodePropertyName</span><span class="p">}</span></code></pre></figure>
+
+<p>\P{…}是\p{…}的反向匹配，即匹配不满足条件的字符。</p>
+
+<p>注意，这两种类只对Unicode有效，所以使用的时候一定要加上u修饰符。如果不加u修饰符，正则表达式使用\p和\P会报错，ECMAScript预留了这两个类。</p>
+
+<p>由于Unicode的各种属性非常多，所以这种新的类的表达能力非常强。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/^</span><span class="se">\p</span><span class="sr">{Decimal_Number}+$/</span><span class="nx">u</span><span class="p">;</span>
+<span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'𝟏𝟐𝟑𝟜𝟝𝟞𝟩𝟪𝟫𝟬𝟭𝟮𝟯𝟺𝟻𝟼'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，属性类指定匹配所有十进制字符，可以看到各种字型的十进制字符都会匹配成功。</p>
+
+<p>\p{Number}甚至能匹配罗马数字。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 匹配所有数字</span>
+<span class="kr">const</span> <span class="nx">regex</span> <span class="o">=</span> <span class="sr">/^</span><span class="se">\p</span><span class="sr">{Number}+$/</span><span class="nx">u</span><span class="p">;</span>
+<span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'²³¹¼½¾'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'㉛㉜㉝'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>下面是其他一些例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 匹配各种文字的所有字母，等同于Unicode版的\w</span>
+<span class="p">[</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Alphabetic</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Mark</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Decimal_Number</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Connector_Punctuation</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Join_Control</span><span class="p">}]</span>
+
+<span class="c1">// 匹配各种文字的所有非字母的字符，等同于Unicode版的\W</span>
+<span class="p">[</span><span class="o">^</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Alphabetic</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Mark</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Decimal_Number</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Connector_Punctuation</span><span class="p">}</span><span class="err">\</span><span class="nx">p</span><span class="p">{</span><span class="nx">Join_Control</span><span class="p">}]</span>
+
+<span class="c1">// 匹配所有的箭头字符</span>
+<span class="kr">const</span> <span class="nx">regexArrows</span> <span class="o">=</span> <span class="sr">/^</span><span class="se">\p</span><span class="sr">{Block=Arrows}+$/</span><span class="nx">u</span><span class="p">;</span>
+<span class="nx">regexArrows</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="s1">'←↑→↓↔↕↖↗↘↙⇏⇐⇑⇒⇓⇔⇕⇖⇗⇘⇙⇧⇩'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/02/17/es6-4" data-title="ES6语法之四（正则的扩展）" data-url="/front/article/2017/02/17/es6-4.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
