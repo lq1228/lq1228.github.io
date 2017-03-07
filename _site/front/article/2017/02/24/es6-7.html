@@ -656,16 +656,738 @@
 
 <h3 id="section-9">4. 严格模式</h3>
 
+<p>从ES5开始，函数内部可以设定为严格模式。</p>
+
+<p>《ECMAScript 2016标准》做了一点修改，规定只要函数参数使用了默认值、解构赋值、或者扩展运算符，那么函数内部就不能显式设定为严格模式，否则会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 报错</span>
+<span class="kd">function</span> <span class="nx">doSomething</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="c1">// code</span>
+<span class="p">}</span>
+
+<span class="c1">// 报错</span>
+<span class="kr">const</span> <span class="nx">doSomething</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">({</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">})</span> <span class="p">{</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="c1">// code</span>
+<span class="p">};</span>
+
+<span class="c1">// 报错</span>
+<span class="kr">const</span> <span class="nx">doSomething</span> <span class="o">=</span> <span class="p">(...</span><span class="nx">a</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="c1">// code</span>
+<span class="p">};</span>
+
+<span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1">// 报错</span>
+  <span class="nx">doSomething</span><span class="p">({</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">})</span> <span class="p">{</span>
+    <span class="s1">'use strict'</span><span class="p">;</span>
+    <span class="c1">// code</span>
+  <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>这样规定的原因是，函数内部的严格模式，同时适用于函数体代码和函数参数代码。但是，函数执行的时候，先执行函数参数代码，然后再执行函数体代码。这样就有一个不合理的地方，只有从函数体代码之中，才能知道参数代码是否应该以严格模式执行，但是参数代码却应该先于函数体代码执行。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 报错</span>
+<span class="kd">function</span> <span class="nx">doSomething</span><span class="p">(</span><span class="nx">value</span> <span class="o">=</span> <span class="mi">070</span><span class="p">)</span> <span class="p">{</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，参数value的默认值是八进制数070，但是严格模式下不能用前缀0表示八进制，所以应该报错。但是实际上，JavaScript引擎会先成功执行value = 070，然后进入函数体内部，发现需要用严格模式执行，这时才会报错。</p>
+
+<p>虽然可以先解析函数体代码，再执行参数代码，但是这样无疑就增加了复杂性。因此，标准索性禁止了这种用法，只要参数使用了默认值、解构赋值、或者扩展运算符，就不能显式指定严格模式。</p>
+
+<p>两种方法可以规避这种限制。第一种是设定全局性的严格模式，这是合法的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">doSomething</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// code</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>第二种是把函数包在一个无参数的立即执行函数里面。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">doSomething</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="s1">'use strict'</span><span class="p">;</span>
+  <span class="k">return</span> <span class="kd">function</span><span class="p">(</span><span class="nx">value</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}());</span></code></pre></figure>
+
 <h3 id="name-">5. name 属性</h3>
+
+<p>函数的name属性，返回该函数的函数名。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{}</span>
+<span class="nx">foo</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// "foo"</span></code></pre></figure>
+
+<p>这个属性早就被浏览器广泛支持，但是直到 ES6，才将其写入了标准。</p>
+
+<p>需要注意的是，ES6 对这个属性的行为做出了一些修改。如果将一个匿名函数赋值给一个变量，ES5 的name属性，会返回空字符串，而 ES6 的name属性会返回实际的函数名。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{};</span>
+
+<span class="c1">// ES5</span>
+<span class="nx">f</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// ""</span>
+
+<span class="c1">// ES6</span>
+<span class="nx">f</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// "f"</span></code></pre></figure>
+
+<p>上面代码中，变量f等于一个匿名函数，ES5 和 ES6 的name属性返回的值不一样。</p>
+
+<p>如果将一个具名函数赋值给一个变量，则 ES5 和 ES6 的name属性都返回这个具名函数原本的名字。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">bar</span> <span class="o">=</span> <span class="kd">function</span> <span class="nx">baz</span><span class="p">()</span> <span class="p">{};</span>
+
+<span class="c1">// ES5</span>
+<span class="nx">bar</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// "baz"</span>
+
+<span class="c1">// ES6</span>
+<span class="nx">bar</span><span class="p">.</span><span class="nx">name</span> <span class="c1">// "baz"</span></code></pre></figure>
+
+<p>Function构造函数返回的函数实例，name属性的值为anonymous。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="k">new</span> <span class="nb">Function</span><span class="p">).</span><span class="nx">name</span> <span class="c1">// "anonymous"</span></code></pre></figure>
+
+<p>bind返回的函数，name属性值会加上bound前缀。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{};</span>
+<span class="nx">foo</span><span class="p">.</span><span class="nx">bind</span><span class="p">({}).</span><span class="nx">name</span> <span class="c1">// "bound foo"</span>
+
+<span class="p">(</span><span class="kd">function</span><span class="p">(){}).</span><span class="nx">bind</span><span class="p">({}).</span><span class="nx">name</span> <span class="c1">// "bound "</span></code></pre></figure>
 
 <h3 id="section-10">6. 箭头函数</h3>
 
+<h4 id="section-11">基本用法</h4>
+
+<p>ES6允许使用“箭头”（=&gt;）定义函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">v</span> <span class="o">=&gt;</span> <span class="nx">v</span><span class="p">;</span>
+<span class="c1">//上面的箭头函数等同于：</span>
+<span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">v</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>如果箭头函数不需要参数或需要多个参数，就使用一个圆括号代表参数部分。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="mi">5</span><span class="p">;</span>
+<span class="c1">// 等同于</span>
+<span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="mi">5</span> <span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">num1</span><span class="p">,</span> <span class="nx">num2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">num1</span> <span class="o">+</span> <span class="nx">num2</span><span class="p">;</span>
+<span class="c1">// 等同于</span>
+<span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">num1</span><span class="p">,</span> <span class="nx">num2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">num1</span> <span class="o">+</span> <span class="nx">num2</span><span class="p">;</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>如果箭头函数的代码块部分多于一条语句，就要使用大括号将它们括起来，并且使用return语句返回。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="p">(</span><span class="nx">num1</span><span class="p">,</span> <span class="nx">num2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">num1</span> <span class="o">+</span> <span class="nx">num2</span><span class="p">;</span> <span class="p">}</span></code></pre></figure>
+
+<p>由于大括号被解释为代码块，所以如果箭头函数直接返回一个对象，必须在对象外面加上括号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">getTempItem</span> <span class="o">=</span> <span class="nx">id</span> <span class="o">=&gt;</span> <span class="p">({</span> <span class="na">id</span><span class="p">:</span> <span class="nx">id</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"Temp"</span> <span class="p">});</span></code></pre></figure>
+
+<p>箭头函数可以与变量解构结合使用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">full</span> <span class="o">=</span> <span class="p">({</span> <span class="nx">first</span><span class="p">,</span> <span class="nx">last</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="nx">first</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nx">last</span><span class="p">;</span>
+
+<span class="c1">// 等同于</span>
+<span class="kd">function</span> <span class="nx">full</span><span class="p">(</span><span class="nx">person</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">person</span><span class="p">.</span><span class="nx">first</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nx">person</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>箭头函数使得表达更加简洁。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">isEven</span> <span class="o">=</span> <span class="nx">n</span> <span class="o">=&gt;</span> <span class="nx">n</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">square</span> <span class="o">=</span> <span class="nx">n</span> <span class="o">=&gt;</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">n</span><span class="p">;</span></code></pre></figure>
+
+<p>上面代码只用了两行，就定义了两个简单的工具函数。如果不用箭头函数，可能就要占用多行，而且还不如现在这样写醒目。</p>
+
+<p>箭头函数的一个用处是简化回调函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 正常函数写法</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// 箭头函数写法</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">);</span></code></pre></figure>
+
+<p>另一个例子是</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 正常函数写法</span>
+<span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// 箭头函数写法</span>
+<span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">values</span><span class="p">.</span><span class="nx">sort</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">);</span></code></pre></figure>
+
+<p>下面是rest参数与箭头函数结合的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">(...</span><span class="nx">nums</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">nums</span><span class="p">;</span>
+
+<span class="nx">numbers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1">// [1,2,3,4,5]</span>
+
+<span class="kr">const</span> <span class="nx">headAndTail</span> <span class="o">=</span> <span class="p">(</span><span class="nx">head</span><span class="p">,</span> <span class="p">...</span><span class="nx">tail</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">head</span><span class="p">,</span> <span class="nx">tail</span><span class="p">];</span>
+
+<span class="nx">headAndTail</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1">// [1,[2,3,4,5]]</span></code></pre></figure>
+
+<h4 id="section-12">使用注意点</h4>
+
+<p>箭头函数有几个使用注意点。</p>
+
+<p>（1）函数体内的this对象，就是定义时所在的对象，而不是使用时所在的对象。</p>
+
+<p>（2）不可以当作构造函数，也就是说，不可以使用new命令，否则会抛出一个错误。</p>
+
+<p>（3）不可以使用arguments对象，该对象在函数体内不存在。如果要用，可以用Rest参数代替。</p>
+
+<p>（4）不可以使用yield命令，因此箭头函数不能用作Generator函数。</p>
+
+<p>上面四点中，第一点尤其值得注意。this对象的指向是可变的，但是在箭头函数中，它是固定的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'id:'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+  <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="mi">21</span><span class="p">;</span>
+
+<span class="nx">foo</span><span class="p">.</span><span class="nx">call</span><span class="p">({</span> <span class="na">id</span><span class="p">:</span> <span class="mi">42</span> <span class="p">});</span>
+<span class="c1">// id: 42</span></code></pre></figure>
+
+<p>上面代码中，setTimeout的参数是一个箭头函数，这个箭头函数的定义生效是在foo函数生成时，而它的真正执行要等到100毫秒后。如果是普通函数，执行时this应该指向全局对象window，这时应该输出21。但是，箭头函数导致this总是指向函数定义生效时所在的对象（本例是{id: 42}），所以输出的是42。</p>
+
+<p>箭头函数可以让setTimeout里面的this，绑定定义时所在的作用域，而不是指向运行时所在的作用域。下面是另一个例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Timer</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">s1</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">s2</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="c1">// 箭头函数</span>
+  <span class="nx">setInterval</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">s1</span><span class="o">++</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+  <span class="c1">// 普通函数</span>
+  <span class="nx">setInterval</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">s2</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">},</span> <span class="mi">1000</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">timer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Timer</span><span class="p">();</span>
+
+<span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'s1: '</span><span class="p">,</span> <span class="nx">timer</span><span class="p">.</span><span class="nx">s1</span><span class="p">),</span> <span class="mi">3100</span><span class="p">);</span>
+<span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'s2: '</span><span class="p">,</span> <span class="nx">timer</span><span class="p">.</span><span class="nx">s2</span><span class="p">),</span> <span class="mi">3100</span><span class="p">);</span>
+<span class="c1">// s1: 3</span>
+<span class="c1">// s2: 0</span></code></pre></figure>
+
+<p>上面代码中，Timer函数内部设置了两个定时器，分别使用了箭头函数和普通函数。前者的this绑定定义时所在的作用域（即Timer函数），后者的this指向运行时所在的作用域（即全局对象）。所以，3100毫秒之后，timer.s1被更新了3次，而timer.s2一次都没更新。</p>
+
+<p>箭头函数可以让this指向固定化，这种特性很有利于封装回调函数。下面是一个例子，DOM事件的回调函数封装在一个对象里面。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">handler</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="s1">'123456'</span><span class="p">,</span>
+
+  <span class="na">init</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span>
+      <span class="nx">event</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">doSomething</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">type</span><span class="p">),</span> <span class="kc">false</span><span class="p">);</span>
+  <span class="p">},</span>
+
+  <span class="na">doSomething</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Handling '</span> <span class="o">+</span> <span class="nx">type</span>  <span class="o">+</span> <span class="s1">' for '</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>上面代码的init方法中，使用了箭头函数，这导致这个箭头函数里面的this，总是指向handler对象。否则，回调函数运行时，this.doSomething这一行会报错，因为此时this指向document对象。</p>
+
+<p>this指向的固定化，并不是因为箭头函数内部有绑定this的机制，实际原因是箭头函数根本没有自己的this，导致内部的this就是外层代码块的this。正是因为它没有this，所以也就不能用作构造函数。</p>
+
+<p>所以，箭头函数转成ES5的代码如下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// ES6</span>
+<span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'id:'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+  <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// ES5</span>
+<span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">_this</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+  <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'id:'</span><span class="p">,</span> <span class="nx">_this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+  <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，转换后的ES5版本清楚地说明了，箭头函数里面根本没有自己的this，而是引用外层的this。</p>
+
+<p>请问下面的代码之中有几个this？</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'id:'</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">foo</span><span class="p">.</span><span class="nx">call</span><span class="p">({</span><span class="na">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">t1</span> <span class="o">=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">call</span><span class="p">({</span><span class="na">id</span><span class="p">:</span> <span class="mi">2</span><span class="p">})()();</span> <span class="c1">// id: 1</span>
+<span class="kd">var</span> <span class="nx">t2</span> <span class="o">=</span> <span class="nx">f</span><span class="p">().</span><span class="nx">call</span><span class="p">({</span><span class="na">id</span><span class="p">:</span> <span class="mi">3</span><span class="p">})();</span> <span class="c1">// id: 1</span>
+<span class="kd">var</span> <span class="nx">t3</span> <span class="o">=</span> <span class="nx">f</span><span class="p">()().</span><span class="nx">call</span><span class="p">({</span><span class="na">id</span><span class="p">:</span> <span class="mi">4</span><span class="p">});</span> <span class="c1">// id: 1</span></code></pre></figure>
+
+<p>上面代码之中，只有一个this，就是函数foo的this，所以t1、t2、t3都输出同样的结果。因为所有的内层函数都是箭头函数，都没有自己的this，它们的this其实都是最外层foo函数的this。</p>
+
+<p>除了this，以下三个变量在箭头函数之中也是不存在的，指向外层函数的对应变量：arguments、super、new.target。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'args:'</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+  <span class="p">},</span> <span class="mi">100</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">foo</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="c1">// args: [2, 4, 6, 8]</span></code></pre></figure>
+
+<p>上面代码中，箭头函数内部的变量arguments，其实是函数foo的arguments变量。</p>
+
+<p>另外，由于箭头函数没有自己的this，所以当然也就不能用call()、apply()、bind()这些方法去改变this的指向。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span>
+    <span class="p">(()</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">x</span><span class="p">).</span><span class="nx">bind</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'inner'</span> <span class="p">})()</span>
+  <span class="p">];</span>
+<span class="p">}).</span><span class="nx">call</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'outer'</span> <span class="p">});</span>
+<span class="c1">// ['outer']</span></code></pre></figure>
+
+<p>上面代码中，箭头函数没有自己的this，所以bind方法无效，内部的this指向外部的this。</p>
+
+<p>长期以来，JavaScript语言的this对象一直是一个令人头痛的问题，在对象方法中使用this，必须非常小心。箭头函数”绑定”this，很大程度上解决了这个困扰。</p>
+
+<h4 id="section-13">嵌套的箭头函数</h4>
+
+<p>箭头函数内部，还可以再使用箭头函数。下面是一个ES5语法的多重嵌套函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">insert</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span><span class="na">into</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span><span class="na">after</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">afterValue</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">array</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">afterValue</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">;</span>
+    <span class="p">}};</span>
+  <span class="p">}};</span>
+<span class="p">}</span>
+
+<span class="nx">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nx">into</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]).</span><span class="nx">after</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//[1, 2, 3]</span></code></pre></figure>
+
+<p>上面这个函数，可以使用箭头函数改写。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">insert</span> <span class="o">=</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span><span class="na">into</span><span class="p">:</span> <span class="p">(</span><span class="nx">array</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span><span class="na">after</span><span class="p">:</span> <span class="p">(</span><span class="nx">afterValue</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">array</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">array</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="nx">afterValue</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">array</span><span class="p">;</span>
+<span class="p">}})});</span>
+
+<span class="nx">insert</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nx">into</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]).</span><span class="nx">after</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//[1, 2, 3]</span></code></pre></figure>
+
+<p>下面是一个部署管道机制（pipeline）的例子，即前一个函数的输出是后一个函数的输入。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">pipeline</span> <span class="o">=</span> <span class="p">(...</span><span class="nx">funcs</span><span class="p">)</span> <span class="o">=&gt;</span>
+  <span class="nx">val</span> <span class="o">=&gt;</span> <span class="nx">funcs</span><span class="p">.</span><span class="nx">reduce</span><span class="p">((</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">b</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span> <span class="nx">val</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">plus1</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">mult2</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">addThenMult</span> <span class="o">=</span> <span class="nx">pipeline</span><span class="p">(</span><span class="nx">plus1</span><span class="p">,</span> <span class="nx">mult2</span><span class="p">);</span>
+
+<span class="nx">addThenMult</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="c1">// 12</span></code></pre></figure>
+
+<p>如果觉得上面的写法可读性比较差，也可以采用下面的写法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">plus1</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">mult2</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="nx">mult2</span><span class="p">(</span><span class="nx">plus1</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+<span class="c1">// 12</span></code></pre></figure>
+
+<p>箭头函数还有一个功能，就是可以很方便地改写λ演算。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// λ演算的写法</span>
+<span class="nx">fix</span> <span class="o">=</span> <span class="err">λ</span><span class="nx">f</span><span class="p">.(</span><span class="err">λ</span><span class="nx">x</span><span class="p">.</span><span class="nx">f</span><span class="p">(</span><span class="err">λ</span><span class="nx">v</span><span class="p">.</span><span class="nx">x</span><span class="p">(</span><span class="nx">x</span><span class="p">)(</span><span class="nx">v</span><span class="p">)))(</span><span class="err">λ</span><span class="nx">x</span><span class="p">.</span><span class="nx">f</span><span class="p">(</span><span class="err">λ</span><span class="nx">v</span><span class="p">.</span><span class="nx">x</span><span class="p">(</span><span class="nx">x</span><span class="p">)(</span><span class="nx">v</span><span class="p">)))</span>
+
+<span class="c1">// ES6的写法</span>
+<span class="kd">var</span> <span class="nx">fix</span> <span class="o">=</span> <span class="nx">f</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">f</span><span class="p">(</span><span class="nx">v</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">(</span><span class="nx">x</span><span class="p">)(</span><span class="nx">v</span><span class="p">)))</span>
+               <span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">f</span><span class="p">(</span><span class="nx">v</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">(</span><span class="nx">x</span><span class="p">)(</span><span class="nx">v</span><span class="p">)));</span></code></pre></figure>
+
+<p>上面两种写法，几乎是一一对应的。由于λ演算对于计算机科学非常重要，这使得我们可以用ES6作为替代工具，探索计算机科学。</p>
+
 <h3 id="this">7. 绑定 this</h3>
 
-<h3 id="section-11">8. 尾调用优化</h3>
+<p>箭头函数可以绑定this对象，大大减少了显式绑定this对象的写法（call、apply、bind）。但是，箭头函数并不适用于所有场合，所以ES7提出了“函数绑定”（function bind）运算符，用来取代call、apply、bind调用。虽然该语法还是ES7的一个提案，但是Babel转码器已经支持。</p>
 
-<h3 id="section-12">9. 函数参数的尾逗号</h3>
+<p>函数绑定运算符是并排的两个双冒号（::），双冒号左边是一个对象，右边是一个函数。该运算符会自动将左边的对象，作为上下文环境（即this对象），绑定到右边的函数上面。</p>
 
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">foo</span><span class="err">::</span><span class="nx">bar</span><span class="p">;</span>
+<span class="c1">// 等同于</span>
+<span class="nx">bar</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span>
+
+<span class="nl">foo</span><span class="p">:</span><span class="err">:</span><span class="nx">bar</span><span class="p">(...</span><span class="nx">arguments</span><span class="p">);</span>
+<span class="c1">// 等同于</span>
+<span class="nx">bar</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">foo</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">hasOwnProperty</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">;</span>
+<span class="kd">function</span> <span class="nx">hasOwn</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">obj</span><span class="err">::</span><span class="nx">hasOwnProperty</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>如果双冒号左边为空，右边是一个对象的方法，则等于将该方法绑定在该对象上面。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">method</span> <span class="o">=</span> <span class="nx">obj</span><span class="err">::</span><span class="nx">obj</span><span class="p">.</span><span class="nx">foo</span><span class="p">;</span>
+<span class="c1">// 等同于</span>
+<span class="kd">var</span> <span class="nx">method</span> <span class="o">=</span> <span class="err">::</span><span class="nx">obj</span><span class="p">.</span><span class="nx">foo</span><span class="p">;</span>
+
+<span class="kd">let</span> <span class="nx">log</span> <span class="o">=</span> <span class="err">::</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">;</span>
+<span class="c1">// 等同于</span>
+<span class="kd">var</span> <span class="nx">log</span> <span class="o">=</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">console</span><span class="p">);</span></code></pre></figure>
+
+<p>由于双冒号运算符返回的还是原对象，因此可以采用链式写法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 例一</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">map</span><span class="p">,</span> <span class="nx">takeWhile</span><span class="p">,</span> <span class="nx">forEach</span> <span class="p">}</span> <span class="nx">from</span> <span class="s2">"iterlib"</span><span class="p">;</span>
+
+<span class="nx">getPlayers</span><span class="p">()</span>
+<span class="err">::</span><span class="nx">map</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">character</span><span class="p">())</span>
+<span class="err">::</span><span class="nx">takeWhile</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">.</span><span class="nx">strength</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)</span>
+<span class="err">::</span><span class="nx">forEach</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">));</span>
+
+<span class="c1">// 例二</span>
+<span class="kd">let</span> <span class="p">{</span> <span class="nx">find</span><span class="p">,</span> <span class="nx">html</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">jake</span><span class="p">;</span>
+
+<span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s2">"div.myClass"</span><span class="p">)</span>
+<span class="err">::</span><span class="nx">find</span><span class="p">(</span><span class="s2">"p"</span><span class="p">)</span>
+<span class="err">::</span><span class="nx">html</span><span class="p">(</span><span class="s2">"hahaha"</span><span class="p">);</span></code></pre></figure>
+
+<h3 id="section-14">8. 尾调用优化</h3>
+
+<h4 id="section-15">什么是尾调用？</h4>
+
+<p>尾调用（Tail Call）是函数式编程的一个重要概念，本身非常简单，一句话就能说清楚，就是指某个函数的最后一步是调用另一个函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+  <span class="k">return</span> <span class="nx">g</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，函数f的最后一步是调用函数g，这就叫尾调用。</p>
+
+<p>以下三种情况，都不属于尾调用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 情况一</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+  <span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">g</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">y</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 情况二</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+  <span class="k">return</span> <span class="nx">g</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// 情况三</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+  <span class="nx">g</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，情况一是调用函数g之后，还有赋值操作，所以不属于尾调用，即使语义完全一样。情况二也属于调用后还有操作，即使写在一行内。情况三等同于下面的代码。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">f</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">m</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">n</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，函数m和n都属于尾调用，因为它们都是函数f的最后一步操作。</p>
+
+<h4 id="section-16">尾调用优化</h4>
+
+<p>尾调用之所以与其他调用不同，就在于它的特殊的调用位置。</p>
+
+<p>我们知道，函数调用会在内存形成一个“调用记录”，又称“调用帧”（call frame），保存调用位置和内部变量等信息。如果在函数A的内部调用函数B，那么在A的调用帧上方，还会形成一个B的调用帧。等到B运行结束，将结果返回到A，B的调用帧才会消失。如果函数B内部还调用函数C，那就还有一个C的调用帧，以此类推。所有的调用帧，就形成一个“调用栈”（call stack）。</p>
+
+<p>尾调用由于是函数的最后一步操作，所以不需要保留外层函数的调用帧，因为调用位置、内部变量等信息都不会再用到了，只要直接用内层函数的调用帧，取代外层函数的调用帧就可以了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">m</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">n</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">g</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="nx">n</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">f</span><span class="p">();</span>
+
+<span class="c1">// 等同于</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">g</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">f</span><span class="p">();</span>
+
+<span class="c1">// 等同于</span>
+<span class="nx">g</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，如果函数g不是尾调用，函数f就需要保存内部变量m和n的值、g的调用位置等信息。但由于调用g之后，函数f就结束了，所以执行到最后一步，完全可以删除 f(x) 的调用帧，只保留 g(3) 的调用帧。</p>
+
+<p>这就叫做“尾调用优化”（Tail call optimization），即只保留内层函数的调用帧。如果所有函数都是尾调用，那么完全可以做到每次执行时，调用帧只有一项，这将大大节省内存。这就是“尾调用优化”的意义。</p>
+
+<p>注意，只有不再用到外层函数的内部变量，内层函数的调用帧才会取代外层函数的调用帧，否则就无法进行“尾调用优化”。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">addOne</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">one</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="kd">function</span> <span class="nx">inner</span><span class="p">(</span><span class="nx">b</span><span class="p">){</span>
+    <span class="k">return</span> <span class="nx">b</span> <span class="o">+</span> <span class="nx">one</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">inner</span><span class="p">(</span><span class="nx">a</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面的函数不会进行尾调用优化，因为内层函数inner用到了外层函数addOne的内部变量one。</p>
+
+<h4 id="section-17">尾递归</h4>
+
+<p>函数调用自身，称为递归。如果尾调用自身，就称为尾递归。</p>
+
+<p>递归非常耗费内存，因为需要同时保存成千上百个调用帧，很容易发生“栈溢出”错误（stack overflow）。但对于尾递归来说，由于只存在一个调用帧，所以永远不会发生“栈溢出”错误。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">// 120</span></code></pre></figure>
+
+<p>上面代码是一个阶乘函数，计算n的阶乘，最多需要保存n个调用记录，复杂度 O(n) 。</p>
+
+<p>如果改写成尾递归，只保留一个调用记录，复杂度 O(1) 。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">total</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">total</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1">// 120</span></code></pre></figure>
+
+<p>还有一个比较著名的例子，就是计算fibonacci 数列，也能充分说明尾递归优化的重要性</p>
+
+<p>如果是非尾递归的fibonacci 递归方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Fibonacci</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="mi">1</span><span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">Fibonacci</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">Fibonacci</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">Fibonacci</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span> <span class="c1">// 89</span>
+<span class="c1">// Fibonacci(100)</span>
+<span class="c1">// Fibonacci(500)</span>
+<span class="c1">// 堆栈溢出了</span></code></pre></figure>
+
+<p>如果我们使用尾递归优化过的fibonacci 递归算法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Fibonacci2</span> <span class="p">(</span><span class="nx">n</span> <span class="p">,</span> <span class="nx">ac1</span> <span class="o">=</span> <span class="mi">1</span> <span class="p">,</span> <span class="nx">ac2</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="nx">ac2</span><span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">Fibonacci2</span> <span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">ac2</span><span class="p">,</span> <span class="nx">ac1</span> <span class="o">+</span> <span class="nx">ac2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">Fibonacci2</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="c1">// 573147844013817200000</span>
+<span class="nx">Fibonacci2</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="c1">// 7.0330367711422765e+208</span>
+<span class="nx">Fibonacci2</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span> <span class="c1">// Infinity</span></code></pre></figure>
+
+<p>由此可见，“尾调用优化”对递归操作意义重大，所以一些函数式编程语言将其写入了语言规格。ES6也是如此，第一次明确规定，所有ECMAScript的实现，都必须部署“尾调用优化”。这就是说，在ES6中，只要使用尾递归，就不会发生栈溢出，相对节省内存。</p>
+
+<h4 id="section-18">递归函数的改写</h4>
+
+<p>尾递归的实现，往往需要改写递归函数，确保最后一步只调用自身。做到这一点的方法，就是把所有用到的内部变量改写成函数的参数。比如上面的例子，阶乘函数 factorial 需要用到一个中间变量 total ，那就把这个中间变量改写成函数的参数。这样做的缺点就是不太直观，第一眼很难看出来，为什么计算5的阶乘，需要传入两个参数5和1？</p>
+
+<p>两个方法可以解决这个问题。方法一是在尾递归函数之外，再提供一个正常形式的函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">tailFactorial</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">total</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">tailFactorial</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">total</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">tailFactorial</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">// 120</span></code></pre></figure>
+
+<p>上面代码通过一个正常形式的阶乘函数 factorial ，调用尾递归函数 tailFactorial ，看起来就正常多了。</p>
+
+<p>函数式编程有一个概念，叫做柯里化（currying），意思是将多参数的函数转换成单参数的形式。这里也可以使用柯里化。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">currying</span><span class="p">(</span><span class="nx">fn</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">m</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">m</span><span class="p">,</span> <span class="nx">n</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">tailFactorial</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">total</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">tailFactorial</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">total</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">factorial</span> <span class="o">=</span> <span class="nx">currying</span><span class="p">(</span><span class="nx">tailFactorial</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">// 120</span></code></pre></figure>
+
+<p>上面代码通过柯里化，将尾递归函数 tailFactorial 变为只接受1个参数的 factorial 。</p>
+
+<p>第二种方法就简单多了，就是采用ES6的函数默认值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">total</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="nx">total</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">total</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="c1">// 120</span></code></pre></figure>
+
+<p>上面代码中，参数 total 有默认值1，所以调用时不用提供这个值。</p>
+
+<p>总结一下，递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如Lua，ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归。</p>
+
+<h4 id="section-19">严格模式</h4>
+
+<p>ES6的尾调用优化只在严格模式下开启，正常模式是无效的。</p>
+
+<p>这是因为在正常模式下，函数内部有两个变量，可以跟踪函数的调用栈。</p>
+
+<p>func.arguments：返回调用时函数的参数。
+func.caller：返回调用当前函数的那个函数。
+尾调用优化发生时，函数的调用栈会改写，因此上面两个变量就会失真。严格模式禁用这两个变量，所以尾调用模式仅在严格模式下生效。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">restricted</span><span class="p">()</span> <span class="p">{</span>
+  <span class="s2">"use strict"</span><span class="p">;</span>
+  <span class="nx">restricted</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>    <span class="c1">// 报错</span>
+  <span class="nx">restricted</span><span class="p">.</span><span class="nx">arguments</span><span class="p">;</span> <span class="c1">// 报错</span>
+<span class="p">}</span>
+<span class="nx">restricted</span><span class="p">();</span></code></pre></figure>
+
+<h4 id="section-20">尾递归优化的实现</h4>
+
+<p>尾递归优化只在严格模式下生效，那么正常模式下，或者那些不支持该功能的环境中，有没有办法也使用尾递归优化呢？回答是可以的，就是自己实现尾递归优化。</p>
+
+<p>它的原理非常简单。尾递归之所以需要优化，原因是调用栈太多，造成溢出，那么只要减少调用栈，就不会溢出。怎么做可以减少调用栈呢？就是采用“循环”换掉“递归”。</p>
+
+<p>下面是一个正常的递归函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)</span>
+<span class="c1">// Uncaught RangeError: Maximum call stack size exceeded(…)</span></code></pre></figure>
+
+<p>上面代码中，sum是一个递归函数，参数x是需要累加的值，参数y控制递归次数。一旦指定sum递归100000次，就会报错，提示超出调用栈的最大次数。</p>
+
+<p>蹦床函数（trampoline）可以将递归执行转为循环执行。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">trampoline</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">f</span> <span class="o">&amp;&amp;</span> <span class="nx">f</span> <span class="k">instanceof</span> <span class="nb">Function</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">f</span> <span class="o">=</span> <span class="nx">f</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">f</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面就是蹦床函数的一个实现，它接受一个函数f作为参数。只要f执行后返回一个函数，就继续执行。注意，这里是返回一个函数，然后执行该函数，而不是函数里面调用函数，这样就避免了递归执行，从而就消除了调用栈过大的问题。</p>
+
+<p>然后，要做的就是将原来的递归函数，改写为每一步返回另一个函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">sum</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，sum函数的每次执行，都会返回自身的另一个版本。</p>
+
+<p>现在，使用蹦床函数执行sum，就不会发生调用栈溢出。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">trampoline</span><span class="p">(</span><span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100000</span><span class="p">))</span>
+<span class="c1">// 100001</span></code></pre></figure>
+
+<p>蹦床函数并不是真正的尾递归优化，下面的实现才是。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">tco</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">active</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">accumulated</span> <span class="o">=</span> <span class="p">[];</span>
+
+  <span class="k">return</span> <span class="kd">function</span> <span class="nx">accumulator</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">accumulated</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">active</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">active</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="k">while</span> <span class="p">(</span><span class="nx">accumulated</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">value</span> <span class="o">=</span> <span class="nx">f</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">accumulated</span><span class="p">.</span><span class="nx">shift</span><span class="p">());</span>
+      <span class="p">}</span>
+      <span class="nx">active</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">sum</span> <span class="o">=</span> <span class="nx">tco</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">y</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">sum</span><span class="p">(</span><span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)</span>
+<span class="c1">// 100001</span></code></pre></figure>
+
+<p>上面代码中，tco函数是尾递归优化的实现，它的奥妙就在于状态变量active。默认情况下，这个变量是不激活的。一旦进入尾递归优化的过程，这个变量就激活了。然后，每一轮递归sum返回的都是undefined，所以就避免了递归执行；而accumulated数组存放每一轮sum执行的参数，总是有值的，这就保证了accumulator函数内部的while循环总是会执行。这样就很巧妙地将“递归”改成了“循环”，而后一轮的参数会取代前一轮的参数，保证了调用栈只有一层。</p>
+
+<h3 id="section-21">9. 函数参数的尾逗号</h3>
+
+<p>ES2017 允许函数的最后一个参数有尾逗号（trailing comma）。</p>
+
+<p>此前，函数定义和调用时，都不允许最后一个参数后面出现逗号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">clownsEverywhere</span><span class="p">(</span>
+  <span class="nx">param1</span><span class="p">,</span>
+  <span class="nx">param2</span>
+<span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
+
+<span class="nx">clownsEverywhere</span><span class="p">(</span>
+  <span class="s1">'foo'</span><span class="p">,</span>
+  <span class="s1">'bar'</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，如果在param2或bar后面加一个逗号，就会报错。</p>
+
+<p>如果像上面这样，将参数写成多行（即每个参数占据一行），以后修改代码的时候，想为函数clownsEverywhere添加第三个参数，或者调整参数的次序，就势必要在原来最后一个参数后面添加一个逗号。这对于版本管理系统来说，就会显示添加逗号的那一行也发生了变动。这看上去有点冗余，因此新的语法允许定义和调用时，尾部直接有一个逗号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">clownsEverywhere</span><span class="p">(</span>
+  <span class="nx">param1</span><span class="p">,</span>
+  <span class="nx">param2</span><span class="p">,</span>
+<span class="p">)</span> <span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
+
+<span class="nx">clownsEverywhere</span><span class="p">(</span>
+  <span class="s1">'foo'</span><span class="p">,</span>
+  <span class="s1">'bar'</span><span class="p">,</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>这样的规定也使得，函数参数与数组和对象的尾逗号规则，保持一致了。</p>
 
   </div>
 
