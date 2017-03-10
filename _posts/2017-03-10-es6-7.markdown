@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "ES6语法之七（函数的扩展）"
-date:   2017-02-24 10:49:42 +0800
+date:   2017-03-10 10:49:42 +0800
 description: "函数的扩展"
 categories: front article
 ---
