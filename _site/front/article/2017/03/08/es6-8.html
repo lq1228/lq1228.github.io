@@ -964,9 +964,259 @@ ES6新增了一个操作Object.assign()，会忽略enumerable为false的属性�
 
 <p>扩展运算符（…）用于取出参数对象的所有可遍历属性，拷贝到当前对象之中。</p>
 
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">z</span> <span class="o">=</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">4</span> <span class="p">};</span>
+<span class="kd">let</span> <span class="nx">n</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">z</span> <span class="p">};</span>
+<span class="nx">n</span> <span class="c1">// { a: 3, b: 4 }</span></code></pre></figure>
+
+<p>这等同于使用Object.assign方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">aClone</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">a</span> <span class="p">};</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">aClone</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">a</span><span class="p">);</span></code></pre></figure>
+
+<p>扩展运算符可以用于合并两个对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">ab</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">a</span><span class="p">,</span> <span class="p">...</span><span class="nx">b</span> <span class="p">};</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">ab</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">);</span></code></pre></figure>
+
+<p>如果用户自定义的属性，放在扩展运算符后面，则扩展运算符内部的同名属性会被覆盖掉。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">aWithOverrides</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">a</span><span class="p">,</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">};</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">aWithOverrides</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">a</span><span class="p">,</span> <span class="p">...{</span> <span class="nl">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">};</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">aWithOverrides</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="nx">a</span><span class="p">,</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="p">};</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">aWithOverrides</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">a</span><span class="p">,</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">});</span></code></pre></figure>
+
+<p>上面代码中，a对象的x属性和y属性，拷贝到新对象后会被覆盖掉。</p>
+
+<p>这用来修改现有对象部分的部分属性就很方便了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">newVersion</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">...</span><span class="nx">previousVersion</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s1">'New Name'</span> <span class="c1">// Override the name property</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>上面代码中，newVersion对象自定义了name属性，其他属性全部复制自previousVersion对象。</p>
+
+<p>如果把自定义属性放在扩展运算符前面，就变成了设置新对象的默认属性值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">aWithDefaults</span> <span class="o">=</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="p">...</span><span class="nx">a</span> <span class="p">};</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">aWithDefaults</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span> <span class="nx">a</span><span class="p">);</span>
+<span class="c1">// 等同于</span>
+<span class="kd">let</span> <span class="nx">aWithDefaults</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span> <span class="nx">a</span><span class="p">);</span></code></pre></figure>
+
+<p>扩展运算符的参数对象之中，如果有取值函数get，这个函数是会执行的。\</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 并不会抛出错误，因为x属性只是被定义，但没执行</span>
+<span class="kd">let</span> <span class="nx">aWithXGetter</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">...</span><span class="nx">a</span><span class="p">,</span>
+  <span class="nx">get</span> <span class="nx">x</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kr">throws</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">'not thrown yet'</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">// 会抛出错误，因为x属性被执行了</span>
+<span class="kd">let</span> <span class="nx">runtimeError</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">...</span><span class="nx">a</span><span class="p">,</span>
+  <span class="p">...{</span>
+    <span class="nx">get</span> <span class="nx">x</span><span class="p">()</span> <span class="p">{</span>
+      <span class="kr">throws</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">'thrown now'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>如果扩展运算符的参数是null或undefined，这个两个值会被忽略，不会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">emptyObject</span> <span class="o">=</span> <span class="p">{</span> <span class="p">...</span><span class="kc">null</span><span class="p">,</span> <span class="p">...</span><span class="kc">undefined</span> <span class="p">};</span> <span class="c1">// 不报错</span></code></pre></figure>
+
 <h3 id="objectgetownpropertydescriptors">11. Object.getOwnPropertyDescriptors()</h3>
 
+<p>ES5有一个Object.getOwnPropertyDescriptor方法，返回某个对象属性的描述对象（descriptor）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">p</span><span class="p">:</span> <span class="s1">'a'</span> <span class="p">};</span>
+
+<span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptor</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="s1">'p'</span><span class="p">)</span>
+<span class="c1">// Object { value: "a",</span>
+<span class="c1">//   writable: true,</span>
+<span class="c1">//   enumerable: true,</span>
+<span class="c1">//   configurable: true</span>
+<span class="c1">// }</span></code></pre></figure>
+
+<p>ES2017 引入了Object.getOwnPropertyDescriptors方法，返回指定对象所有自身属性（非继承属性）的描述对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">foo</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+  <span class="nx">get</span> <span class="nx">bar</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="s1">'abc'</span> <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span>
+<span class="c1">// { foo:</span>
+<span class="c1">//    { value: 123,</span>
+<span class="c1">//      writable: true,</span>
+<span class="c1">//      enumerable: true,</span>
+<span class="c1">//      configurable: true },</span>
+<span class="c1">//   bar:</span>
+<span class="c1">//    { get: [Function: bar],</span>
+<span class="c1">//      set: undefined,</span>
+<span class="c1">//      enumerable: true,</span>
+<span class="c1">//      configurable: true } }</span></code></pre></figure>
+
+<p>上面代码中，Object.getOwnPropertyDescriptors方法返回一个对象，所有原对象的属性名都是该对象的属性名，对应的属性值就是该属性的描述对象。</p>
+
+<p>该方法的实现非常容易。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{};</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">key</span> <span class="nx">of</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">result</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptor</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>该方法的引入目的，主要是为了解决Object.assign()无法正确拷贝get属性和set属性的问题。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">source</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">set</span> <span class="nx">foo</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kr">const</span> <span class="nx">target1</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">target1</span><span class="p">,</span> <span class="nx">source</span><span class="p">);</span>
+
+<span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptor</span><span class="p">(</span><span class="nx">target1</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">)</span>
+<span class="c1">// { value: undefined,</span>
+<span class="c1">//   writable: true,</span>
+<span class="c1">//   enumerable: true,</span>
+<span class="c1">//   configurable: true }</span></code></pre></figure>
+
+<p>上面代码中，source对象的foo属性的值是一个赋值函数，Object.assign方法将这个属性拷贝给target1对象，结果该属性的值变成了undefined。这是因为Object.assign方法总是拷贝一个属性的值，而不会拷贝它背后的赋值方法或取值方法。</p>
+
+<p>这时，Object.getOwnPropertyDescriptors方法配合Object.defineProperties方法，就可以实现正确拷贝。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">source</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">set</span> <span class="nx">foo</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kr">const</span> <span class="nx">target2</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperties</span><span class="p">(</span><span class="nx">target2</span><span class="p">,</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">source</span><span class="p">));</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptor</span><span class="p">(</span><span class="nx">target2</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">)</span>
+<span class="c1">// { get: undefined,</span>
+<span class="c1">//   set: [Function: foo],</span>
+<span class="c1">//   enumerable: true,</span>
+<span class="c1">//   configurable: true }</span></code></pre></figure>
+
+<p>上面代码中，将两个对象合并的逻辑提炼出来，就是下面这样。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">shallowMerge</span> <span class="o">=</span> <span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">source</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperties</span><span class="p">(</span>
+  <span class="nx">target</span><span class="p">,</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">source</span><span class="p">)</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>Object.getOwnPropertyDescriptors方法的另一个用处，是配合Object.create方法，将对象属性克隆到一个新对象。这属于浅拷贝。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">clone</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">obj</span><span class="p">),</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">obj</span><span class="p">));</span>
+
+<span class="c1">// 或者</span>
+
+<span class="kr">const</span> <span class="nx">shallowClone</span> <span class="o">=</span> <span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">getPrototypeOf</span><span class="p">(</span><span class="nx">obj</span><span class="p">),</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>上面代码会克隆对象obj。</p>
+
+<p>另外，Object.getOwnPropertyDescriptors方法可以实现一个对象继承另一个对象。以前，继承另一个对象，常常写成下面这样。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">__proto__</span><span class="p">:</span> <span class="nx">prot</span><span class="p">,</span>
+  <span class="na">foo</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>ES6 规定__proto__只有浏览器要部署，其他环境不用部署。如果去除__proto__，上面代码就要改成下面这样。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">prot</span><span class="p">);</span>
+<span class="nx">obj</span><span class="p">.</span><span class="nx">foo</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+
+<span class="c1">// 或者</span>
+
+<span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">prot</span><span class="p">),</span>
+  <span class="p">{</span>
+    <span class="na">foo</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+  <span class="p">}</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>有了Object.getOwnPropertyDescriptors，我们就有了另一种写法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span>
+  <span class="nx">prot</span><span class="p">,</span>
+  <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">({</span>
+    <span class="na">foo</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+  <span class="p">})</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>Object.getOwnPropertyDescriptors也可以用来实现 Mixin（混入）模式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">mix</span> <span class="o">=</span> <span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span>
+  <span class="na">with</span><span class="p">:</span> <span class="p">(...</span><span class="nx">mixins</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">mixins</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span>
+    <span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="nx">mixin</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span>
+      <span class="nx">c</span><span class="p">,</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">getOwnPropertyDescriptors</span><span class="p">(</span><span class="nx">mixin</span><span class="p">)</span>
+    <span class="p">),</span> <span class="nx">object</span><span class="p">)</span>
+<span class="p">});</span>
+
+<span class="c1">// multiple mixins example</span>
+<span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span><span class="na">a</span><span class="p">:</span> <span class="s1">'a'</span><span class="p">};</span>
+<span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">{</span><span class="na">b</span><span class="p">:</span> <span class="s1">'b'</span><span class="p">};</span>
+<span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="p">{</span><span class="na">c</span><span class="p">:</span> <span class="s1">'c'</span><span class="p">};</span>
+<span class="kd">let</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">mix</span><span class="p">(</span><span class="nx">c</span><span class="p">).</span><span class="kd">with</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，对象a和b被混入了对象c。</p>
+
+<p>出于完整性的考虑，Object.getOwnPropertyDescriptors进入标准以后，还会有Reflect.getOwnPropertyDescriptors方法。</p>
+
 <h3 id="null-">12. Null 传导运算符</h3>
+
+<p>编程实务中，如果读取对象内部的某个属性，往往需要判断一下该对象是否存在。比如，要读取message.body.user.firstName，安全的写法是写成下面这样。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">firstName</span> <span class="o">=</span> <span class="p">(</span><span class="nx">message</span>
+  <span class="o">&amp;&amp;</span> <span class="nx">message</span><span class="p">.</span><span class="nx">body</span>
+  <span class="o">&amp;&amp;</span> <span class="nx">message</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">user</span>
+  <span class="o">&amp;&amp;</span> <span class="nx">message</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">firstName</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'default'</span><span class="p">;</span></code></pre></figure>
+
+<p>这样的层层判断非常麻烦，因此现在有一个提案，引入了“Null 传导运算符”（null propagation operator）?.，简化上面的写法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">firstName</span> <span class="o">=</span> <span class="nx">message</span><span class="p">?.</span><span class="nx">body</span><span class="p">?.</span><span class="nx">user</span><span class="p">?.</span><span class="nx">firstName</span> <span class="o">||</span> <span class="s1">'default'</span><span class="p">;</span></code></pre></figure>
+
+<p>上面代码有三个?.运算符，只要其中一个返回null或undefined，就不再往下运算，而是返回undefined。</p>
+
+<p>“Null 传导运算符”有四种用法。</p>
+
+<p>obj?.prop // 读取对象属性
+obj?.[expr] // 同上
+func?.(…args) // 函数或对象方法的调用
+new C?.(…args) // 构造函数的调用
+传导运算符之所以写成obj?.prop，而不是obj?prop，是为了方便编译器能够区分三元运算符?:（比如obj?prop:123）。</p>
+
+<p>下面是更多的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 如果 a 是 null 或 undefined, 返回 undefined</span>
+<span class="c1">// 否则返回 a.b.c().d</span>
+<span class="nx">a</span><span class="p">?.</span><span class="nx">b</span><span class="p">.</span><span class="nx">c</span><span class="p">().</span><span class="nx">d</span>
+
+<span class="c1">// 如果 a 是 null 或 undefined，下面的语句不产生任何效果</span>
+<span class="c1">// 否则执行 a.b = 42</span>
+<span class="nx">a</span><span class="p">?.</span><span class="nx">b</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1">// 如果 a 是 null 或 undefined，下面的语句不产生任何效果</span>
+<span class="k">delete</span> <span class="nx">a</span><span class="p">?.</span><span class="nx">b</span></code></pre></figure>
 
 
   </div>
