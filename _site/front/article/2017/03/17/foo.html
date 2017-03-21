@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>偶遇小题</title>
+  <meta name="description" content="此题涉及的知识点较多，包括变量定义提升、this指针指向、运算符优先级、原型、继承、全局变量污染、对象属性及原型属性优先级等，有兴趣可以做题玩玩">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/03/17/foo.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/03/17/foo.html">偶遇小题</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">偶遇小题</h1>
+    <p class="post-meta"><time datetime="2017-03-17T10:49:42+08:00" itemprop="datePublished">Mar 17, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>偶然间看到一个这样的题目，觉得很有意思，分享给大家，有兴趣的可以先做题，最后看结果.</p>
+
+<p>题目如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Foo</span><span class="p">()</span> <span class="p">{</span> 
+    <span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">};</span> 
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span> 
+<span class="p">}</span> 
+<span class="nx">Foo</span><span class="p">.</span><span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="p">};</span> 
+<span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="p">};</span> 
+<span class="kd">var</span> <span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="p">};</span> 
+<span class="kd">function</span> <span class="nx">getName</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="p">}</span></code></pre></figure>
+
+<p>请写出以下输出结果：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Foo</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> 
+<span class="nx">getName</span><span class="p">();</span> 
+<span class="nx">Foo</span><span class="p">().</span><span class="nx">getName</span><span class="p">();</span> 
+<span class="nx">getName</span><span class="p">();</span> 
+<span class="k">new</span> <span class="nx">Foo</span><span class="p">.</span><span class="nx">getName</span><span class="p">();</span> 
+<span class="k">new</span> <span class="nx">Foo</span><span class="p">().</span><span class="nx">getName</span><span class="p">();</span> 
+<span class="k">new</span> <span class="k">new</span> <span class="nx">Foo</span><span class="p">().</span><span class="nx">getName</span><span class="p">();</span></code></pre></figure>
+
+<p><a href="/page/demo-0324.html">答案</a></p>
+
+<p>此题涉及的知识点较多，包括变量定义提升、this指针指向、运算符优先级、原型、继承、全局变量污染、对象属
+性及原型属性优先级等，下面逐个题目分析</p>
+
+<h4 id="section">第一问</h4>
+
+<p>先看此题的上半部分做了什么，首先定义了一个叫Foo的函数，之后为Foo创建了一个叫getName的静态属性存储了一个匿名函数，之后为Foo的原型对象新创建了一个叫getName的匿名函数。之后又通过函数变量表达式创建了一个getName的函数，最后再声明一个叫getName函数。</p>
+
+<p>第一问的 Foo.getName 自然是访问Foo函数上存储的静态属性，自然是2，没什么可说的。</p>
+
+<h4 id="section-1">第二问</h4>
+
+<p>第二问，直接调用 getName 函数。既然是直接调用那么就是访问当前上文作用域内的叫getName的函数，所以跟1 2 3都没什么关系。此题有无数面试者回答为5。此处有两个坑，一是变量声明提升，二是函数表达式。
+变量声明提升</p>
+
+<p>即所有声明变量或声明函数都会被提升到当前函数的顶部。</p>
+
+<p>例如下代码:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'x'</span> <span class="k">in</span> <span class="nb">window</span><span class="p">);</span><span class="c1">//true </span>
+<span class="kd">var</span> <span class="nx">x</span><span class="p">;</span> 
+<span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></figure>
+
+<p>代码执行时js引擎会将声明语句提升至代码最上方，变为：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">x</span><span class="p">;</span> 
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'x'</span> <span class="k">in</span> <span class="nb">window</span><span class="p">);</span><span class="c1">//true </span>
+<span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span></code></pre></figure>
+
+<p>函数表达式</p>
+
+<p>var getName 与 function getName 都是声明语句，区别在于 var getName 是函数表达式，而 function getName 是函数声明。关于JS中的各种函数创建方式可以看 大部分人都会做错的经典JS闭包面试题 这篇文章有详细说明。
+函数表达式最大的问题，在于js会将此代码拆分为两行代码分别执行。</p>
+
+<p>例如下代码：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span><span class="c1">//输出：function x(){} </span>
+<span class="kd">var</span> <span class="nx">x</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> 
+<span class="kd">function</span> <span class="nx">x</span><span class="p">(){}</span></code></pre></figure>
+
+<p>实际执行的代码为，先将 var x=1 拆分为 var x; 和 x = 1; 两行，再将 var x; 和 function x(){} 两行提升至最上方变成：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">x</span><span class="p">;</span> 
+<span class="kd">function</span> <span class="nx">x</span><span class="p">(){}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+<span class="nx">x</span><span class="o">=</span><span class="mi">1</span></code></pre></figure>
+
+<p>所以最终函数声明的x覆盖了变量声明的x，log输出为x函数。同理，原题中代码最终执行时的是：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">Foo</span><span class="p">()</span> <span class="p">{</span> 
+    <span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="p">};</span> 
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span> 
+<span class="p">}</span> 
+<span class="kd">var</span> <span class="nx">getName</span><span class="p">;</span><span class="c1">//只提升变量声明 </span>
+<span class="kd">function</span> <span class="nx">getName</span><span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">5</span><span class="p">);</span> <span class="p">}</span><span class="c1">//提升函数声明，覆盖var的声明 </span>
+<span class="nx">Foo</span><span class="p">.</span><span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="p">};</span> 
+<span class="nx">Foo</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="p">};</span> 
+<span class="nx">getName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">alert</span> <span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="p">};</span><span class="c1">//最终的赋值再次覆盖function getName声明 </span>
+<span class="nx">getName</span><span class="p">();</span><span class="c1">//最终输出4</span></code></pre></figure>
+
+<h4 id="section-2">第三问</h4>
+
+<p>第三问的 Foo().getName(); 先执行了Foo函数，然后调用Foo函数的返回值对象的getName属性函数。</p>
+
+<p>Foo函数的第一句 getName = function () { alert (1); }; 是一句函数赋值语句，注意它没有var声明，所以先向当前Foo函数作用域内寻找getName变量，没有。再向当前函数作用域上层，即外层作用域内寻找是否含有getName变量，找到了，也就是第二问中的alert(4)函数，将此变量的值赋值为 function(){alert(1)}。</p>
+
+<p>此处实际上是将外层作用域内的getName函数修改了。</p>
+
+<p>注意：此处若依然没有找到会一直向上查找到window对象，若window对象中也没有getName属性，就在window对象中创建一个getName变量。</p>
+
+<p>之后Foo函数的返回值是this，而JS的this问题博客园中已经有非常多的文章介绍，这里不再多说。</p>
+
+<p>简单的讲，this的指向是由所在函数的调用方式决定的。而此处的直接调用方式，this指向window对象。</p>
+
+<p>遂Foo函数返回的是window对象，相当于执行 window.getName() ，而window中的getName已经被修改为alert(1)，所以最终会输出1</p>
+
+<p>此处考察了两个知识点，一个是变量作用域问题，一个是this指向问题。</p>
+
+<h4 id="section-3">第四问</h4>
+
+<p>直接调用getName函数，相当于 window.getName() ，因为这个变量已经被Foo函数执行时修改了，遂结果与第三问相同，为1</p>
+
+<h4 id="section-4">第五问</h4>
+
+<p>第五问 new Foo.getName(); ,此处考察的是js的运算符优先级问题。<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Operator_Precedence">js运算符优先级</a></p>
+
+<p>通过查上表可以得知点（.）的优先级高于new操作，遂相当于是:</p>
+
+<p>new (Foo.getName)();</p>
+
+<p>所以实际上将getName函数作为了构造函数来执行，遂弹出2。</p>
+
+<h4 id="section-5">第六问</h4>
+
+<p>第六问 new Foo().getName() ，首先看运算符优先级括号高于new，实际执行为</p>
+
+<p>(new Foo()).getName()</p>
+
+<p>遂先执行Foo函数，而Foo此时作为构造函数却有返回值，所以这里需要说明下js中的构造函数返回值问题。</p>
+
+<p>构造函数的返回值</p>
+
+<p>在传统语言中，构造函数不应该有返回值，实际执行的返回值就是此构造函数的实例化对象。</p>
+
+<p>而在js中构造函数可以有返回值也可以没有。</p>
+
+<p>1、没有返回值则按照其他语言一样返回实例化对象。</p>
+
+<p>2、若有返回值则检查其返回值是否为引用类型。如果是非引用类型，如基本类型（string,number,boolean,null,undefined）则与无返回值相同，实际返回其实例化对象。</p>
+
+<p>3、若返回值是引用类型，则实际返回值为这个引用类型。</p>
+
+<p>原题中，返回的是this，而this在构造函数中本来就代表当前实例化对象，遂最终Foo函数返回实例化对象。</p>
+
+<p>之后调用实例化对象的getName函数，因为在Foo构造函数中没有为实例化对象添加任何属性，遂到当前对象的原型对象（prototype）中寻找getName，找到了。</p>
+
+<p>遂最终输出3。</p>
+
+<h4 id="section-6">第七问</h4>
+
+<p>第七问,new new Foo().getName(); 同样是运算符优先级问题。</p>
+
+<p>最终实际执行为：</p>
+
+<p>new ((new Foo()).getName)();</p>
+
+<p>初始化Foo的实例化对象，然后将其原型上的getName函数作为构造函数再次new。</p>
+
+<p>遂最终结果为3</p>
+
+<p>这里确实是(new Foo()).getName()，但是跟括号优先级高于成员访问没关系，实际上这里成员访问的优先级是最高的，因此先执行了 .getName，但是在进行左侧取值的时候， new Foo() 可以理解为两种运算：new 带参数（即 new Foo()）和函数调用（即 先 Foo() 取值之后再 new），而 new 带参数的优先级是高于函数调用的，因此先执行了 new Foo()，或得 Foo 类的实例对象，再进行了成员访问 .getName。</p>
+
+<p>最后</p>
+
+<p>其实此题并没有太多刁钻匪夷所思的用法，都是一些可能会遇到的场景，做到不轻视，不急躁，做题就容易啦。</p>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/03/17/foo" data-title="偶遇小题" data-url="/front/article/2017/03/17/foo.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
