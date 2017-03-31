@@ -1,0 +1,105 @@
+---
+layout: post
+title:  "ES6 fetch函数与后台交互"
+date:   2017-03-30 10:49:42 +0800
+description: "ES6 fetch函数与后台交互"
+categories: front article
+---
+
+
+这周的项目启用敏捷开发，用ES6语法、React开发，临时抱佛脚，看[React官方文档](https://facebook.github.io/react/)～～
+
+进入开发后，调用后端接口的问题不可避免，为了方便以后查询，先做个简单整理，多拍砖，多建议，谢谢大家～～
+
+#### 1. RN官方文档中,可使用XMLHttpRequest
+
+{% highlight javascript %}
+var request = new XMLHttpRequest(); 
+request.onreadystatechange = (e) => { 
+    if (request.readyState !== 4) { 
+        return; 
+    } 
+    if (request.status === 200) { 
+        console.log('success', request.responseText); 
+    } else { 
+        console.warn('error'); 
+    } 
+}; 
+request.open('GET', 'https://mywebsite.com/endpoint.php'); 
+request.send();
+{% endhighlight %}
+
+这是http的原生方法,这里不做多的介绍.
+
+#### 2. RN官方文档中,推荐使用fetch
+
+{% highlight javascript %}
+fetch('https://mywebsite.com/endpoint/', { 
+    method: 'POST', 
+    headers: { 
+        'Accept': 'application/json', 
+        'Content-Type': 'application/json', 
+    }, 
+    body: JSON.stringify({ 
+        firstParam: 'yourValue', 
+        secondParam: 'yourOtherValue', 
+    }) 
+}).then(function(res){
+    console.log(res);
+})
+{% endhighlight %}
+
+body中的数据就是我们需要向服务器提交的数据,比如用户名,密码等;如果上述body中的数据提交失败,那么你可能需要把数据转换成如下的表单提交的格式:
+
+{% highlight javascript %}
+fetch('https://mywebsite.com/endpoint/', { 
+    method: 'POST', 
+    headers: { 
+        'Content-Type': 'application/x-www-form-urlencoded', 
+    }, 
+    body: 'key1=value1&key2=value2' 
+}).then(function(res){
+　　console.log(res);
+})
+{% endhighlight %}
+
+这样可以获取纯文本的返回数据.
+
+如果你需要返回json格式的数据:
+
+{% highlight javascript %}
+fetch('https://mywebsite.com/endpoint/').then(function(res) {
+    if (res.ok) {
+        res.json().then(function(obj) {
+        // 这样数据就转换成json格式的了
+        });
+    }
+}, function(ex) {
+    console.log(ex);
+});
+{% endhighlight %}
+
+fetch模拟表单提交:
+
+{% highlight javascript %}
+fetch('doAct.action', { 
+    method: 'post', 
+        headers: { 
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8" 
+        }, 
+        body: 'foo=bar&lorem=ipsum' 
+})
+.then(json) 
+.then(function (data) { 
+    console.log('Request succeeded with JSON response', data); 
+}) 
+.catch(function (error) { 
+    console.log('Request failed', error); 
+});
+{% endhighlight %}
+
+不过无论是ajax还是fetch,都是对http进行了一次封装,大家各取所好吧.
+
+[参考文档](https://developer.mozilla.org/zh-CN/docs/Web/API/GlobalFetch/fetch)
+
+Vue的学习暂停, 后续有时间继续～

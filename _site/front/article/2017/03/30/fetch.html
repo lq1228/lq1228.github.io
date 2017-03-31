@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ES6 fetch函数与后台交互</title>
+  <meta name="description" content="ES6 fetch函数与后台交互">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/03/30/fetch.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/03/30/fetch.html">ES6 fetch函数与后台交互</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ES6 fetch函数与后台交互</h1>
+    <p class="post-meta"><time datetime="2017-03-30T10:49:42+08:00" itemprop="datePublished">Mar 30, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>这周的项目启用敏捷开发，用ES6语法、React开发，临时抱佛脚，看<a href="https://facebook.github.io/react/">React官方文档</a>～～</p>
+
+<p>进入开发后，调用后端接口的问题不可避免，为了方便以后查询，先做个简单整理，多拍砖，多建议，谢谢大家～～</p>
+
+<h4 id="rnxmlhttprequest">1. RN官方文档中,可使用XMLHttpRequest</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span> 
+<span class="nx">request</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">!==</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="k">return</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'success'</span><span class="p">,</span> <span class="nx">request</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span> 
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> 
+        <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">'error'</span><span class="p">);</span> 
+    <span class="p">}</span> 
+<span class="p">};</span> 
+<span class="nx">request</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'https://mywebsite.com/endpoint.php'</span><span class="p">);</span> 
+<span class="nx">request</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span></code></pre></figure>
+
+<p>这是http的原生方法,这里不做多的介绍.</p>
+
+<h4 id="rnfetch">2. RN官方文档中,推荐使用fetch</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://mywebsite.com/endpoint/'</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'POST'</span><span class="p">,</span> 
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> 
+        <span class="s1">'Accept'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">,</span> 
+        <span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">,</span> 
+    <span class="p">},</span> 
+    <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> 
+        <span class="na">firstParam</span><span class="p">:</span> <span class="s1">'yourValue'</span><span class="p">,</span> 
+        <span class="na">secondParam</span><span class="p">:</span> <span class="s1">'yourOtherValue'</span><span class="p">,</span> 
+    <span class="p">})</span> 
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+<span class="p">})</span></code></pre></figure>
+
+<p>body中的数据就是我们需要向服务器提交的数据,比如用户名,密码等;如果上述body中的数据提交失败,那么你可能需要把数据转换成如下的表单提交的格式:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://mywebsite.com/endpoint/'</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'POST'</span><span class="p">,</span> 
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> 
+        <span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/x-www-form-urlencoded'</span><span class="p">,</span> 
+    <span class="p">},</span> 
+    <span class="na">body</span><span class="p">:</span> <span class="s1">'key1=value1&amp;key2=value2'</span> 
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span>
+<span class="err">　　</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+<span class="p">})</span></code></pre></figure>
+
+<p>这样可以获取纯文本的返回数据.</p>
+
+<p>如果你需要返回json格式的数据:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://mywebsite.com/endpoint/'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 这样数据就转换成json格式的了</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ex</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">ex</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>fetch模拟表单提交:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'doAct.action'</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span> 
+        <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> 
+            <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span> 
+        <span class="p">},</span> 
+        <span class="na">body</span><span class="p">:</span> <span class="s1">'foo=bar&amp;lorem=ipsum'</span> 
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> 
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request succeeded with JSON response'</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span> 
+<span class="p">})</span> 
+<span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request failed'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span> 
+<span class="p">});</span></code></pre></figure>
+
+<p>不过无论是ajax还是fetch,都是对http进行了一次封装,大家各取所好吧.</p>
+
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/GlobalFetch/fetch">参考文档</a></p>
+
+<p>Vue的学习暂停, 后续有时间继续～</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/03/30/fetch" data-title="ES6 fetch函数与后台交互" data-url="/front/article/2017/03/30/fetch.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.cc/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
