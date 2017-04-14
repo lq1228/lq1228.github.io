@@ -2,7 +2,7 @@
 layout: post
 title:  "React Native 中 component 生命周期"
 date:   2017-04-14 10:49:42 +0800
-description: ""
+description: "组件的状态和生命周期 合理利用"
 categories: front article
 ---
 
