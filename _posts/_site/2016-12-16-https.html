@@ -1,0 +1,164 @@
+<h3 id="section">缘起</h3>
+
+<p>随着国内网络环境的持续恶化，各种篡改和劫持层出不穷，越来越多的网站选择了全站 HTTPS。HTTPS 通过 TLS 层和证书机制提供了内容加密、身份认证和数据完整性三大功能，可以有效防止数据被查看或篡改，以及防止中间人冒充。</p>
+
+<p>在可见的未来，HTTP2 只在 HTTPS 环境下被支持，iOS9 要求应用程序必须采用 HTTPS 传输，升级HTTPS迫在眉睫。</p>
+
+<h3 id="section-1">实现</h3>
+
+<p>大概8-9月份的时候，在前端leader的主导，运维协助的情况下，M站已经基本完成HTTPS的升级；有了上次的技术摸底，这次APP全部升级HTTPS就显得顺风顺水了很多；接下来是今天的重点：测试静态资源https可用性检测。</p>
+
+<h3 id="https">静态资源https可用性检测</h3>
+
+<h4 id="section-2">需求</h4>
+
+<p>对静态资源https的支持程度做统计</p>
+
+<ol>
+  <li>
+    <p>记录IP粒度的地域信息；</p>
+  </li>
+  <li>
+    <p>对所有域名(静态文件所有域名)进行测试；</p>
+  </li>
+  <li>
+    <p>劫持，内容是否一致；</p>
+  </li>
+</ol>
+
+<h4 id="section-3">分析</h4>
+
+<p>需求1中提到的记录IP粒度的地域信息，在服务器端很容易就能获取到；</p>
+
+<p>需求2和3需要前端提供每个域名下的返回状态，以接口的方式传给后端，和1整合后统一存入数据库中</p>
+
+<h4 id="section-4">前端实现方案</h4>
+
+<ol>
+  <li>
+    <p>图片所有域名需要返回加载状态</p>
+  </li>
+  <li>
+    <p>js或css文件所有域名需要返回加载状态外，还需要对比是否被劫持</p>
+  </li>
+  <li>
+    <p>图片和js统一返回状态</p>
+  </li>
+  <li>
+    <p>将返回状态存入data中，以便后端调用</p>
+  </li>
+</ol>
+
+<p>返回所有域名下js文件访问状态</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">returnJsStatus</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
+	<span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'static01'</span><span class="p">,</span> <span class="s1">'static02'</span><span class="p">],</span>
+	<span class="nx">i</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span><span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'.zepto/1.0.0/zepto.min.js'</span><span class="p">);</span>
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+	    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">.</span><span class="nx">length</span> <span class="o">!==</span> <span class="mi">25768</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		    <span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">count</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">)</span> <span class="o">===</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="nx">callback</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">);</span>
+		<span class="p">}</span>
+	    <span class="p">}</span>
+	<span class="p">})(</span><span class="nx">i</span><span class="p">);</span>
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>返回所有域名下同一张图片访问状态</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">returnImgStatus</span><span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">domainStatus</span> <span class="o">=</span> <span class="p">{},</span>
+	<span class="nx">imgArr</span> <span class="o">=</span> <span class="p">[],</span>
+	<span class="nx">domain</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'pic01'</span><span class="p">,</span> <span class="s1">'pic02'</span><span class="p">,</span> <span class="s1">'pic03'</span><span class="p">,</span> <span class="s1">'pic04'</span><span class="p">,</span> <span class="s1">'pic05'</span><span class="p">],</span>
+	<span class="nx">i</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+	<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="s1">'https://'</span> <span class="o">+</span> <span class="nx">domain</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">'./img/default-avatar.png'</span><span class="p">;</span>
+	<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">onload</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+	    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">count</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">)</span> <span class="o">===</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="nx">callback</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">);</span>
+		<span class="p">}</span>
+	    <span class="p">}</span>
+	<span class="p">})(</span><span class="nx">i</span><span class="p">);</span>
+	<span class="nx">imgArr</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">onerror</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">index</span><span class="p">){</span>
+	    <span class="k">return</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="nx">domainStatus</span><span class="p">[</span><span class="nx">domain</span><span class="p">[</span><span class="nx">index</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">404</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">count</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">)</span> <span class="o">===</span> <span class="nx">domain</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+		    <span class="nx">callback</span><span class="p">(</span><span class="nx">domainStatus</span><span class="p">);</span>
+		<span class="p">}</span>
+	    <span class="p">}</span>
+	<span class="p">})(</span><span class="nx">i</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>将以上返回状态，存入data中，方便后端调用</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="kd">function</span> <span class="nx">result</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">js</span> <span class="o">&amp;&amp;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">img</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+	<span class="c1">//最终返回的结果格式如下：</span>
+	<span class="cm">/*
+	{
+	img:{ pic01: XXX, pic02: XXX, pic03: XXX, pic04: XXX, pic05: XXX },
+	js:{ static01: XXX, static02: XXX }
+	}
+	*/</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">returnJsStatus</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">data</span><span class="p">.</span><span class="nx">js</span> <span class="o">=</span> <span class="nx">status</span><span class="p">;</span>
+	<span class="nx">result</span><span class="p">();</span>
+    <span class="p">});</span>
+    <span class="nx">returnImgStatus</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">status</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">data</span><span class="p">.</span><span class="nx">img</span> <span class="o">=</span> <span class="nx">status</span><span class="p">;</span>
+	<span class="nx">result</span><span class="p">();</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+<span class="nx">init</span><span class="p">();</span></code></pre></figure>
+
+<p>上面用到的获取对象长度的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">count</span><span class="p">(</span><span class="nx">o</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">o</span><span class="p">,</span>
+	<span class="nx">n</span><span class="p">,</span>
+	<span class="nx">i</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">t</span> <span class="o">===</span> <span class="s1">'object'</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">n</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="k">for</span><span class="p">(</span><span class="nx">i</span> <span class="k">in</span> <span class="nx">o</span><span class="p">){</span>
+	    <span class="nx">n</span><span class="o">++</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">n</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">};</span> </code></pre></figure>
+
+<p>当然最终返回的数据格式需要和后端合作人员确定api后，转成对应格式，配合使用</p>
+
+<!--
+* [例子](/page/https/https.html)
+-->
+
+<p>升级HTTPS可参考如下：</p>
+
+<p><a href="http://www.tuicool.com/articles/rMv6b2q">HTTPS 改造初探</a></p>
+
+<p><a href="http://www.cnblogs.com/xuan52rock/p/6178240.html">启用 HTTPS 过程中，如何与一些新出的安全规范配合使用</a></p>
+
+<p><a href="http://www.cnblogs.com/webARM/p/5728695.html">前端静态文件如何应对HTTPS的到来</a></p>

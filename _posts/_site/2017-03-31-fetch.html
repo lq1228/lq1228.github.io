@@ -1,0 +1,86 @@
+<p>这周的项目启用敏捷开发，用ES6语法、React开发，临时抱佛脚，看<a href="https://facebook.github.io/react/">React官方文档</a>～～</p>
+
+<p>进入开发后，调用后端接口的问题不可避免，为了方便以后查询，先做个简单整理，多拍砖，多建议，谢谢大家～～</p>
+
+<h4 id="rnxmlhttprequest">1. RN官方文档中,可使用XMLHttpRequest</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span> 
+<span class="nx">request</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">!==</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="k">return</span><span class="p">;</span> 
+    <span class="p">}</span> 
+    <span class="k">if</span> <span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">status</span> <span class="o">===</span> <span class="mi">200</span><span class="p">)</span> <span class="p">{</span> 
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'success'</span><span class="p">,</span> <span class="nx">request</span><span class="p">.</span><span class="nx">responseText</span><span class="p">);</span> 
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> 
+        <span class="nx">console</span><span class="p">.</span><span class="nx">warn</span><span class="p">(</span><span class="s1">'error'</span><span class="p">);</span> 
+    <span class="p">}</span> 
+<span class="p">};</span> 
+<span class="nx">request</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'https://mywebsite.com/endpoint.php'</span><span class="p">);</span> 
+<span class="nx">request</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span></code></pre></figure>
+
+<p>这是http的原生方法,这里不做多的介绍.</p>
+
+<h4 id="rnfetch">2. RN官方文档中,推荐使用fetch</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://mywebsite.com/endpoint/'</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'POST'</span><span class="p">,</span> 
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> 
+        <span class="s1">'Accept'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">,</span> 
+        <span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/json'</span><span class="p">,</span> 
+    <span class="p">},</span> 
+    <span class="na">body</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span> 
+        <span class="na">firstParam</span><span class="p">:</span> <span class="s1">'yourValue'</span><span class="p">,</span> 
+        <span class="na">secondParam</span><span class="p">:</span> <span class="s1">'yourOtherValue'</span><span class="p">,</span> 
+    <span class="p">})</span> 
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+<span class="p">})</span></code></pre></figure>
+
+<p>body中的数据就是我们需要向服务器提交的数据,比如用户名,密码等;如果上述body中的数据提交失败,那么你可能需要把数据转换成如下的表单提交的格式:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://mywebsite.com/endpoint/'</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'POST'</span><span class="p">,</span> 
+    <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> 
+        <span class="s1">'Content-Type'</span><span class="p">:</span> <span class="s1">'application/x-www-form-urlencoded'</span><span class="p">,</span> 
+    <span class="p">},</span> 
+    <span class="na">body</span><span class="p">:</span> <span class="s1">'key1=value1&amp;key2=value2'</span> 
+<span class="p">}).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span>
+<span class="err">　　</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+<span class="p">})</span></code></pre></figure>
+
+<p>这样可以获取纯文本的返回数据.</p>
+
+<p>如果你需要返回json格式的数据:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'https://mywebsite.com/endpoint/'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 这样数据就转换成json格式的了</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">ex</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">ex</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>fetch模拟表单提交:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">fetch</span><span class="p">(</span><span class="s1">'doAct.action'</span><span class="p">,</span> <span class="p">{</span> 
+    <span class="na">method</span><span class="p">:</span> <span class="s1">'post'</span><span class="p">,</span> 
+        <span class="na">headers</span><span class="p">:</span> <span class="p">{</span> 
+            <span class="s2">"Content-type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded; charset=UTF-8"</span> 
+        <span class="p">},</span> 
+        <span class="na">body</span><span class="p">:</span> <span class="s1">'foo=bar&amp;lorem=ipsum'</span> 
+<span class="p">})</span>
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">json</span><span class="p">)</span> 
+<span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request succeeded with JSON response'</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span> 
+<span class="p">})</span> 
+<span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Request failed'</span><span class="p">,</span> <span class="nx">error</span><span class="p">);</span> 
+<span class="p">});</span></code></pre></figure>
+
+<p>不过无论是ajax还是fetch,都是对http进行了一次封装,大家各取所好吧.</p>
+
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/GlobalFetch/fetch">参考文档</a></p>
+
+<p>Vue的学习暂停, 后续有时间继续～</p>

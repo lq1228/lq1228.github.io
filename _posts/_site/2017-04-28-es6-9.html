@@ -1,0 +1,651 @@
+<h3 id="map">1. Map</h3>
+
+<h4 id="section">含义和基本用法</h4>
+
+<p>JavaScript 的对象（Object），本质上是键值对的集合（Hash 结构），但是传统上只能用字符串当作键。这给它的使用带来了很大的限制。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kr">const</span> <span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'myDiv'</span><span class="p">);</span>
+
+<span class="nx">data</span><span class="p">[</span><span class="nx">element</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'metadata'</span><span class="p">;</span>
+<span class="nx">data</span><span class="p">[</span><span class="s1">'[object HTMLDivElement]'</span><span class="p">]</span> <span class="c1">// "metadata"</span></code></pre></figure>
+
+<p>上面代码原意是将一个 DOM 节点作为对象data的键，但是由于对象只接受字符串作为键名，所以element被自动转为字符串[object HTMLDivElement]。</p>
+
+<p>为了解决这个问题，ES6 提供了 Map 数据结构。它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。也就是说，Object 结构提供了“字符串—值”的对应，Map结构提供了“值—值”的对应，是一种更完善的 Hash 结构实现。如果你需要“键值对”的数据结构，Map 比 Object 更合适。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<span class="kr">const</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">{</span><span class="na">p</span><span class="p">:</span> <span class="s1">'Hello World'</span><span class="p">};</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">o</span><span class="p">,</span> <span class="s1">'content'</span><span class="p">)</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="c1">// "content"</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">m</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="nx">o</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<p>上面代码使用 Map 结构的set方法，将对象o当作m的一个键，然后又使用get方法读取这个键，接着使用delete方法删除了这个键。</p>
+
+<p>上面的例子展示了如何向 Map 添加成员。作为构造函数，Map 也可以接受一个数组作为参数。该数组的成员是一个个表示键值对的数组。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">([</span>
+  <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'张三'</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'Author'</span><span class="p">]</span>
+    <span class="p">]);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">size</span> <span class="c1">// 2</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span> <span class="c1">// "张三"</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">'title'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'title'</span><span class="p">)</span> <span class="c1">// "Author"</span></code></pre></figure>
+
+<p>上面代码在新建 Map 实例时，就指定了两个键name和title。</p>
+
+<p>Map构造函数接受数组作为参数，实际上执行的是下面的算法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'张三'</span><span class="p">],</span>
+  <span class="p">[</span><span class="s1">'title'</span><span class="p">,</span> <span class="s1">'Author'</span><span class="p">]</span>
+<span class="p">];</span>
+
+<span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="nx">items</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span>
+  <span class="p">([</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>事实上，不仅仅是数组，任何具有 Iterator 接口的数据结构（详见《Iterator》一章）都可以当作Map构造函数的参数。这就是说，Set和Map都可以用来生成新的 Map。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">set</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Set</span><span class="p">([</span>
+  <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">'bar'</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="p">]);</span>
+<span class="kr">const</span> <span class="nx">m1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">(</span><span class="nx">set</span><span class="p">);</span>
+<span class="nx">m1</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">)</span> <span class="c1">// 1</span>
+
+<span class="kr">const</span> <span class="nx">m2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">([[</span><span class="s1">'baz'</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]);</span>
+<span class="kr">const</span> <span class="nx">m3</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">(</span><span class="nx">m2</span><span class="p">);</span>
+<span class="nx">m3</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'baz'</span><span class="p">)</span> <span class="c1">// 3</span></code></pre></figure>
+
+<p>上面代码中，我们分别使用 Set 对象和 Map 对象，当作Map构造函数的参数，结果都生成了新的 Map 对象。</p>
+
+<p>如果对同一个键多次赋值，后面的值将覆盖前面的值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="nx">map</span>
+<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'aaa'</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'bbb'</span><span class="p">);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// "bbb"</span></code></pre></figure>
+
+<p>上面代码对键1连续赋值两次，后一次的值覆盖前一次的值。</p>
+
+<p>如果读取一个未知的键，则返回undefined。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Map</span><span class="p">().</span><span class="nx">get</span><span class="p">(</span><span class="s1">'asfddfsasadf'</span><span class="p">)</span>
+<span class="c1">// undefined</span></code></pre></figure>
+
+<p>注意，只有对同一个对象的引用，Map 结构才将其视为同一个键。这一点要非常小心。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">([</span><span class="s1">'a'</span><span class="p">],</span> <span class="mi">555</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">([</span><span class="s1">'a'</span><span class="p">])</span> <span class="c1">// undefined</span></code></pre></figure>
+
+<p>上面代码的set和get方法，表面是针对同一个键，但实际上这是两个值，内存地址是不一样的，因此get方法无法读取该键，返回undefined。</p>
+
+<p>同理，同样的值的两个实例，在 Map 结构中被视为两个键。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="kr">const</span> <span class="nx">k1</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">];</span>
+<span class="kr">const</span> <span class="nx">k2</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">];</span>
+
+<span class="nx">map</span>
+<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">k1</span><span class="p">,</span> <span class="mi">111</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">k2</span><span class="p">,</span> <span class="mi">222</span><span class="p">);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">k1</span><span class="p">)</span> <span class="c1">// 111</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">k2</span><span class="p">)</span> <span class="c1">// 222</span></code></pre></figure>
+
+<p>上面代码中，变量k1和k2的值是一样的，但是它们在 Map 结构中被视为两个键。</p>
+
+<p>由上可知，Map 的键实际上是跟内存地址绑定的，只要内存地址不一样，就视为两个键。这就解决了同名属性碰撞（clash）的问题，我们扩展别人的库的时候，如果使用对象作为键名，就不用担心自己的属性与原作者的属性同名。</p>
+
+<p>如果 Map 的键是一个简单类型的值（数字、字符串、布尔值），则只要两个值严格相等，Map 将其视为一个键，包括0和-0，布尔值true和字符串true则是两个不同的键。另外，undefined和null也是两个不同的键。虽然NaN不严格相等于自身，但 Map 将其视为同一个键。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="o">+</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// 123</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'true'</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="c1">// 1</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">undefined</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="kc">undefined</span><span class="p">)</span> <span class="c1">// 3</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">NaN</span><span class="p">,</span> <span class="mi">123</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// 123</span></code></pre></figure>
+
+<h4 id="section-1">实例的属性和操作方法</h4>
+
+<p>Map 结构的实例有以下属性和操作方法。</p>
+
+<p>（1）size属性</p>
+
+<p>size属性返回 Map 结构的成员总数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">size</span> <span class="c1">// 2</span></code></pre></figure>
+
+<p>（2）set(key, value)</p>
+
+<p>set方法设置键名key对应的键值为value，然后返回整个 Map 结构。如果key已经有值，则键值会被更新，否则就新生成该键。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'edition'</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>        <span class="c1">// 键是字符串</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">262</span><span class="p">,</span> <span class="s1">'standard'</span><span class="p">)</span>     <span class="c1">// 键是数值</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">undefined</span><span class="p">,</span> <span class="s1">'nah'</span><span class="p">)</span>    <span class="c1">// 键是 undefined</span></code></pre></figure>
+
+<p>set方法返回的是当前的Map对象，因此可以采用链式写法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span></code></pre></figure>
+
+<p>（3）get(key)</p>
+
+<p>get方法读取key对应的键值，如果找不到key，返回undefined。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="kr">const</span> <span class="nx">hello</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">);};</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">hello</span><span class="p">,</span> <span class="s1">'Hello ES6!'</span><span class="p">)</span> <span class="c1">// 键是函数</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">hello</span><span class="p">)</span>  <span class="c1">// Hello ES6!</span></code></pre></figure>
+
+<p>（4）has(key)</p>
+
+<p>has方法返回一个布尔值，表示某个键是否在当前 Map 对象之中。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'edition'</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">262</span><span class="p">,</span> <span class="s1">'standard'</span><span class="p">);</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">undefined</span><span class="p">,</span> <span class="s1">'nah'</span><span class="p">);</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">'edition'</span><span class="p">)</span>     <span class="c1">// true</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="s1">'years'</span><span class="p">)</span>       <span class="c1">// false</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="mi">262</span><span class="p">)</span>           <span class="c1">// true</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="kc">undefined</span><span class="p">)</span>     <span class="c1">// true</span></code></pre></figure>
+
+<p>（5）delete(key)</p>
+
+<p>delete方法删除某个键，返回true。如果删除失败，返回false。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">undefined</span><span class="p">,</span> <span class="s1">'nah'</span><span class="p">);</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="kc">undefined</span><span class="p">)</span>     <span class="c1">// true</span>
+
+<span class="nx">m</span><span class="p">.</span><span class="k">delete</span><span class="p">(</span><span class="kc">undefined</span><span class="p">)</span>
+<span class="nx">m</span><span class="p">.</span><span class="nx">has</span><span class="p">(</span><span class="kc">undefined</span><span class="p">)</span>       <span class="c1">// false</span></code></pre></figure>
+
+<p>（6）clear()</p>
+
+<p>clear方法清除所有成员，没有返回值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">size</span> <span class="c1">// 2</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">clear</span><span class="p">()</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">size</span> <span class="c1">// 0</span></code></pre></figure>
+
+<h4 id="section-2">遍历方法</h4>
+
+<p>Map 结构原生提供三个遍历器生成函数和一个遍历方法。</p>
+
+<p>keys()：返回键名的遍历器。</p>
+
+<p>values()：返回键值的遍历器。</p>
+
+<p>entries()：返回所有成员的遍历器。</p>
+
+<p>forEach()：遍历 Map 的所有成员。</p>
+
+<p>需要特别注意的是，Map 的遍历顺序就是插入顺序。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">([</span>
+  <span class="p">[</span><span class="s1">'F'</span><span class="p">,</span> <span class="s1">'no'</span><span class="p">],</span>
+  <span class="p">[</span><span class="s1">'T'</span><span class="p">,</span>  <span class="s1">'yes'</span><span class="p">],</span>
+<span class="p">]);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">key</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">keys</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// "F"</span>
+<span class="c1">// "T"</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">value</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">values</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// "no"</span>
+<span class="c1">// "yes"</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">item</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">entries</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="p">}</span>
+<span class="c1">// "F" "no"</span>
+<span class="c1">// "T" "yes"</span>
+
+<span class="c1">// 或者</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="p">[</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">]</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">entries</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// "F" "no"</span>
+<span class="c1">// "T" "yes"</span>
+
+<span class="c1">// 等同于使用map.entries()</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="p">[</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">]</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// "F" "no"</span>
+<span class="c1">// "T" "yes"</span></code></pre></figure>
+
+<p>上面代码最后的那个例子，表示 Map 结构的默认遍历器接口（Symbol.iterator属性），就是entries方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">map</span><span class="p">[</span><span class="nx">Symbol</span><span class="p">.</span><span class="nx">iterator</span><span class="p">]</span> <span class="o">===</span> <span class="nx">map</span><span class="p">.</span><span class="nx">entries</span>
+<span class="c1">// true</span></code></pre></figure>
+
+<p>Map 结构转为数组结构，比较快速的方法是使用扩展运算符（…）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">([</span>
+  <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'one'</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'two'</span><span class="p">],</span>
+  <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'three'</span><span class="p">],</span>
+<span class="p">]);</span>
+
+<span class="p">[...</span><span class="nx">map</span><span class="p">.</span><span class="nx">keys</span><span class="p">()]</span>
+<span class="c1">// [1, 2, 3]</span>
+
+<span class="p">[...</span><span class="nx">map</span><span class="p">.</span><span class="nx">values</span><span class="p">()]</span>
+<span class="c1">// ['one', 'two', 'three']</span>
+
+<span class="p">[...</span><span class="nx">map</span><span class="p">.</span><span class="nx">entries</span><span class="p">()]</span>
+<span class="c1">// [[1,'one'], [2, 'two'], [3, 'three']]</span>
+
+<span class="p">[...</span><span class="nx">map</span><span class="p">]</span>
+<span class="c1">// [[1,'one'], [2, 'two'], [3, 'three']]</span></code></pre></figure>
+
+<p>结合数组的map方法、filter方法，可以实现 Map 的遍历和过滤（Map 本身没有map和filter方法）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map0</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span>
+
+<span class="kr">const</span> <span class="nx">map1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">(</span>
+  <span class="p">[...</span><span class="nx">map0</span><span class="p">].</span><span class="nx">filter</span><span class="p">(([</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="nx">k</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">);</span>
+<span class="c1">// 产生 Map 结构 {1 =&gt; 'a', 2 =&gt; 'b'}</span>
+
+<span class="kr">const</span> <span class="nx">map2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">(</span>
+  <span class="p">[...</span><span class="nx">map0</span><span class="p">].</span><span class="nx">map</span><span class="p">(([</span><span class="nx">k</span><span class="p">,</span> <span class="nx">v</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="nx">k</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'_'</span> <span class="o">+</span> <span class="nx">v</span><span class="p">])</span>
+    <span class="p">);</span>
+<span class="c1">// 产生 Map 结构 {2 =&gt; '_a', 4 =&gt; '_b', 6 =&gt; '_c'}</span></code></pre></figure>
+
+<p>此外，Map 还有一个forEach方法，与数组的forEach方法类似，也可以实现遍历。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">map</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Key: %s, Value: %s"</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>forEach方法还可以接受第二个参数，用来绑定this。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">reporter</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">report</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Key: %s, Value: %s"</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">map</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">report</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+<span class="p">},</span> <span class="nx">reporter</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，forEach方法的回调函数的this，就指向reporter。</p>
+
+<h4 id="section-3">与其他数据结构的互相转换</h4>
+
+<p>（1）Map 转为数组</p>
+
+<p>前面已经提过，Map 转为数组最方便的方法，就是使用扩展运算符（…）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">myMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">({</span><span class="na">foo</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="p">[</span><span class="s1">'abc'</span><span class="p">]);</span>
+<span class="p">[...</span><span class="nx">myMap</span><span class="p">]</span>
+<span class="c1">// [ [ true, 7 ], [ { foo: 3 }, [ 'abc' ] ] ]</span></code></pre></figure>
+
+<p>（2）数组 转为 Map</p>
+
+<p>将数组传入 Map 构造函数，就可以转为 Map。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Map</span><span class="p">([</span>
+  <span class="p">[</span><span class="kc">true</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+  <span class="p">[{</span><span class="na">foo</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="p">[</span><span class="s1">'abc'</span><span class="p">]]</span>
+<span class="p">])</span>
+<span class="c1">// Map {</span>
+<span class="c1">//   true =&gt; 7,</span>
+<span class="c1">//   Object {foo: 3} =&gt; ['abc']</span>
+<span class="c1">// }</span></code></pre></figure>
+
+<p>（3）Map 转为对象</p>
+
+<p>如果所有 Map 的键都是字符串，它可以转为对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">strMapToObj</span><span class="p">(</span><span class="nx">strMap</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="p">[</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span><span class="p">]</span> <span class="nx">of</span> <span class="nx">strMap</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">myMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'yes'</span><span class="p">,</span> <span class="kc">true</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'no'</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="nx">strMapToObj</span><span class="p">(</span><span class="nx">myMap</span><span class="p">)</span>
+<span class="c1">// { yes: true, no: false }</span></code></pre></figure>
+
+<p>（4）对象转为 Map</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">objToStrMap</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">strMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">k</span> <span class="nx">of</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">obj</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">strMap</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">]);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">strMap</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">objToStrMap</span><span class="p">({</span><span class="na">yes</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">no</span><span class="p">:</span> <span class="kc">false</span><span class="p">})</span>
+<span class="c1">// Map {"yes" =&gt; true, "no" =&gt; false}</span></code></pre></figure>
+
+<p>（5）Map 转为 JSON</p>
+
+<p>Map 转为 JSON 要区分两种情况。一种情况是，Map 的键名都是字符串，这时可以选择转为对象 JSON。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">strMapToJson</span><span class="p">(</span><span class="nx">strMap</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">strMapToObj</span><span class="p">(</span><span class="nx">strMap</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">myMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">().</span><span class="nx">set</span><span class="p">(</span><span class="s1">'yes'</span><span class="p">,</span> <span class="kc">true</span><span class="p">).</span><span class="nx">set</span><span class="p">(</span><span class="s1">'no'</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
+<span class="nx">strMapToJson</span><span class="p">(</span><span class="nx">myMap</span><span class="p">)</span>
+<span class="c1">// '{"yes":true,"no":false}'</span></code></pre></figure>
+
+<p>另一种情况是，Map 的键名有非字符串，这时可以选择转为数组 JSON。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">mapToArrayJson</span><span class="p">(</span><span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">([...</span><span class="nx">map</span><span class="p">]);</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">myMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">().</span><span class="nx">set</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="mi">7</span><span class="p">).</span><span class="nx">set</span><span class="p">({</span><span class="na">foo</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="p">[</span><span class="s1">'abc'</span><span class="p">]);</span>
+<span class="nx">mapToArrayJson</span><span class="p">(</span><span class="nx">myMap</span><span class="p">)</span>
+<span class="c1">// '[[true,7],[{"foo":3},["abc"]]]'</span></code></pre></figure>
+
+<p>（6）JSON 转为 Map</p>
+
+<p>JSON 转为 Map，正常情况下，所有键名都是字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">jsonToStrMap</span><span class="p">(</span><span class="nx">jsonStr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">objToStrMap</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">jsonStr</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="nx">jsonToStrMap</span><span class="p">(</span><span class="s1">'{"yes": true, "no": false}'</span><span class="p">)</span>
+<span class="c1">// Map {'yes' =&gt; true, 'no' =&gt; false}</span></code></pre></figure>
+
+<p>但是，有一种特殊情况，整个 JSON 就是一个数组，且每个数组成员本身，又是一个有两个成员的数组。这时，它可以一一对应地转为Map。这往往是数组转为 JSON 的逆操作。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">jsonToMap</span><span class="p">(</span><span class="nx">jsonStr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">jsonStr</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="nx">jsonToMap</span><span class="p">(</span><span class="s1">'[[true,7],[{"foo":3},["abc"]]]'</span><span class="p">)</span>
+<span class="c1">// Map {true =&gt; 7, Object {foo: 3} =&gt; ['abc']}</span></code></pre></figure>
+
+<h3 id="weakmap">2. WeakMap</h3>
+
+<h4 id="section-4">含义</h4>
+
+<p>WeakMap结构与Map结构类似，也是用于生成键值对。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// WeakMap 可以使用 set 方法添加成员</span>
+<span class="kr">const</span> <span class="nx">wm1</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+<span class="kr">const</span> <span class="nx">key</span> <span class="o">=</span> <span class="p">{</span><span class="na">foo</span><span class="p">:</span> <span class="mi">1</span><span class="p">};</span>
+<span class="nx">wm1</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="nx">wm1</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="c1">// 2</span>
+
+<span class="c1">// WeakMap 也可以接受一个数组，</span>
+<span class="c1">// 作为构造函数的参数</span>
+<span class="kr">const</span> <span class="nx">k1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+<span class="kr">const</span> <span class="nx">k2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">];</span>
+<span class="kr">const</span> <span class="nx">wm2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">([[</span><span class="nx">k1</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">],</span> <span class="p">[</span><span class="nx">k2</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">]]);</span>
+<span class="nx">wm2</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">k2</span><span class="p">)</span> <span class="c1">// "bar"</span></code></pre></figure>
+
+<p>WeakMap与Map的区别有两点。</p>
+
+<p>首先，WeakMap只接受对象作为键名（null除外），不接受其他类型的值作为键名。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1">// TypeError: 1 is not an object!</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">Symbol</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1">// TypeError: Invalid value used as weak map key</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="c1">// TypeError: Invalid value used as weak map key</span></code></pre></figure>
+
+<p>上面代码中，如果将数值1和Symbol值作为 WeakMap 的键名，都会报错。</p>
+
+<p>其次，WeakMap的键名所指向的对象，不计入垃圾回收机制。</p>
+
+<p>WeakMap的设计目的在于，有时我们想在某个对象上面存放一些数据，但是这会形成对于这个对象的引用。请看下面的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">e1</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'foo'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">e2</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'bar'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="p">[</span><span class="nx">e1</span><span class="p">,</span> <span class="s1">'foo 元素'</span><span class="p">],</span>
+  <span class="p">[</span><span class="nx">e2</span><span class="p">,</span> <span class="s1">'bar 元素'</span><span class="p">],</span>
+<span class="p">];</span></code></pre></figure>
+
+<p>上面代码中，e1和e2是两个对象，我们通过arr数组对这两个对象添加一些文字说明。这就形成了arr对e1和e2的引用。</p>
+
+<p>一旦不再需要这两个对象，我们就必须手动删除这个引用，否则垃圾回收机制就不会释放e1和e2占用的内存。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 不需要 e1 和 e2 的时候</span>
+<span class="c1">// 必须手动删除引用</span>
+<span class="nx">arr</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nx">arr</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span></code></pre></figure>
+
+<p>上面这样的写法显然很不方便。一旦忘了写，就会造成内存泄露。</p>
+
+<p>WeakMap 就是为了解决这个问题而诞生的，它的键名所引用的对象都是弱引用，即垃圾回收机制不将该引用考虑在内。因此，只要所引用的对象的其他引用都被清除，垃圾回收机制就会释放该对象所占用的内存。也就是说，一旦不再需要，WeakMap 里面的键名对象和所对应的键值对会自动消失，不用手动删除引用。</p>
+
+<p>基本上，如果你要往对象上添加数据，又不想干扰垃圾回收机制，就可以使用 WeakMap。一个典型应用场景是，在网页的 DOM 元素上添加数据，就可以使用WeakMap结构。当该 DOM 元素被清除，其所对应的WeakMap记录就会自动被移除。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">wm</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+
+<span class="kr">const</span> <span class="nx">element</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'example'</span><span class="p">);</span>
+
+<span class="nx">wm</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">element</span><span class="p">,</span> <span class="s1">'some information'</span><span class="p">);</span>
+<span class="nx">wm</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">element</span><span class="p">)</span> <span class="c1">// "some information"</span></code></pre></figure>
+
+<p>上面代码中，先新建一个 Weakmap 实例。然后，将一个 DOM 节点作为键名存入该实例，并将一些附加信息作为键值，一起存放在 WeakMap 里面。这时，WeakMap 里面对element的引用就是弱引用，不会被计入垃圾回收机制。</p>
+
+<p>也就是说，上面的 DOM 节点对象的引用计数是1，而不是2。这时，一旦消除对该节点的引用，它占用的内存就会被垃圾回收机制释放。Weakmap 保存的这个键值对，也会自动消失。</p>
+
+<p>总之，WeakMap的专用场合就是，它的键所对应的对象，可能会在将来消失。WeakMap结构有助于防止内存泄漏。</p>
+
+<p>注意，WeakMap 弱引用的只是键名，而不是键值。键值依然是正常引用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">wm</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+<span class="kd">let</span> <span class="nx">key</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">let</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span><span class="na">foo</span><span class="p">:</span> <span class="mi">1</span><span class="p">};</span>
+
+<span class="nx">wm</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="nx">obj</span><span class="p">);</span>
+<span class="nx">obj</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nx">wm</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span>
+<span class="c1">// Object {foo: 1}</span></code></pre></figure>
+
+<p>上面代码中，键值obj是正常引用。所以，即使在 WeakMap 外部消除了obj的引用，WeakMap 内部的引用依然存在。</p>
+
+<h4 id="weakmap-">WeakMap 的示例</h4>
+
+<p>WeakMap 的例子很难演示，因为无法观察它里面的引用会自动消失。此时，其他引用都解除了，已经没有引用指向 WeakMap 的键名了，导致无法证实那个键名是不是存在。</p>
+
+<p>贺师俊老师提示，如果引用所指向的值占用特别多的内存，就可以通过 Node 的process.memoryUsage方法看出来。根据这个思路，网友vtxf补充了下面的例子。</p>
+
+<p>首先，打开 Node 命令行。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span> <span class="nx">node</span> <span class="o">--</span><span class="nx">expose</span><span class="o">-</span><span class="nx">gc</span></code></pre></figure>
+
+<p>上面代码中，–expose-gc参数表示允许手动执行垃圾回收机制。</p>
+
+<p>然后，执行下面的代码。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 手动执行一次垃圾回收，保证获取的内存使用状态准确</span>
+<span class="o">&gt;</span> <span class="nx">global</span><span class="p">.</span><span class="nx">gc</span><span class="p">();</span>
+<span class="kc">undefined</span>
+
+<span class="c1">// 查看内存占用的初始状态，heapUsed 为 4M 左右</span>
+<span class="o">&gt;</span> <span class="nx">process</span><span class="p">.</span><span class="nx">memoryUsage</span><span class="p">();</span>
+<span class="p">{</span> <span class="nl">rss</span><span class="p">:</span> <span class="mi">21106688</span><span class="p">,</span>
+  <span class="nx">heapTotal</span><span class="err">:</span> <span class="mi">7376896</span><span class="p">,</span>
+  <span class="nx">heapUsed</span><span class="err">:</span> <span class="mi">4153936</span><span class="p">,</span>
+  <span class="nx">external</span><span class="err">:</span> <span class="mi">9059</span> <span class="p">}</span>
+
+<span class="o">&gt;</span> <span class="kd">let</span> <span class="nx">wm</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+<span class="kc">undefined</span>
+
+<span class="o">&gt;</span> <span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Object</span><span class="p">();</span>
+<span class="kc">undefined</span>
+
+<span class="o">&gt;</span> <span class="nx">global</span><span class="p">.</span><span class="nx">gc</span><span class="p">();</span>
+<span class="kc">undefined</span>
+
+<span class="c1">// 此时，heapUsed 仍然为 4M 左右</span>
+<span class="o">&gt;</span> <span class="nx">process</span><span class="p">.</span><span class="nx">memoryUsage</span><span class="p">();</span>
+<span class="p">{</span> <span class="nl">rss</span><span class="p">:</span> <span class="mi">20537344</span><span class="p">,</span>
+  <span class="nx">heapTotal</span><span class="err">:</span> <span class="mi">9474048</span><span class="p">,</span>
+  <span class="nx">heapUsed</span><span class="err">:</span> <span class="mi">3967272</span><span class="p">,</span>
+  <span class="nx">external</span><span class="err">:</span> <span class="mi">8993</span> <span class="p">}</span>
+
+<span class="c1">// 在 WeakMap 中添加一个键值对，</span>
+<span class="c1">// 键名为对象 b，键值为一个 5*1024*1024 的数组</span>
+<span class="o">&gt;</span> <span class="nx">wm</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="k">new</span> <span class="nb">Array</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">));</span>
+<span class="nx">WeakMap</span> <span class="p">{}</span>
+
+<span class="c1">// 手动执行一次垃圾回收</span>
+<span class="o">&gt;</span> <span class="nx">global</span><span class="p">.</span><span class="nx">gc</span><span class="p">();</span>
+<span class="kc">undefined</span>
+
+<span class="c1">// 此时，heapUsed 为 45M 左右</span>
+<span class="o">&gt;</span> <span class="nx">process</span><span class="p">.</span><span class="nx">memoryUsage</span><span class="p">();</span>
+<span class="p">{</span> <span class="nl">rss</span><span class="p">:</span> <span class="mi">62652416</span><span class="p">,</span>
+  <span class="nx">heapTotal</span><span class="err">:</span> <span class="mi">51437568</span><span class="p">,</span>
+  <span class="nx">heapUsed</span><span class="err">:</span> <span class="mi">45911664</span><span class="p">,</span>
+  <span class="nx">external</span><span class="err">:</span> <span class="mi">8951</span> <span class="p">}</span>
+
+<span class="c1">// 解除对象 b 的引用</span>
+<span class="o">&gt;</span> <span class="nx">b</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="kc">null</span>
+
+<span class="c1">// 再次执行垃圾回收</span>
+<span class="o">&gt;</span> <span class="nx">global</span><span class="p">.</span><span class="nx">gc</span><span class="p">();</span>
+<span class="kc">undefined</span>
+
+<span class="c1">// 解除 b 的引用以后，heapUsed 变回 4M 左右</span>
+<span class="c1">// 说明 WeakMap 中的那个长度为 5*1024*1024 的数组被销毁了</span>
+<span class="o">&gt;</span> <span class="nx">process</span><span class="p">.</span><span class="nx">memoryUsage</span><span class="p">();</span>
+<span class="p">{</span> <span class="nl">rss</span><span class="p">:</span> <span class="mi">20639744</span><span class="p">,</span>
+  <span class="nx">heapTotal</span><span class="err">:</span> <span class="mi">8425472</span><span class="p">,</span>
+  <span class="nx">heapUsed</span><span class="err">:</span> <span class="mi">3979792</span><span class="p">,</span>
+  <span class="nx">external</span><span class="err">:</span> <span class="mi">8956</span> <span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，只要外部的引用消失，WeakMap 内部的引用，就会自动被垃圾回收清除。由此可见，有了 WeakMap 的帮助，解决内存泄漏就会简单很多。</p>
+
+<h4 id="weakmap--1">WeakMap 的语法</h4>
+
+<p>WeakMap 与 Map 在 API 上的区别主要是两个，一是没有遍历操作（即没有key()、values()和entries()方法），也没有size属性。因为没有办法列出所有键名，这个键名是否存在完全不可预测，跟垃圾回收机制是否运行相关。二是无法清空，即不支持clear方法。因此，WeakMap只有四个方法可用：get()、set()、has()、delete()。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">wm</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+
+<span class="c1">// size、forEach、clear 方法都不存在</span>
+<span class="nx">wm</span><span class="p">.</span><span class="nx">size</span> <span class="c1">// undefined</span>
+<span class="nx">wm</span><span class="p">.</span><span class="nx">forEach</span> <span class="c1">// undefined</span>
+<span class="nx">wm</span><span class="p">.</span><span class="nx">clear</span> <span class="c1">// undefined</span></code></pre></figure>
+
+<h4 id="weakmap--2">WeakMap 的用途</h4>
+
+<p>前文说过，WeakMap 应用的典型场合就是 DOM 节点作为键名。下面是一个例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">myElement</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'logo'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">myWeakmap</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+
+<span class="nx">myWeakmap</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">myElement</span><span class="p">,</span> <span class="p">{</span><span class="na">timesClicked</span><span class="p">:</span> <span class="mi">0</span><span class="p">});</span>
+
+<span class="nx">myElement</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">logoData</span> <span class="o">=</span> <span class="nx">myWeakmap</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">myElement</span><span class="p">);</span>
+  <span class="nx">logoData</span><span class="p">.</span><span class="nx">timesClicked</span><span class="o">++</span><span class="p">;</span>
+<span class="p">},</span> <span class="kc">false</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，myElement是一个 DOM 节点，每当发生click事件，就更新一下状态。我们将这个状态作为键值放在 WeakMap 里，对应的键名就是myElement。一旦这个 DOM 节点删除，该状态就会自动消失，不存在内存泄漏风险。</p>
+
+<p>进一步说，注册监听事件的listener对象，就很合适用 WeakMap 实现。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">listener</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+
+<span class="nx">listener</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">element1</span><span class="p">,</span> <span class="nx">handler1</span><span class="p">);</span>
+<span class="nx">listener</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">element2</span><span class="p">,</span> <span class="nx">handler2</span><span class="p">);</span>
+
+<span class="nx">element1</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="nx">listener</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">element1</span><span class="p">),</span> <span class="kc">false</span><span class="p">);</span>
+<span class="nx">element2</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="nx">listener</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">element2</span><span class="p">),</span> <span class="kc">false</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，监听函数放在 WeakMap 里面。一旦 DOM 对象消失，跟它绑定的监听函数也会自动消失。</p>
+
+<p>WeakMap 的另一个用处是部署私有属性。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">_counter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+<span class="kr">const</span> <span class="nx">_action</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WeakMap</span><span class="p">();</span>
+
+<span class="kr">class</span> <span class="nx">Countdown</span> <span class="p">{</span>
+  <span class="nx">constructor</span><span class="p">(</span><span class="nx">counter</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">_counter</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">counter</span><span class="p">);</span>
+    <span class="nx">_action</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">action</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="nx">dec</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">let</span> <span class="nx">counter</span> <span class="o">=</span> <span class="nx">_counter</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">counter</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+    <span class="nx">counter</span><span class="o">--</span><span class="p">;</span>
+    <span class="nx">_counter</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">counter</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">counter</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">_action</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="k">this</span><span class="p">)();</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Countdown</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'DONE'</span><span class="p">));</span>
+
+<span class="nx">c</span><span class="p">.</span><span class="nx">dec</span><span class="p">()</span>
+<span class="nx">c</span><span class="p">.</span><span class="nx">dec</span><span class="p">()</span>
+<span class="c1">// DONE</span></code></pre></figure>
+
+<p>上面代码中，Countdown类的两个内部属性_counter和_action，是实例的弱引用，所以如果删除实例，它们也就随之消失，不会造成内存泄漏。</p>

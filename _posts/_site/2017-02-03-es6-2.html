@@ -1,0 +1,566 @@
+<h3 id="section">1. 数组的解构赋值</h3>
+
+<h4 id="section-1">基本用法</h4>
+
+<p>ES6 允许按照一定模式，从数组和对象中提取值，对变量进行赋值，这被称为解构（Destructuring）。</p>
+
+<p>以前，为变量赋值，只能直接指定值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">//ES6允许写成下面这样。</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span></code></pre></figure>
+
+<p>上面代码表示，可以从数组中提取值，按照对应位置，对变量赋值。</p>
+
+<p>本质上，这种写法属于“模式匹配”，只要等号两边的模式相同，左边的变量就会被赋予对应的值。下面是一些使用嵌套数组进行解构的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">,</span> <span class="p">[[</span><span class="nx">bar</span><span class="p">],</span> <span class="nx">baz</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">[[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">]];</span>
+<span class="nx">foo</span> <span class="c1">// 1</span>
+<span class="nx">bar</span> <span class="c1">// 2</span>
+<span class="nx">baz</span> <span class="c1">// 3</span>
+
+<span class="kd">let</span> <span class="p">[</span> <span class="p">,</span> <span class="p">,</span> <span class="nx">third</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"bar"</span><span class="p">,</span> <span class="s2">"baz"</span><span class="p">];</span>
+<span class="nx">third</span> <span class="c1">// "baz"</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+<span class="nx">x</span> <span class="c1">// 1</span>
+<span class="nx">y</span> <span class="c1">// 3</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">head</span><span class="p">,</span> <span class="p">...</span><span class="nx">tail</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">];</span>
+<span class="nx">head</span> <span class="c1">// 1</span>
+<span class="nx">tail</span> <span class="c1">// [2, 3, 4]</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="p">...</span><span class="nx">z</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">];</span>
+<span class="nx">x</span> <span class="c1">// "a"</span>
+<span class="nx">y</span> <span class="c1">// undefined</span>
+<span class="nx">z</span> <span class="c1">// []</span></code></pre></figure>
+
+<p>如果解构不成功，变量的值就等于undefined。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">bar</span><span class="p">,</span> <span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span></code></pre></figure>
+
+<p>以上两种情况都属于解构不成功，foo的值都会等于undefined。</p>
+
+<p>另一种情况是不完全解构，即等号左边的模式，只匹配一部分的等号右边的数组。这种情况下，解构依然可以成功。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+<span class="nx">x</span> <span class="c1">// 1</span>
+<span class="nx">y</span> <span class="c1">// 2</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="p">[</span><span class="nx">b</span><span class="p">],</span> <span class="nx">d</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="mi">4</span><span class="p">];</span>
+<span class="nx">a</span> <span class="c1">// 1</span>
+<span class="nx">b</span> <span class="c1">// 2</span>
+<span class="nx">d</span> <span class="c1">// 4</span></code></pre></figure>
+
+<p>上面两个例子，都属于不完全解构，但是可以成功。</p>
+
+<p>如果等号的右边不是数组（或者严格地说，不是可遍历的结构，参见《Iterator》一章），那么将会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 报错</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">NaN</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span></code></pre></figure>
+
+<p>上面的语句都会报错，因为等号右边的值，要么转为对象以后不具备 Iterator 接口（前五个表达式），要么本身就不具备 Iterator 接口（最后一个表达式）。</p>
+
+<p>对于 Set 结构，也可以使用数组的解构赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Set</span><span class="p">([</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">]);</span>
+<span class="nx">x</span> <span class="c1">// "a"</span></code></pre></figure>
+
+<p>事实上，只要某种数据结构具有 Iterator 接口，都可以采用数组形式的解构赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span><span class="o">*</span> <span class="nx">fibs</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kd">let</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">yield</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">b</span><span class="p">,</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">,</span> <span class="nx">third</span><span class="p">,</span> <span class="nx">fourth</span><span class="p">,</span> <span class="nx">fifth</span><span class="p">,</span> <span class="nx">sixth</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fibs</span><span class="p">();</span>
+<span class="nx">sixth</span> <span class="c1">// 5</span></code></pre></figure>
+
+<p>上面代码中，fibs是一个 <a href="http://www.ruanyifeng.com/blog/2015/04/generator.html">Generator 函数</a>，原生具有 Iterator 接口。解构赋值会依次从这个接口获取值。</p>
+
+<h4 id="section-2">默认值</h4>
+
+<p>解构赋值允许指定默认值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">foo</span> <span class="o">=</span> <span class="kc">true</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="nx">foo</span> <span class="c1">// true</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="s1">'b'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">];</span> <span class="c1">// x='a', y='b'</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="s1">'b'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">];</span> <span class="c1">// x='a', y='b'</span></code></pre></figure>
+
+<p>注意，ES6 内部使用严格相等运算符（===），判断一个位置是否有值。所以，如果一个数组成员不严格等于undefined，默认值是不会生效的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">undefined</span><span class="p">];</span>
+<span class="nx">x</span> <span class="c1">// 1</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="kc">null</span><span class="p">];</span>
+<span class="nx">x</span> <span class="c1">// null</span></code></pre></figure>
+
+<p>上面代码中，如果一个数组成员是null，默认值就不会生效，因为null不严格等于undefined。</p>
+
+<p>如果默认值是一个表达式，那么这个表达式是惰性求值的，即只有在用到的时候，才会求值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">f</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'aaa'</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">f</span><span class="p">()]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span></code></pre></figure>
+
+<p>上面代码中，因为x能取到值，所以函数f根本不会执行。上面的代码其实等价于下面的代码。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">x</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">([</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="nx">f</span><span class="p">();</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="nx">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>默认值可以引用解构赋值的其他变量，但该变量必须已经声明。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>     <span class="c1">// x=1; y=1</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">];</span>    <span class="c1">// x=2; y=2</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">];</span> <span class="c1">// x=1; y=2</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>     <span class="c1">// ReferenceError</span></code></pre></figure>
+
+<p>上面最后一个表达式之所以会报错，是因为x用到默认值y时，y还没有声明。</p>
+
+<h3 id="section-3">2. 对象的解构赋</h3>
+
+<p>解构不仅可以用于数组，还可以用于对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span> <span class="nx">foo</span><span class="p">,</span> <span class="nx">bar</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="s2">"aaa"</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="s2">"bbb"</span> <span class="p">};</span>
+<span class="nx">foo</span> <span class="c1">// "aaa"</span>
+<span class="nx">bar</span> <span class="c1">// "bbb"</span></code></pre></figure>
+
+<p>对象的解构与数组有一个重要的不同。数组的元素是按次序排列的，变量的取值由它的位置决定；而对象的属性没有次序，变量必须与属性同名，才能取到正确的值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span> <span class="nx">bar</span><span class="p">,</span> <span class="nx">foo</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="s2">"aaa"</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="s2">"bbb"</span> <span class="p">};</span>
+<span class="nx">foo</span> <span class="c1">// "aaa"</span>
+<span class="nx">bar</span> <span class="c1">// "bbb"</span>
+
+<span class="kd">let</span> <span class="p">{</span> <span class="nx">baz</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="s2">"aaa"</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="s2">"bbb"</span> <span class="p">};</span>
+<span class="nx">baz</span> <span class="c1">// undefined</span></code></pre></figure>
+
+<p>上面代码的第一个例子，等号左边的两个变量的次序，与等号右边两个同名属性的次序不一致，但是对取值完全没有影响。第二个例子的变量没有对应的同名属性，导致取不到值，最后等于undefined。</p>
+
+<p>如果变量名与属性名不一致，必须写成下面这样。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="nx">baz</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="s1">'aaa'</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="s1">'bbb'</span> <span class="p">};</span>
+<span class="nx">baz</span> <span class="c1">// "aaa"</span>
+
+<span class="kd">let</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span> <span class="na">first</span><span class="p">:</span> <span class="s1">'hello'</span><span class="p">,</span> <span class="na">last</span><span class="p">:</span> <span class="s1">'world'</span> <span class="p">};</span>
+<span class="kd">let</span> <span class="p">{</span> <span class="na">first</span><span class="p">:</span> <span class="nx">f</span><span class="p">,</span> <span class="na">last</span><span class="p">:</span> <span class="nx">l</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="nx">f</span> <span class="c1">// 'hello'</span>
+<span class="nx">l</span> <span class="c1">// 'world'</span></code></pre></figure>
+
+<p>这实际上说明，对象的解构赋值是下面形式的简写（参见<a href="http://es6.ruanyifeng.com/#docs/object">《对象的扩展》</a>一章）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="nx">foo</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="nx">bar</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="s2">"aaa"</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="s2">"bbb"</span> <span class="p">};</span></code></pre></figure>
+
+<p>也就是说，对象的解构赋值的内部机制，是先找到同名属性，然后再赋给对应的变量。真正被赋值的是后者，而不是前者。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="nx">baz</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="s2">"aaa"</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="s2">"bbb"</span> <span class="p">};</span>
+<span class="nx">baz</span> <span class="c1">// "aaa"</span>
+<span class="nx">foo</span> <span class="c1">// error: foo is not defined</span></code></pre></figure>
+
+<p>上面代码中，foo是匹配的模式，baz才是变量。真正被赋值的是变量baz，而不是模式foo。</p>
+
+<p>注意，采用这种写法时，变量的声明和赋值是一体的。对于let和const来说，变量不能重新声明，所以一旦赋值的变量以前声明过，就会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">foo</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">foo</span><span class="p">:</span> <span class="mi">1</span><span class="p">};</span> <span class="c1">// SyntaxError: Duplicate declaration "foo"</span>
+
+<span class="kd">let</span> <span class="nx">baz</span><span class="p">;</span>
+<span class="kd">let</span> <span class="p">{</span><span class="na">bar</span><span class="p">:</span> <span class="nx">baz</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">bar</span><span class="p">:</span> <span class="mi">1</span><span class="p">};</span> <span class="c1">// SyntaxError: Duplicate declaration "baz"</span></code></pre></figure>
+
+<p>上面代码中，解构赋值的变量都会重新声明，所以报错了。不过，因为var命令允许重新声明，所以这个错误只会在使用let和const命令时出现。如果没有第二个let命令，上面的代码就不会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">foo</span><span class="p">;</span>
+<span class="p">({</span><span class="nx">foo</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">foo</span><span class="p">:</span> <span class="mi">1</span><span class="p">});</span> <span class="c1">// 成功</span>
+
+<span class="kd">let</span> <span class="nx">baz</span><span class="p">;</span>
+<span class="p">({</span><span class="na">bar</span><span class="p">:</span> <span class="nx">baz</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">bar</span><span class="p">:</span> <span class="mi">1</span><span class="p">});</span> <span class="c1">// 成功</span></code></pre></figure>
+
+<p>上面代码中，let命令下面一行的圆括号是必须的，否则会报错。因为解析器会将起首的大括号，理解成一个代码块，而不是赋值语句。</p>
+
+<p>和数组一样，解构也可以用于嵌套结构的对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">p</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s1">'Hello'</span><span class="p">,</span>
+    <span class="p">{</span> <span class="na">y</span><span class="p">:</span> <span class="s1">'World'</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">};</span>
+
+<span class="kd">let</span> <span class="p">{</span> <span class="na">p</span><span class="p">:</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="p">{</span> <span class="nx">y</span> <span class="p">}]</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="nx">x</span> <span class="c1">// "Hello"</span>
+<span class="nx">y</span> <span class="c1">// "World"</span></code></pre></figure>
+
+<p>注意，这时p是模式，不是变量，因此不会被赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">node</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">loc</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">start</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">line</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">column</span><span class="p">:</span> <span class="mi">5</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="p">{</span> <span class="na">loc</span><span class="p">:</span> <span class="p">{</span> <span class="na">start</span><span class="p">:</span> <span class="p">{</span> <span class="nx">line</span> <span class="p">}}</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">node</span><span class="p">;</span>
+<span class="nx">line</span> <span class="c1">// 1</span>
+<span class="nx">loc</span>  <span class="c1">// error: loc is undefined</span>
+<span class="nx">start</span> <span class="c1">// error: start is undefined</span></code></pre></figure>
+
+<p>下面是嵌套赋值的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[];</span>
+
+<span class="p">({</span> <span class="na">foo</span><span class="p">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">prop</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">foo</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="na">bar</span><span class="p">:</span> <span class="kc">true</span> <span class="p">});</span>
+
+<span class="nx">obj</span> <span class="c1">// {prop:123}</span>
+<span class="nx">arr</span> <span class="c1">// [true]</span></code></pre></figure>
+
+<p>对象的解构也可以指定默认值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="p">{</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">x</span> <span class="c1">// 3</span>
+
+<span class="kd">var</span> <span class="p">{</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">5</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">};</span>
+<span class="nx">x</span> <span class="c1">// 1</span>
+<span class="nx">y</span> <span class="c1">// 5</span>
+
+<span class="kd">var</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">y</span> <span class="c1">// 3</span>
+
+<span class="kd">var</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">5</span><span class="p">};</span>
+<span class="nx">y</span> <span class="c1">// 5</span>
+
+<span class="kd">var</span> <span class="p">{</span> <span class="na">message</span><span class="p">:</span> <span class="nx">msg</span> <span class="o">=</span> <span class="s1">'Something went wrong'</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">msg</span> <span class="c1">// "Something went wrong"</span></code></pre></figure>
+
+<p>默认值生效的条件是，对象的属性值严格等于undefined。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="p">{</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="kc">undefined</span><span class="p">};</span>
+<span class="nx">x</span> <span class="c1">// 3</span>
+
+<span class="kd">var</span> <span class="p">{</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="kc">null</span><span class="p">};</span>
+<span class="nx">x</span> <span class="c1">// null</span></code></pre></figure>
+
+<p>上面代码中，如果x属性等于null，就不严格相等于undefined，导致默认值不会生效。</p>
+
+<p>如果解构失败，变量的值等于undefined。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span><span class="nx">foo</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">bar</span><span class="p">:</span> <span class="s1">'baz'</span><span class="p">};</span>
+<span class="nx">foo</span> <span class="c1">// undefined</span></code></pre></figure>
+
+<p>如果解构模式是嵌套的对象，而且子对象所在的父属性不存在，那么将会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 报错</span>
+<span class="kd">let</span> <span class="p">{</span><span class="na">foo</span><span class="p">:</span> <span class="p">{</span><span class="nx">bar</span><span class="p">}}</span> <span class="o">=</span> <span class="p">{</span><span class="na">baz</span><span class="p">:</span> <span class="s1">'baz'</span><span class="p">};</span></code></pre></figure>
+
+<p>上面代码中，等号左边对象的foo属性，对应一个子对象。该子对象的bar属性，解构时会报错。原因很简单，因为foo这时等于undefined，再取子属性就会报错，请看下面的代码。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">_tmp</span> <span class="o">=</span> <span class="p">{</span><span class="na">baz</span><span class="p">:</span> <span class="s1">'baz'</span><span class="p">};</span>
+<span class="nx">_tmp</span><span class="p">.</span><span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span> <span class="c1">// 报错</span></code></pre></figure>
+
+<p>如果要将一个已经声明的变量用于解构赋值，必须非常小心。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 错误的写法</span>
+<span class="kd">let</span> <span class="nx">x</span><span class="p">;</span>
+<span class="p">{</span><span class="nx">x</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">};</span>
+<span class="c1">// SyntaxError: syntax error</span></code></pre></figure>
+
+<p>上面代码的写法会报错，因为JavaScript引擎会将{x}理解成一个代码块，从而发生语法错误。只有不将大括号写在行首，避免JavaScript将其解释为代码块，才能解决这个问题。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 正确的写法</span>
+<span class="p">({</span><span class="nx">x</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">});</span></code></pre></figure>
+
+<p>上面代码将整个解构赋值语句，放在一个圆括号里面，就可以正确执行。关于圆括号与解构赋值的关系，参见下文。</p>
+
+<p>解构赋值允许，等号左边的模式之中，不放置任何变量名。因此，可以写出非常古怪的赋值表达式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">({}</span> <span class="o">=</span> <span class="p">[</span><span class="kc">true</span><span class="p">,</span> <span class="kc">false</span><span class="p">]);</span>
+<span class="p">({}</span> <span class="o">=</span> <span class="s1">'abc'</span><span class="p">);</span>
+<span class="p">({}</span> <span class="o">=</span> <span class="p">[]);</span></code></pre></figure>
+
+<p>上面的表达式虽然毫无意义，但是语法是合法的，可以执行。</p>
+
+<p>对象的解构赋值，可以很方便地将现有对象的方法，赋值到某个变量。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span> <span class="nx">log</span><span class="p">,</span> <span class="nx">sin</span><span class="p">,</span> <span class="nx">cos</span> <span class="p">}</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">;</span></code></pre></figure>
+
+<p>上面代码将Math对象的对数、正弦、余弦三个方法，赋值到对应的变量上，使用起来就会方便很多。</p>
+
+<p>由于数组本质是特殊的对象，因此可以对数组进行对象属性的解构。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+<span class="kd">let</span> <span class="p">{</span><span class="mi">0</span> <span class="p">:</span> <span class="nx">first</span><span class="p">,</span> <span class="p">[</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="p">:</span> <span class="nx">last</span><span class="p">}</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span>
+<span class="nx">first</span> <span class="c1">// 1</span>
+<span class="nx">last</span> <span class="c1">// 3</span></code></pre></figure>
+
+<p>上面代码对数组进行对象解构。数组arr的0键对应的值是1，[arr.length - 1]就是2键，对应的值是3。方括号这种写法，属于“属性名表达式”，参见<a href="http://es6.ruanyifeng.com/#docs/object">《对象的扩展》</a>一章。</p>
+
+<h3 id="section-4">3. 字符串的解构赋值</h3>
+
+<p>字符串也可以解构赋值。这是因为此时，字符串被转换成了一个类似数组的对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">,</span> <span class="nx">e</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
+<span class="nx">a</span> <span class="c1">// "h"</span>
+<span class="nx">b</span> <span class="c1">// "e"</span>
+<span class="nx">c</span> <span class="c1">// "l"</span>
+<span class="nx">d</span> <span class="c1">// "l"</span>
+<span class="nx">e</span> <span class="c1">// "o"</span></code></pre></figure>
+
+<p>类似数组的对象都有一个length属性，因此还可以对这个属性解构赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span><span class="na">length</span> <span class="p">:</span> <span class="nx">len</span><span class="p">}</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
+<span class="nx">len</span> <span class="c1">// 5</span></code></pre></figure>
+
+<h3 id="section-5">4. 数值和布尔值的解构赋值</h3>
+
+<p>解构赋值时，如果等号右边是数值和布尔值，则会先转为对象。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span><span class="na">toString</span><span class="p">:</span> <span class="nx">s</span><span class="p">}</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+<span class="nx">s</span> <span class="o">===</span> <span class="nb">Number</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span> <span class="c1">// true</span>
+
+<span class="kd">let</span> <span class="p">{</span><span class="na">toString</span><span class="p">:</span> <span class="nx">s</span><span class="p">}</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+<span class="nx">s</span> <span class="o">===</span> <span class="nb">Boolean</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，数值和布尔值的包装对象都有toString属性，因此变量s都能取到值。</p>
+
+<p>解构赋值的规则是，只要等号右边的值不是对象，就先将其转为对象。由于undefined和null无法转为对象，所以对它们进行解构赋值，都会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="p">{</span> <span class="na">prop</span><span class="p">:</span> <span class="nx">x</span> <span class="p">}</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span> <span class="c1">// TypeError</span>
+<span class="kd">let</span> <span class="p">{</span> <span class="na">prop</span><span class="p">:</span> <span class="nx">y</span> <span class="p">}</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span> <span class="c1">// TypeError</span></code></pre></figure>
+
+<h3 id="section-6">5. 函数参数的解构赋值</h3>
+
+<p>函数的参数也可以使用解构赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">add</span><span class="p">([</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]){</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">add</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]);</span> <span class="c1">// 3</span></code></pre></figure>
+
+<p>上面代码中，函数add的参数表面上是一个数组，但在传入参数的那一刻，数组参数就被解构成变量x和y。对于函数内部的代码来说，它们能感受到的参数就是x和y。</p>
+
+<p>下面是另一个例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]].</span><span class="nx">map</span><span class="p">(([</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">])</span> <span class="o">=&gt;</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span><span class="p">);</span>
+<span class="c1">// [ 3, 7 ]</span></code></pre></figure>
+
+<p>函数参数的解构也可以使用默认值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">move</span><span class="p">({</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">}</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="nx">move</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">8</span><span class="p">});</span> <span class="c1">// [3, 8]</span>
+<span class="nx">move</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="mi">3</span><span class="p">});</span> <span class="c1">// [3, 0]</span>
+<span class="nx">move</span><span class="p">({});</span> <span class="c1">// [0, 0]</span>
+<span class="nx">move</span><span class="p">();</span> <span class="c1">// [0, 0]</span></code></pre></figure>
+
+<p>上面代码中，函数move的参数是一个对象，通过对这个对象进行解构，得到变量x和y的值。如果解构失败，x和y等于默认值。</p>
+
+<p>注意，下面的写法会得到不一样的结果。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">move</span><span class="p">({</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">0</span> <span class="p">})</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="nx">move</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">8</span><span class="p">});</span> <span class="c1">// [3, 8]</span>
+<span class="nx">move</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="mi">3</span><span class="p">});</span> <span class="c1">// [3, undefined]</span>
+<span class="nx">move</span><span class="p">({});</span> <span class="c1">// [undefined, undefined]</span>
+<span class="nx">move</span><span class="p">();</span> <span class="c1">// [0, 0]</span></code></pre></figure>
+
+<p>上面代码是为函数move的参数指定默认值，而不是为变量x和y指定默认值，所以会得到与前一种写法不同的结果。</p>
+
+<p>undefined就会触发函数参数的默认值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">((</span><span class="nx">x</span> <span class="o">=</span> <span class="s1">'yes'</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">x</span><span class="p">);</span>
+<span class="c1">// [ 1, 'yes', 3 ]</span></code></pre></figure>
+
+<h3 id="section-7">6. 圆括号问题</h3>
+
+<p>解构赋值虽然很方便，但是解析起来并不容易。对于编译器来说，一个式子到底是模式，还是表达式，没有办法从一开始就知道，必须解析到（或解析不到）等号才能知道。</p>
+
+<p>由此带来的问题是，如果模式中出现圆括号怎么处理。ES6的规则是，只要有可能导致解构的歧义，就不得使用圆括号。</p>
+
+<p>但是，这条规则实际上不那么容易辨别，处理起来相当麻烦。因此，建议只要有可能，就不要在模式中放置圆括号。</p>
+
+<h4 id="section-8">不能使用圆括号的情况</h4>
+
+<p>以下三种解构赋值不得使用圆括号。</p>
+
+<p>（1）变量声明语句中，不能带有圆括号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 全部报错</span>
+<span class="kd">let</span> <span class="p">[(</span><span class="nx">a</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+<span class="kd">let</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="p">(</span><span class="nx">c</span><span class="p">)}</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">let</span> <span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="nx">c</span><span class="p">})</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">let</span> <span class="p">{(</span><span class="na">x</span><span class="p">:</span> <span class="nx">c</span><span class="p">)}</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="kd">let</span> <span class="p">{(</span><span class="nx">x</span><span class="p">):</span> <span class="nx">c</span><span class="p">}</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="kd">let</span> <span class="p">{</span> <span class="na">o</span><span class="p">:</span> <span class="p">({</span> <span class="na">p</span><span class="p">:</span> <span class="nx">p</span> <span class="p">})</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span> <span class="na">o</span><span class="p">:</span> <span class="p">{</span> <span class="na">p</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}</span> <span class="p">};</span></code></pre></figure>
+
+<p>上面三个语句都会报错，因为它们都是变量声明语句，模式不能使用圆括号。</p>
+
+<p>（2）函数参数中，模式不能带有圆括号。</p>
+
+<p>函数参数也属于变量声明，因此不能带有圆括号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 报错</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">([(</span><span class="nx">z</span><span class="p">)])</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">z</span><span class="p">;</span> <span class="p">}</span></code></pre></figure>
+
+<p>（3）赋值语句中，不能将整个模式，或嵌套模式中的一层，放在圆括号之中。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 全部报错</span>
+<span class="p">({</span> <span class="na">p</span><span class="p">:</span> <span class="nx">a</span> <span class="p">})</span> <span class="o">=</span> <span class="p">{</span> <span class="na">p</span><span class="p">:</span> <span class="mi">42</span> <span class="p">};</span>
+<span class="p">([</span><span class="nx">a</span><span class="p">])</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">];</span></code></pre></figure>
+
+<p>上面代码将整个模式放在圆括号之中，导致报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 报错</span>
+<span class="p">[({</span> <span class="na">p</span><span class="p">:</span> <span class="nx">a</span> <span class="p">}),</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="nx">c</span> <span class="p">}]</span> <span class="o">=</span> <span class="p">[{},</span> <span class="p">{}];</span></code></pre></figure>
+
+<p>上面代码将嵌套模式的一层，放在圆括号之中，导致报错。</p>
+
+<h4 id="section-9">可以使用圆括号的情况</h4>
+
+<p>可以使用圆括号的情况只有一种：赋值语句的非模式部分，可以使用圆括号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[(</span><span class="nx">b</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">];</span> <span class="c1">// 正确</span>
+<span class="p">({</span> <span class="na">p</span><span class="p">:</span> <span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{});</span> <span class="c1">// 正确</span>
+<span class="p">[(</span><span class="nb">parseInt</span><span class="p">.</span><span class="nx">prop</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">];</span> <span class="c1">// 正确</span></code></pre></figure>
+
+<p>上面三行语句都可以正确执行，因为首先它们都是赋值语句，而不是声明语句；其次它们的圆括号都不属于模式的一部分。第一行语句中，模式是取数组的第一个成员，跟圆括号无关；第二行语句中，模式是p，而不是d；第三行语句与第一行语句的性质一致。</p>
+
+<h3 id="section-10">7. 用途</h3>
+
+<p>变量的解构赋值用途很多。</p>
+
+<p>（1）交换变量的值</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="p">[</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">y</span><span class="p">,</span> <span class="nx">x</span><span class="p">];</span></code></pre></figure>
+
+<p>上面代码交换变量x和y的值，这样的写法不仅简洁，而且易读，语义非常清晰。</p>
+
+<p>（2）从函数返回多个值</p>
+
+<p>函数只能返回一个值，如果要返回多个值，只能将它们放在数组或对象里返回。有了解构赋值，取出这些值就非常方便。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 返回一个数组</span>
+
+<span class="kd">function</span> <span class="nx">example</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="kd">let</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">]</span> <span class="o">=</span> <span class="nx">example</span><span class="p">();</span>
+
+<span class="c1">// 返回一个对象</span>
+
+<span class="kd">function</span> <span class="nx">example</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">foo</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">bar</span><span class="p">:</span> <span class="mi">2</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+<span class="kd">let</span> <span class="p">{</span> <span class="nx">foo</span><span class="p">,</span> <span class="nx">bar</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">example</span><span class="p">();</span></code></pre></figure>
+
+<p>（3）函数参数的定义</p>
+
+<p>解构赋值可以方便地将一组参数与变量名对应起来。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 参数是一组有次序的值</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">([</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">])</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<span class="nx">f</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]);</span>
+
+<span class="c1">// 参数是一组无次序的值</span>
+<span class="kd">function</span> <span class="nx">f</span><span class="p">({</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">,</span> <span class="nx">z</span><span class="p">})</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+<span class="nx">f</span><span class="p">({</span><span class="na">z</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">});</span></code></pre></figure>
+
+<p>（4）提取JSON数据</p>
+
+<p>解构赋值对提取JSON对象中的数据，尤其有用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">jsonData</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+  <span class="na">status</span><span class="p">:</span> <span class="s2">"OK"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">[</span><span class="mi">867</span><span class="p">,</span> <span class="mi">5309</span><span class="p">]</span>
+<span class="p">};</span>
+
+<span class="kd">let</span> <span class="p">{</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">status</span><span class="p">,</span> <span class="na">data</span><span class="p">:</span> <span class="nx">number</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">jsonData</span><span class="p">;</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">status</span><span class="p">,</span> <span class="nx">number</span><span class="p">);</span>
+<span class="c1">// 42, "OK", [867, 5309]</span></code></pre></figure>
+
+<p>上面代码可以快速提取 JSON 数据的值。</p>
+
+<p>（5）函数参数的默认值</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">url</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">async</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">beforeSend</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{},</span>
+  <span class="nx">cache</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="nx">complete</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{},</span>
+  <span class="nx">crossDomain</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="nx">global</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+  <span class="c1">// ... more config</span>
+<span class="p">})</span> <span class="p">{</span>
+  <span class="c1">// ... do stuff</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>指定参数的默认值，就避免了在函数体内部再写var foo = config.foo 或者 ‘default foo’这样的语句。</p>
+
+<p>（6）遍历Map结构</p>
+
+<p>任何部署了Iterator接口的对象，都可以用for…of循环遍历。Map结构原生支持Iterator接口，配合变量的解构赋值，获取键名和键值就非常方便。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">();</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'first'</span><span class="p">,</span> <span class="s1">'hello'</span><span class="p">);</span>
+<span class="nx">map</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">'second'</span><span class="p">,</span> <span class="s1">'world'</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="p">[</span><span class="nx">key</span><span class="p">,</span> <span class="nx">value</span><span class="p">]</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">" is "</span> <span class="o">+</span> <span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// first is hello</span>
+<span class="c1">// second is world</span></code></pre></figure>
+
+<p>如果只想获取键名，或者只想获取键值，可以写成下面这样。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 获取键名</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// 获取键值</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="p">[,</span><span class="nx">value</span><span class="p">]</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>（7）输入模块的指定方法</p>
+
+<p>加载模块时，往往需要指定输入那些方法。解构赋值使得输入语句非常清晰。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="p">{</span> <span class="nx">SourceMapConsumer</span><span class="p">,</span> <span class="nx">SourceNode</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"source-map"</span><span class="p">);</span></code></pre></figure>
+

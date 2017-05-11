@@ -1,0 +1,794 @@
+<p>ES6加强了对Unicode的支持，并且扩展了字符串对象。</p>
+
+<h3 id="unicode">1. 字符的Unicode表示法</h3>
+
+<p>JavaScript允许采用\uxxxx形式表示一个字符，其中“xxxx”表示字符的码点。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"\u0061"</span>
+<span class="c1">// "a"</span></code></pre></figure>
+
+<p>但是，这种表示法只限于\u0000——\uFFFF之间的字符。超出这个范围的字符，必须用两个双字节的形式表达。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"\uD842\uDFB7"</span>
+<span class="c1">// "𠮷"</span>
+
+<span class="s2">"\u20BB7"</span>
+<span class="c1">// " 7"</span></code></pre></figure>
+
+<p>上面代码表示，如果直接在\u后面跟上超过0xFFFF的数值（比如\u20BB7），JavaScript会理解成\u20BB+7。由于\u20BB是一个不可打印字符，所以只会显示一个空格，后面跟着一个7。</p>
+
+<p>ES6 对这一点做出了改进，只要将码点放入大括号，就能正确解读该字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"\u{20BB7}"</span>
+<span class="c1">// "𠮷"</span>
+
+<span class="s2">"\u{41}\u{42}\u{43}"</span>
+<span class="c1">// "ABC"</span>
+
+<span class="kd">let</span> <span class="nx">hello</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+<span class="nx">hell</span><span class="err">\</span><span class="nx">u</span><span class="p">{</span><span class="mi">6</span><span class="nx">F</span><span class="p">}</span> <span class="c1">// 123</span>
+
+<span class="s1">'\u{1F680}'</span> <span class="o">===</span> <span class="s1">'\uD83D\uDE80'</span>
+<span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，最后一个例子表明，大括号表示法与四字节的UTF-16编码是等价的。</p>
+
+<p>有了这种表示法之后，JavaScript共有6种方法可以表示一个字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'\z'</span> <span class="o">===</span> <span class="s1">'z'</span>  <span class="c1">// true</span>
+<span class="s1">'\172'</span> <span class="o">===</span> <span class="s1">'z'</span> <span class="c1">// true</span>
+<span class="s1">'\x7A'</span> <span class="o">===</span> <span class="s1">'z'</span> <span class="c1">// true</span>
+<span class="s1">'\u007A'</span> <span class="o">===</span> <span class="s1">'z'</span> <span class="c1">// true</span>
+<span class="s1">'\u{7A}'</span> <span class="o">===</span> <span class="s1">'z'</span> <span class="c1">// true</span></code></pre></figure>
+
+<h3 id="codepointat">2. codePointAt()</h3>
+
+<p>JavaScript内部，字符以UTF-16的格式储存，每个字符固定为2个字节。对于那些需要4个字节储存的字符（Unicode码点大于0xFFFF的字符），JavaScript会认为它们是两个字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s2">"𠮷"</span><span class="p">;</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">length</span> <span class="c1">// 2</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// ''</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// ''</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// 55362</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">charCodeAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// 57271</span></code></pre></figure>
+
+<p>上面代码中，汉字“𠮷”（注意，这个字不是”吉祥“的”吉“）的码点是0x20BB7，UTF-16编码为0xD842 0xDFB7（十进制为55362 57271），需要4个字节储存。对于这种4个字节的字符，JavaScript不能正确处理，字符串长度会误判为2，而且charAt方法无法读取整个字符，charCodeAt方法只能分别返回前两个字节和后两个字节的值。</p>
+
+<p>ES6提供了codePointAt方法，能够正确处理4个字节储存的字符，返回一个字符的码点。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'𠮷a'</span><span class="p">;</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// 134071</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">// 57271</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1">// 97</span></code></pre></figure>
+
+<p>codePointAt方法的参数，是字符在字符串中的位置（从0开始）。上面代码中，JavaScript将“𠮷a”视为三个字符，codePointAt方法在第一个字符上，正确地识别了“𠮷”，返回了它的十进制码点134071（即十六进制的20BB7）。在第二个字符（即“𠮷”的后两个字节）和第三个字符“a”上，codePointAt方法的结果与charCodeAt方法相同。</p>
+
+<p>总之，codePointAt方法会正确返回32位的UTF-16字符的码点。对于那些两个字节储存的常规字符，它的返回结果与charCodeAt方法相同。</p>
+
+<p>codePointAt方法返回的是码点的十进制值，如果想要十六进制的值，可以使用toString方法转换一下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'𠮷a'</span><span class="p">;</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="c1">// "20bb7"</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="c1">// "61"</span></code></pre></figure>
+
+<p>intAt方法的参数，仍然是不正确的。比如，上面代码中，字符a在字符串s的正确位置序号应该是1，但是必须向codePointAt方法传入2。解决这个问题的一个办法是使用for…of循环，因为它会正确识别32位的UTF-16字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'𠮷a'</span><span class="p">;</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">ch</span> <span class="nx">of</span> <span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">ch</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="mi">16</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="c1">// 20bb7</span>
+<span class="c1">// 61</span></code></pre></figure>
+
+<p>codePointAt方法是测试一个字符由两个字节还是由四个字节组成的最简单方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">is32Bit</span><span class="p">(</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">codePointAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mh">0xFFFF</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">is32Bit</span><span class="p">(</span><span class="s2">"𠮷"</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">is32Bit</span><span class="p">(</span><span class="s2">"a"</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<h3 id="stringfromcodepoint">3. String.fromCodePoint()</h3>
+
+<p>ES5提供String.fromCharCode方法，用于从码点返回对应字符，但是这个方法不能识别32位的UTF-16字符（Unicode编号大于0xFFFF）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mh">0x20BB7</span><span class="p">)</span>
+<span class="c1">// "ஷ"</span></code></pre></figure>
+
+<p>上面代码中，String.fromCharCode不能识别大于0xFFFF的码点，所以0x20BB7就发生了溢出，最高位2被舍弃了，最后返回码点U+0BB7对应的字符，而不是码点U+20BB7对应的字符。</p>
+
+<p>ES6提供了String.fromCodePoint方法，可以识别0xFFFF的字符，弥补了String.fromCharCode方法的不足。在作用上，正好与codePointAt方法相反。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">String</span><span class="p">.</span><span class="nx">fromCodePoint</span><span class="p">(</span><span class="mh">0x20BB7</span><span class="p">)</span>
+<span class="c1">// "𠮷"</span>
+<span class="nb">String</span><span class="p">.</span><span class="nx">fromCodePoint</span><span class="p">(</span><span class="mh">0x78</span><span class="p">,</span> <span class="mh">0x1f680</span><span class="p">,</span> <span class="mh">0x79</span><span class="p">)</span> <span class="o">===</span> <span class="s1">'x\uD83D\uDE80y'</span>
+<span class="c1">// true</span></code></pre></figure>
+
+<p>上面代码中，如果String.fromCodePoint方法有多个参数，则它们会被合并成一个字符串返回。</p>
+
+<p>注意，fromCodePoint方法定义在String对象上，而codePointAt方法定义在字符串的实例对象上。</p>
+
+<h3 id="section">4. 字符串的遍历器接口</h3>
+
+<p>ES6为字符串添加了遍历器接口（详见<a href="http://es6.ruanyifeng.com/#docs/iterator">《Iterator》一章</a>），使得字符串可以被for…of循环遍历。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">codePoint</span> <span class="nx">of</span> <span class="s1">'foo'</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">codePoint</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">// "f"</span>
+<span class="c1">// "o"</span>
+<span class="c1">// "o"</span></code></pre></figure>
+
+<p>除了遍历字符串，这个遍历器最大的优点是可以识别大于0xFFFF的码点，传统的for循环无法识别这样的码点。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">text</span> <span class="o">=</span> <span class="nb">String</span><span class="p">.</span><span class="nx">fromCodePoint</span><span class="p">(</span><span class="mh">0x20BB7</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">text</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">text</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+<span class="p">}</span>
+<span class="c1">// " "</span>
+<span class="c1">// " "</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="nx">of</span> <span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// "𠮷"</span></code></pre></figure>
+
+<p>上面代码中，字符串text只有一个字符，但是for循环会认为它包含两个字符（都不可打印），而for…of循环会正确识别出这一个字符。</p>
+
+<h3 id="at">5. at()</h3>
+
+<p>ES5对字符串对象提供charAt方法，返回字符串给定位置的字符。该方法不能识别码点大于0xFFFF的字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'abc'</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// "a"</span>
+<span class="s1">'𠮷'</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// "\uD842"</span></code></pre></figure>
+
+<p>arAt方法返回的是UTF-16编码的第一个字节，实际上是无法显示的。</p>
+
+<p>目前，有一个提案，提出字符串实例的at方法，可以识别Unicode编号大于0xFFFF的字符，返回正确的字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'abc'</span><span class="p">.</span><span class="nx">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// "a"</span>
+<span class="s1">'𠮷'</span><span class="p">.</span><span class="nx">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// "𠮷"</span></code></pre></figure>
+
+<p>这个方法可以通过<a href="https://github.com/es-shims/String.prototype.at">垫片库</a>实现。</p>
+
+<h3 id="normalize">6. normalize()</h3>
+
+<p>许多欧洲语言有语调符号和重音符号。为了表示它们，Unicode提供了两种方法。一种是直接提供带重音符号的字符，比如Ǒ（\u01D1）。另一种是提供合成符号（combining character），即原字符与重音符号的合成，两个字符合成一个字符，比如O（\u004F）和ˇ（\u030C）合成Ǒ（\u004F\u030C）。</p>
+
+<p>这两种表示方法，在视觉和语义上都等价，但是JavaScript不能识别。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'\u01D1'</span><span class="o">===</span><span class="s1">'\u004F\u030C'</span> <span class="c1">//false</span>
+
+<span class="s1">'\u01D1'</span><span class="p">.</span><span class="nx">length</span> <span class="c1">// 1</span>
+<span class="s1">'\u004F\u030C'</span><span class="p">.</span><span class="nx">length</span> <span class="c1">// 2</span></code></pre></figure>
+
+<p>上面代码表示，JavaScript将合成字符视为两个字符，导致两种表示方法不相等。</p>
+
+<p>ES6提供字符串实例的normalize()方法，用来将字符的不同表示方法统一为同样的形式，这称为Unicode正规化。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'\u01D1'</span><span class="p">.</span><span class="nx">normalize</span><span class="p">()</span> <span class="o">===</span> <span class="s1">'\u004F\u030C'</span><span class="p">.</span><span class="nx">normalize</span><span class="p">()</span>
+<span class="c1">// true</span></code></pre></figure>
+
+<p>normalize方法可以接受一个参数来指定normalize的方式，参数的四个可选值如下。</p>
+
+<p>NFC，默认参数，表示“标准等价合成”（Normalization Form Canonical Composition），返回多个简单字符的合成字符。所谓“标准等价”指的是视觉和语义上的等价。
+NFD，表示“标准等价分解”（Normalization Form Canonical Decomposition），即在标准等价的前提下，返回合成字符分解的多个简单字符。
+NFKC，表示“兼容等价合成”（Normalization Form Compatibility Composition），返回合成字符。所谓“兼容等价”指的是语义上存在等价，但视觉上不等价，比如“囍”和“喜喜”。（这只是用来举例，normalize方法不能识别中文。）
+NFKD，表示“兼容等价分解”（Normalization Form Compatibility Decomposition），即在兼容等价的前提下，返回合成字符分解的多个简单字符。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'\u004F\u030C'</span><span class="p">.</span><span class="nx">normalize</span><span class="p">(</span><span class="s1">'NFC'</span><span class="p">).</span><span class="nx">length</span> <span class="c1">// 1</span>
+<span class="s1">'\u004F\u030C'</span><span class="p">.</span><span class="nx">normalize</span><span class="p">(</span><span class="s1">'NFD'</span><span class="p">).</span><span class="nx">length</span> <span class="c1">// 2</span></code></pre></figure>
+
+<p>上面代码表示，NFC参数返回字符的合成形式，NFD参数返回字符的分解形式。</p>
+
+<p>不过，normalize方法目前不能识别三个或三个以上字符的合成。这种情况下，还是只能使用正则表达式，通过Unicode编号区间判断。</p>
+
+<h3 id="includes-startswith-endswith">7. includes(), startsWith(), endsWith()</h3>
+
+<p>传统上，JavaScript只有indexOf方法，可以用来确定一个字符串是否包含在另一个字符串中。ES6又提供了三种新方法。</p>
+
+<p>includes()：返回布尔值，表示是否找到了参数字符串。
+startsWith()：返回布尔值，表示参数字符串是否在源字符串的头部。
+endsWith()：返回布尔值，表示参数字符串是否在源字符串的尾部。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'Hello world!'</span><span class="p">;</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'Hello'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">'!'</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'o'</span><span class="p">)</span> <span class="c1">// true</span></code></pre></figure>
+
+<p>这三个方法都支持第二个参数，表示开始搜索的位置。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="s1">'Hello world!'</span><span class="p">;</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">'world'</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">endsWith</span><span class="p">(</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span> <span class="c1">// true</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'Hello'</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="c1">// false</span></code></pre></figure>
+
+<p>上面代码表示，使用第二个参数n时，endsWith的行为与其他两个方法有所不同。它针对前n个字符，而其他两个方法针对从第n个位置直到字符串结束。</p>
+
+<h3 id="repeat">8. repeat()</h3>
+
+<p>repeat方法返回一个新字符串，表示将原字符串重复n次。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'x'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1">// "xxx"</span>
+<span class="s1">'hello'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1">// "hellohello"</span>
+<span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1">// ""</span></code></pre></figure>
+
+<p>参数如果是小数，会被取整。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="mf">2.9</span><span class="p">)</span> <span class="c1">// "nana"</span></code></pre></figure>
+
+<p>如果repeat的参数是负数或者Infinity，会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="kc">Infinity</span><span class="p">)</span>
+<span class="c1">// RangeError</span>
+<span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">// RangeError</span></code></pre></figure>
+
+<p>但是，如果参数是0到-1之间的小数，则等同于0，这是因为会先进行取整运算。0到-1之间的小数，取整以后等于-0，repeat视同为0。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="o">-</span><span class="mf">0.9</span><span class="p">)</span> <span class="c1">// ""</span></code></pre></figure>
+
+<p>参数NaN等同于0。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span> <span class="c1">// ""</span></code></pre></figure>
+
+<p>如果repeat的参数是字符串，则会先转换成数字。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="s1">'na'</span><span class="p">)</span> <span class="c1">// ""</span>
+<span class="s1">'na'</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span><span class="s1">'3'</span><span class="p">)</span> <span class="c1">// "nanana"</span></code></pre></figure>
+
+<h3 id="padstartpadend">9. padStart()，padEnd()</h3>
+
+<p>ES2017 引入了字符串补全长度的功能。如果某个字符串不够指定长度，会在头部或尾部补全。padStart()用于头部补全，padEnd()用于尾部补全。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'x'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'ab'</span><span class="p">)</span> <span class="c1">// 'ababx'</span>
+<span class="s1">'x'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'ab'</span><span class="p">)</span> <span class="c1">// 'abax'</span>
+
+<span class="s1">'x'</span><span class="p">.</span><span class="nx">padEnd</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">'ab'</span><span class="p">)</span> <span class="c1">// 'xabab'</span>
+<span class="s1">'x'</span><span class="p">.</span><span class="nx">padEnd</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'ab'</span><span class="p">)</span> <span class="c1">// 'xaba'</span></code></pre></figure>
+
+<p>上面代码中，padStart和padEnd一共接受两个参数，第一个参数用来指定字符串的最小长度，第二个参数是用来补全的字符串。</p>
+
+<p>如果原字符串的长度，等于或大于指定的最小长度，则返回原字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'xxx'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'ab'</span><span class="p">)</span> <span class="c1">// 'xxx'</span>
+<span class="s1">'xxx'</span><span class="p">.</span><span class="nx">padEnd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'ab'</span><span class="p">)</span> <span class="c1">// 'xxx'</span></code></pre></figure>
+
+<p>如果用来补全的字符串与原字符串，两者的长度之和超过了指定的最小长度，则会截去超出位数的补全字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'abc'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'0123456789'</span><span class="p">)</span>
+<span class="c1">// '0123456abc'</span></code></pre></figure>
+
+<p>如果省略第二个参数，默认使用空格补全长度。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'x'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1">// '   x'</span>
+<span class="s1">'x'</span><span class="p">.</span><span class="nx">padEnd</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c1">// 'x   '</span></code></pre></figure>
+
+<p>padStart的常见用途是为数值补全指定位数。下面代码生成10位的数值字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'1'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'0'</span><span class="p">)</span> <span class="c1">// "0000000001"</span>
+<span class="s1">'12'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'0'</span><span class="p">)</span> <span class="c1">// "0000000012"</span>
+<span class="s1">'123456'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'0'</span><span class="p">)</span> <span class="c1">// "0000123456"</span></code></pre></figure>
+
+<p>另一个用途是提示字符串格式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'12'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'YYYY-MM-DD'</span><span class="p">)</span> <span class="c1">// "YYYY-MM-12"</span>
+<span class="s1">'09-12'</span><span class="p">.</span><span class="nx">padStart</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'YYYY-MM-DD'</span><span class="p">)</span> <span class="c1">// "YYYY-09-12"</span></code></pre></figure>
+
+<h3 id="section-1">10. 模板字符串</h3>
+
+<p>传统的JavaScript语言，输出模板通常是这样写的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span>
+  <span class="s1">'There are &lt;b&gt;'</span> <span class="o">+</span> <span class="nx">basket</span><span class="p">.</span><span class="nx">count</span> <span class="o">+</span> <span class="s1">'&lt;/b&gt; '</span> <span class="o">+</span>
+  <span class="s1">'items in your basket, '</span> <span class="o">+</span>
+  <span class="s1">'&lt;em&gt;'</span> <span class="o">+</span> <span class="nx">basket</span><span class="p">.</span><span class="nx">onSale</span> <span class="o">+</span>
+  <span class="s1">'&lt;/em&gt; are on sale!'</span>
+<span class="p">);</span></code></pre></figure>
+
+<p>上面这种写法相当繁琐不方便，ES6引入了模板字符串解决这个问题。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">'#result'</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="err">`</span>
+  <span class="nx">There</span> <span class="nx">are</span> <span class="o">&lt;</span><span class="nx">b</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">basket</span><span class="p">.</span><span class="nx">count</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/b&gt; item</span><span class="err">s
+</span>   <span class="k">in</span> <span class="nx">your</span> <span class="nx">basket</span><span class="p">,</span> <span class="o">&lt;</span><span class="nx">em</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">basket</span><span class="p">.</span><span class="nx">onSale</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/em</span><span class="err">&gt;
+</span>  <span class="nx">are</span> <span class="nx">on</span> <span class="nx">sale</span><span class="o">!</span>
+<span class="err">`</span><span class="p">);</span></code></pre></figure>
+
+<p>模板字符串（template string）是增强版的字符串，用反引号（`）标识。它可以当作普通字符串使用，也可以用来定义多行字符串，或者在字符串中嵌入变量。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 普通字符串</span>
+<span class="err">`</span><span class="nx">In</span> <span class="nx">JavaScript</span> <span class="s1">'\n'</span> <span class="nx">is</span> <span class="nx">a</span> <span class="nx">line</span><span class="o">-</span><span class="nx">feed</span><span class="p">.</span><span class="err">`</span>
+
+<span class="c1">// 多行字符串</span>
+<span class="err">`</span><span class="nx">In</span> <span class="nx">JavaScript</span> <span class="k">this</span> <span class="nx">is</span>
+ <span class="nx">not</span> <span class="nx">legal</span><span class="p">.</span><span class="err">`</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">string</span> <span class="nx">text</span> <span class="nx">line</span> <span class="mi">1</span>
+<span class="nx">string</span> <span class="nx">text</span> <span class="nx">line</span> <span class="mi">2</span><span class="err">`</span><span class="p">);</span>
+
+<span class="c1">// 字符串中嵌入变量</span>
+<span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="s2">"Bob"</span><span class="p">,</span> <span class="nx">time</span> <span class="o">=</span> <span class="s2">"today"</span><span class="p">;</span>
+<span class="err">`</span><span class="nx">Hello</span> <span class="nx">$</span><span class="p">{</span><span class="nx">name</span><span class="p">},</span> <span class="nx">how</span> <span class="nx">are</span> <span class="nx">you</span> <span class="nx">$</span><span class="p">{</span><span class="nx">time</span><span class="p">}?</span><span class="err">`</span></code></pre></figure>
+
+<p>上面代码中的模板字符串，都是用反引号表示。如果在模板字符串中需要使用反引号，则前面要用反斜杠转义。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">greeting</span> <span class="o">=</span> <span class="err">`\`</span><span class="nx">Yo</span><span class="err">\`</span> <span class="nx">World</span><span class="o">!</span><span class="err">`</span><span class="p">;</span></code></pre></figure>
+
+<p>如果使用模板字符串表示多行字符串，所有的空格和缩进都会被保留在输出之中。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">'#list'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="err">`</span>
+<span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;</span><span class="nx">first</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;</span><span class="nx">second</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+`</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，所有模板字符串的空格和换行，都是被保留的，比如&lt;ul&gt;标签前面会有一个换行。如果你不想要这个换行，可以使用trim方法消除它。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">$</span><span class="p">(</span><span class="s1">'#list'</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="err">`</span>
+<span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;</span><span class="nx">first</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;</span><span class="nx">second</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+`</span><span class="p">.</span><span class="nx">trim</span><span class="p">());</span></code></pre></figure>
+
+<p>模板字符串中嵌入变量，需要将变量名写在${}之中。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">authorize</span><span class="p">(</span><span class="nx">user</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">.</span><span class="nx">hasPrivilege</span><span class="p">(</span><span class="nx">action</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span>
+      <span class="c1">// 传统写法为</span>
+      <span class="c1">// 'User '</span>
+      <span class="c1">// + user.name</span>
+      <span class="c1">// + ' is not authorized to do '</span>
+      <span class="c1">// + action</span>
+      <span class="c1">// + '.'</span>
+      <span class="err">`</span><span class="nx">User</span> <span class="nx">$</span><span class="p">{</span><span class="nx">user</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span> <span class="nx">is</span> <span class="nx">not</span> <span class="nx">authorized</span> <span class="nx">to</span> <span class="k">do</span> <span class="nx">$</span><span class="p">{</span><span class="nx">action</span><span class="p">}.</span><span class="err">`</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>大括号内部可以放入任意的JavaScript表达式，可以进行运算，以及引用对象属性。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">x</span><span class="p">}</span> <span class="o">+</span> <span class="nx">$</span><span class="p">{</span><span class="nx">y</span><span class="p">}</span> <span class="o">=</span> <span class="nx">$</span><span class="p">{</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">}</span><span class="err">`</span>
+<span class="c1">// "1 + 2 = 3"</span>
+
+<span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">x</span><span class="p">}</span> <span class="o">+</span> <span class="nx">$</span><span class="p">{</span><span class="nx">y</span> <span class="o">*</span> <span class="mi">2</span><span class="p">}</span> <span class="o">=</span> <span class="nx">$</span><span class="p">{</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span> <span class="o">*</span> <span class="mi">2</span><span class="p">}</span><span class="err">`</span>
+<span class="c1">// "1 + 4 = 5"</span>
+
+<span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span><span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span><span class="p">};</span>
+<span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">obj</span><span class="p">.</span><span class="nx">x</span> <span class="o">+</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">y</span><span class="p">}</span><span class="err">`</span>
+<span class="c1">// 3</span></code></pre></figure>
+
+<p>模板字符串之中还能调用函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">fn</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s2">"Hello World"</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="err">`</span><span class="nx">foo</span> <span class="nx">$</span><span class="p">{</span><span class="nx">fn</span><span class="p">()}</span> <span class="nx">bar</span><span class="err">`</span>
+<span class="c1">// foo Hello World bar</span></code></pre></figure>
+
+<p>如果大括号中的值不是字符串，将按照一般的规则转为字符串。比如，大括号中是一个对象，将默认调用对象的toString方法。</p>
+
+<p>如果模板字符串中的变量没有声明，将报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 变量place没有声明</span>
+<span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="err">`</span><span class="nx">Hello</span><span class="p">,</span> <span class="nx">$</span><span class="p">{</span><span class="nx">place</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+<span class="c1">// 报错</span></code></pre></figure>
+
+<p>由于模板字符串的大括号内部，就是执行JavaScript代码，因此如果大括号内部是一个字符串，将会原样输出。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="err">`</span><span class="nx">Hello</span> <span class="nx">$</span><span class="p">{</span><span class="s1">'World'</span><span class="p">}</span><span class="err">`</span>
+<span class="c1">// "Hello World"</span></code></pre></figure>
+
+<p>模板字符串甚至还能嵌套。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">tmpl</span> <span class="o">=</span> <span class="nx">addrs</span> <span class="o">=&gt;</span> <span class="err">`</span>
+  <span class="o">&lt;</span><span class="nx">table</span><span class="o">&gt;</span>
+  <span class="nx">$</span><span class="p">{</span><span class="nx">addrs</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">addr</span> <span class="o">=&gt;</span> <span class="err">`</span>
+    <span class="o">&lt;</span><span class="nx">tr</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">addr</span><span class="p">.</span><span class="nx">first</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/td&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">tr</span><span class="o">&gt;&lt;</span><span class="nx">td</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">addr</span><span class="p">.</span><span class="nx">last</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/td&gt;&lt;/</span><span class="nx">tr</span><span class="o">&gt;</span>
+  <span class="err">`</span><span class="p">).</span><span class="nx">join</span><span class="p">(</span><span class="s1">''</span><span class="p">)}</span>
+  <span class="o">&lt;</span><span class="sr">/table</span><span class="err">&gt;
+`</span><span class="p">;</span></code></pre></figure>
+
+<p>上面代码中，模板字符串的变量之中，又嵌入了另一个模板字符串，使用方法如下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">first</span><span class="p">:</span> <span class="s1">'&lt;Jane&gt;'</span><span class="p">,</span> <span class="na">last</span><span class="p">:</span> <span class="s1">'Bond'</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">first</span><span class="p">:</span> <span class="s1">'Lars'</span><span class="p">,</span> <span class="na">last</span><span class="p">:</span> <span class="s1">'&lt;Croft&gt;'</span> <span class="p">},</span>
+<span class="p">];</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">tmpl</span><span class="p">(</span><span class="nx">data</span><span class="p">));</span>
+<span class="c1">// &lt;table&gt;</span>
+<span class="c1">//</span>
+<span class="c1">//   &lt;tr&gt;&lt;td&gt;&lt;Jane&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="c1">//   &lt;tr&gt;&lt;td&gt;Bond&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="c1">//</span>
+<span class="c1">//   &lt;tr&gt;&lt;td&gt;Lars&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="c1">//   &lt;tr&gt;&lt;td&gt;&lt;Croft&gt;&lt;/td&gt;&lt;/tr&gt;</span>
+<span class="c1">//</span>
+<span class="c1">// &lt;/table&gt;</span></code></pre></figure>
+
+<p>如果需要引用模板字符串本身，在需要时执行，可以像下面这样写。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 写法一</span>
+<span class="kd">let</span> <span class="nx">str</span> <span class="o">=</span> <span class="s1">'return '</span> <span class="o">+</span> <span class="s1">'`Hello ${name}!`'</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">func</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s1">'name'</span><span class="p">,</span> <span class="nx">str</span><span class="p">);</span>
+<span class="nx">func</span><span class="p">(</span><span class="s1">'Jack'</span><span class="p">)</span> <span class="c1">// "Hello Jack!"</span>
+
+<span class="c1">// 写法二</span>
+<span class="kd">let</span> <span class="nx">str</span> <span class="o">=</span> <span class="s1">'(name) =&gt; `Hello ${name}!`'</span><span class="p">;</span>
+<span class="kd">let</span> <span class="nx">func</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">str</span><span class="p">);</span>
+<span class="nx">func</span><span class="p">(</span><span class="s1">'Jack'</span><span class="p">)</span> <span class="c1">// "Hello Jack!"</span></code></pre></figure>
+
+<h3 id="section-2">11. 实例：模板编译</h3>
+
+<p>下面，我们来看一个通过模板字符串，生成正式模板的实例。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="err">`</span>
+<span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+  <span class="o">&lt;%</span> <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">supplies</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="o">%&gt;</span>
+    <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;&lt;%=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">supplies</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">%&gt;&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>  <span class="o">&lt;%</span> <span class="p">}</span> <span class="o">%&gt;</span>
+<span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+`</span><span class="p">;</span></code></pre></figure>
+
+<p>上面代码在模板字符串之中，放置了一个常规模板。该模板使用&lt;%…%&gt;放置JavaScript代码，使用&lt;%= … %&gt;输出JavaScript表达式。</p>
+
+<p>怎么编译这个模板字符串呢？</p>
+
+<p>一种思路是将其转换为JavaScript表达式字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">echo</span><span class="p">(</span><span class="s1">'&lt;ul&gt;'</span><span class="p">);</span>
+<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">supplies</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">echo</span><span class="p">(</span><span class="s1">'&lt;li&gt;'</span><span class="p">);</span>
+  <span class="nx">echo</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">supplies</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+  <span class="nx">echo</span><span class="p">(</span><span class="s1">'&lt;/li&gt;'</span><span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">echo</span><span class="p">(</span><span class="s1">'&lt;/ul&gt;'</span><span class="p">);</span></code></pre></figure>
+
+<p>这个转换使用正则表达式就行了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">evalExpr</span> <span class="o">=</span> <span class="sr">/&lt;%=</span><span class="se">(</span><span class="sr">.+</span><span class="se">?)</span><span class="sr">%&gt;/g</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">expr</span> <span class="o">=</span> <span class="sr">/&lt;%</span><span class="se">([\s\S]</span><span class="sr">+</span><span class="se">?)</span><span class="sr">%&gt;/g</span><span class="p">;</span>
+
+<span class="nx">template</span> <span class="o">=</span> <span class="nx">template</span>
+  <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">evalExpr</span><span class="p">,</span> <span class="s1">'`); \n  echo( $1 ); \n  echo(`'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="s1">'`); \n $1 \n  echo(`'</span><span class="p">);</span>
+
+<span class="nx">template</span> <span class="o">=</span> <span class="s1">'echo(`'</span> <span class="o">+</span> <span class="nx">template</span> <span class="o">+</span> <span class="s1">'`);'</span><span class="p">;</span></code></pre></figure>
+
+<p>然后，将template封装在一个函数里面返回，就可以了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span>
+<span class="err">`</span><span class="p">(</span><span class="kd">function</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+  <span class="kd">function</span> <span class="nx">echo</span><span class="p">(</span><span class="nx">html</span><span class="p">){</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="nx">html</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nx">$</span><span class="p">{</span> <span class="nx">template</span> <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
+<span class="p">})</span><span class="err">`</span><span class="p">;</span>
+
+<span class="k">return</span> <span class="nx">script</span><span class="p">;</span></code></pre></figure>
+
+<p>将上面的内容拼装成一个模板编译函数compile。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">compile</span><span class="p">(</span><span class="nx">template</span><span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">evalExpr</span> <span class="o">=</span> <span class="sr">/&lt;%=</span><span class="se">(</span><span class="sr">.+</span><span class="se">?)</span><span class="sr">%&gt;/g</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">expr</span> <span class="o">=</span> <span class="sr">/&lt;%</span><span class="se">([\s\S]</span><span class="sr">+</span><span class="se">?)</span><span class="sr">%&gt;/g</span><span class="p">;</span>
+
+  <span class="nx">template</span> <span class="o">=</span> <span class="nx">template</span>
+    <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">evalExpr</span><span class="p">,</span> <span class="s1">'`); \n  echo( $1 ); \n  echo(`'</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="s1">'`); \n $1 \n  echo(`'</span><span class="p">);</span>
+
+  <span class="nx">template</span> <span class="o">=</span> <span class="s1">'echo(`'</span> <span class="o">+</span> <span class="nx">template</span> <span class="o">+</span> <span class="s1">'`);'</span><span class="p">;</span>
+
+  <span class="kd">var</span> <span class="nx">script</span> <span class="o">=</span>
+  <span class="err">`</span><span class="p">(</span><span class="kd">function</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">data</span><span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+
+    <span class="kd">function</span> <span class="nx">echo</span><span class="p">(</span><span class="nx">html</span><span class="p">){</span>
+      <span class="nx">output</span> <span class="o">+=</span> <span class="nx">html</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">$</span><span class="p">{</span> <span class="nx">template</span> <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
+  <span class="p">})</span><span class="err">`</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="nx">script</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>compile函数的用法如下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">parse</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="nx">compile</span><span class="p">(</span><span class="nx">template</span><span class="p">));</span>
+<span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">parse</span><span class="p">({</span> <span class="na">supplies</span><span class="p">:</span> <span class="p">[</span> <span class="s2">"broom"</span><span class="p">,</span> <span class="s2">"mop"</span><span class="p">,</span> <span class="s2">"cleaner"</span> <span class="p">]</span> <span class="p">});</span>
+<span class="c1">//   &lt;ul&gt;</span>
+<span class="c1">//     &lt;li&gt;broom&lt;/li&gt;</span>
+<span class="c1">//     &lt;li&gt;mop&lt;/li&gt;</span>
+<span class="c1">//     &lt;li&gt;cleaner&lt;/li&gt;</span>
+<span class="c1">//   &lt;/ul&gt;</span></code></pre></figure>
+
+<h3 id="section-3">12. 标签模板</h3>
+
+<p>模板字符串的功能，不仅仅是上面这些。它可以紧跟在一个函数名后面，该函数将被调用来处理这个模板字符串。这被称为“标签模板”功能（tagged template）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">alert</span><span class="err">`</span><span class="mi">123</span><span class="err">`</span>
+<span class="c1">// 等同于</span>
+<span class="nx">alert</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span></code></pre></figure>
+
+<p>标签模板其实不是模板，而是函数调用的一种特殊形式。“标签”指的就是函数，紧跟在后面的模板字符串就是它的参数。</p>
+
+<p>但是，如果模板字符里面有变量，就不是简单的调用了，而是会将模板字符串先处理成多个参数，再调用函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="nx">tag</span><span class="err">`</span><span class="nx">Hello</span> <span class="nx">$</span><span class="p">{</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="p">}</span> <span class="nx">world</span> <span class="nx">$</span><span class="p">{</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span> <span class="p">}</span><span class="err">`</span><span class="p">;</span>
+<span class="c1">// 等同于</span>
+<span class="nx">tag</span><span class="p">([</span><span class="s1">'Hello '</span><span class="p">,</span> <span class="s1">' world '</span><span class="p">,</span> <span class="s1">''</span><span class="p">],</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span></code></pre></figure>
+
+<p>上面代码中，模板字符串前面有一个标识名tag，它是一个函数。整个表达式的返回值，就是tag函数处理模板字符串后的返回值。</p>
+
+<p>函数tag依次会接收到多个参数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">tag</span><span class="p">(</span><span class="nx">stringArr</span><span class="p">,</span> <span class="nx">value1</span><span class="p">,</span> <span class="nx">value2</span><span class="p">){</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="c1">// 等同于</span>
+
+<span class="kd">function</span> <span class="nx">tag</span><span class="p">(</span><span class="nx">stringArr</span><span class="p">,</span> <span class="p">...</span><span class="nx">values</span><span class="p">){</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>tag函数的第一个参数是一个数组，该数组的成员是模板字符串中那些没有变量替换的部分，也就是说，变量替换只发生在数组的第一个成员与第二个成员之间、第二个成员与第三个成员之间，以此类推。</p>
+
+<p>tag函数的其他参数，都是模板字符串各个变量被替换后的值。由于本例中，模板字符串含有两个变量，因此tag会接受到value1和value2两个参数。</p>
+
+<p>tag函数所有参数的实际值如下。</p>
+
+<p>第一个参数：[‘Hello ‘, ‘ world ‘, ‘’]
+第二个参数: 15
+第三个参数：50
+也就是说，tag函数实际上以下面的形式调用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tag</span><span class="p">([</span><span class="s1">'Hello '</span><span class="p">,</span> <span class="s1">' world '</span><span class="p">,</span> <span class="s1">''</span><span class="p">],</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span></code></pre></figure>
+
+<p>我们可以按照需要编写tag函数的代码。下面是tag函数的一种写法，以及运行结果。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">tag</span><span class="p">(</span><span class="nx">s</span><span class="p">,</span> <span class="nx">v1</span><span class="p">,</span> <span class="nx">v2</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">v1</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">v2</span><span class="p">);</span>
+
+  <span class="k">return</span> <span class="s2">"OK"</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">tag</span><span class="err">`</span><span class="nx">Hello</span> <span class="nx">$</span><span class="p">{</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span> <span class="p">}</span> <span class="nx">world</span> <span class="nx">$</span><span class="p">{</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+<span class="c1">// "Hello "</span>
+<span class="c1">// " world "</span>
+<span class="c1">// ""</span>
+<span class="c1">// 15</span>
+<span class="c1">// 50</span>
+<span class="c1">// "OK"</span></code></pre></figure>
+
+<p>下面是一个更复杂的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">total</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">msg</span> <span class="o">=</span> <span class="nx">passthru</span><span class="err">`</span><span class="nx">The</span> <span class="nx">total</span> <span class="nx">is</span> <span class="nx">$</span><span class="p">{</span><span class="nx">total</span><span class="p">}</span> <span class="p">(</span><span class="nx">$</span><span class="p">{</span><span class="nx">total</span><span class="o">*</span><span class="mf">1.05</span><span class="p">}</span> <span class="kd">with</span> <span class="nx">tax</span><span class="p">)</span><span class="err">`</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">passthru</span><span class="p">(</span><span class="nx">literals</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="s1">''</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+  <span class="k">while</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">literals</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">result</span> <span class="o">+=</span> <span class="nx">literals</span><span class="p">[</span><span class="nx">i</span><span class="o">++</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">+=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nx">msg</span> <span class="c1">// "The total is 30 (31.5 with tax)"</span></code></pre></figure>
+
+<p>上面这个例子展示了，如何将各个参数按照原来的位置拼合回去。</p>
+
+<p>passthru函数采用rest参数的写法如下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">passthru</span><span class="p">(</span><span class="nx">literals</span><span class="p">,</span> <span class="p">...</span><span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">index</span> <span class="o">&lt;</span> <span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="nx">literals</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="nx">index</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="nx">output</span> <span class="o">+=</span> <span class="nx">literals</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span>
+  <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>“标签模板”的一个重要应用，就是过滤HTML字符串，防止用户输入恶意内容。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span>
+  <span class="nx">SaferHTML</span><span class="err">`</span><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">sender</span><span class="p">}</span> <span class="nx">has</span> <span class="nx">sent</span> <span class="nx">you</span> <span class="nx">a</span> <span class="nx">message</span><span class="p">.</span><span class="o">&lt;</span><span class="sr">/p&gt;`</span><span class="err">;
+</span>
+<span class="kd">function</span> <span class="nx">SaferHTML</span><span class="p">(</span><span class="nx">templateData</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">templateData</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">arg</span> <span class="o">=</span> <span class="nb">String</span><span class="p">(</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+
+    <span class="c1">// Escape special characters in the substitution.</span>
+    <span class="nx">s</span> <span class="o">+=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&amp;/g</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;/g</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&gt;/g</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">);</span>
+
+    <span class="c1">// Don't escape special characters in the template.</span>
+    <span class="nx">s</span> <span class="o">+=</span> <span class="nx">templateData</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">s</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，sender变量往往是用户提供的，经过SaferHTML函数处理，里面的特殊字符都会被转义。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">sender</span> <span class="o">=</span> <span class="s1">'&lt;script&gt;alert("abc")&lt;/script&gt;'</span><span class="p">;</span> <span class="c1">// 恶意代码</span>
+<span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">SaferHTML</span><span class="err">`</span><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">$</span><span class="p">{</span><span class="nx">sender</span><span class="p">}</span> <span class="nx">has</span> <span class="nx">sent</span> <span class="nx">you</span> <span class="nx">a</span> <span class="nx">message</span><span class="p">.</span><span class="o">&lt;</span><span class="sr">/p&gt;`</span><span class="err">;
+</span>
+<span class="nx">message</span>
+<span class="c1">// &lt;p&gt;&amp;lt;script&amp;gt;alert("abc")&amp;lt;/script&amp;gt; has sent you a message.&lt;/p&gt;</span></code></pre></figure>
+
+<p>标签模板的另一个应用，就是多语言转换（国际化处理）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">i18n</span><span class="err">`</span><span class="nx">Welcome</span> <span class="nx">to</span> <span class="nx">$</span><span class="p">{</span><span class="nx">siteName</span><span class="p">},</span> <span class="nx">you</span> <span class="nx">are</span> <span class="nx">visitor</span> <span class="nx">number</span> <span class="nx">$</span><span class="p">{</span><span class="nx">visitorNumber</span><span class="p">}</span><span class="o">!</span><span class="err">`</span>
+<span class="c1">// "欢迎访问xxx，您是第xxxx位访问者！"</span></code></pre></figure>
+
+<p>模板字符串本身并不能取代Mustache之类的模板库，因为没有条件判断和循环处理功能，但是通过标签函数，你可以自己添加这些功能。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 下面的hashTemplate函数</span>
+<span class="c1">// 是一个自定义的模板处理函数</span>
+<span class="kd">var</span> <span class="nx">libraryHtml</span> <span class="o">=</span> <span class="nx">hashTemplate</span><span class="err">`</span>
+  <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+    <span class="err">#</span><span class="k">for</span> <span class="nx">book</span> <span class="k">in</span> <span class="nx">$</span><span class="p">{</span><span class="nx">myBooks</span><span class="p">}</span>
+      <span class="o">&lt;</span><span class="nx">li</span><span class="o">&gt;&lt;</span><span class="nx">i</span><span class="o">&gt;</span><span class="err">#</span><span class="p">{</span><span class="nx">book</span><span class="p">.</span><span class="nx">title</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/i&gt; by #{book.author}&lt;/</span><span class="nx">li</span><span class="o">&gt;</span>
+    <span class="err">#</span><span class="nx">end</span>
+  <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+`</span><span class="p">;</span></code></pre></figure>
+
+<p>除此之外，你甚至可以使用标签模板，在JavaScript语言之中嵌入其他语言。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">jsx</span><span class="err">`</span>
+  <span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">input</span>
+      <span class="nx">ref</span><span class="o">=</span><span class="s1">'input'</span>
+      <span class="nx">onChange</span><span class="o">=</span><span class="s1">'${this.handleChange}'</span>
+      <span class="nx">defaultValue</span><span class="o">=</span><span class="s1">'${this.state.value}'</span> <span class="o">/&gt;</span>
+      <span class="nx">$</span><span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">value</span><span class="p">}</span>
+   <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+`</span></code></pre></figure>
+
+<p>上面的代码通过jsx函数，将一个DOM字符串转为React对象。你可以在Github找到jsx函数的具体实现。</p>
+
+<p>下面则是一个假想的例子，通过java函数，在JavaScript代码之中运行Java代码。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">java</span><span class="err">`</span>
+<span class="kr">class</span> <span class="nx">HelloWorldApp</span> <span class="p">{</span>
+  <span class="kr">public</span> <span class="kr">static</span> <span class="k">void</span> <span class="nx">main</span><span class="p">(</span><span class="nb">String</span><span class="p">[]</span> <span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">System</span><span class="p">.</span><span class="nx">out</span><span class="p">.</span><span class="nx">println</span><span class="p">(</span><span class="err">“</span><span class="nx">Hello</span> <span class="nx">World</span><span class="o">!</span><span class="err">”</span><span class="p">);</span> <span class="c1">// Display the string.</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="err">`</span>
+<span class="nx">HelloWorldApp</span><span class="p">.</span><span class="nx">main</span><span class="p">();</span></code></pre></figure>
+
+<p>模板处理函数的第一个参数（模板字符串数组），还有一个raw属性。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="err">`</span><span class="mi">123</span><span class="err">`</span>
+<span class="c1">// ["123", raw: Array[1]]</span></code></pre></figure>
+
+<p>上面代码中，console.log接受的参数，实际上是一个数组。该数组有一个raw属性，保存的是转义后的原字符串。</p>
+
+<p>请看下面的例子。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">tag</span><span class="err">`</span><span class="nx">First</span> <span class="nx">line</span><span class="err">\</span><span class="nx">nSecond</span> <span class="nx">line</span><span class="err">`</span>
+
+<span class="kd">function</span> <span class="nx">tag</span><span class="p">(</span><span class="nx">strings</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">strings</span><span class="p">.</span><span class="nx">raw</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="c1">// "First line\\nSecond line"</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码中，tag函数的第一个参数strings，有一个raw属性，也指向一个数组。该数组的成员与strings数组完全一致。比如，strings数组是[“First line\nSecond line”]，那么strings.raw数组就是[“First line\nSecond line”]。两者唯一的区别，就是字符串里面的斜杠都被转义了。比如，strings.raw数组会将\n视为\和n两个字符，而不是换行符。这是为了方便取得转义之前的原始模板而设计的。</p>
+
+<h3 id="stringraw">13. String.raw()</h3>
+
+<p>ES6还为原生的String对象，提供了一个raw方法。</p>
+
+<p>String.raw方法，往往用来充当模板字符串的处理函数，返回一个斜杠都被转义（即斜杠前面再加一个斜杠）的字符串，对应于替换变量后的模板字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">String</span><span class="p">.</span><span class="nx">raw</span><span class="err">`</span><span class="nx">Hi</span><span class="err">\</span><span class="nx">n$</span><span class="p">{</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">}</span><span class="o">!</span><span class="err">`</span><span class="p">;</span>
+<span class="c1">// "Hi\\n5!"</span>
+
+<span class="nb">String</span><span class="p">.</span><span class="nx">raw</span><span class="err">`</span><span class="nx">Hi</span><span class="err">\</span><span class="nx">u000A</span><span class="o">!</span><span class="err">`</span><span class="p">;</span>
+<span class="c1">// 'Hi\\u000A!'</span></code></pre></figure>
+
+<p>如果原字符串的斜杠已经转义，那么String.raw不会做任何处理。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">String</span><span class="p">.</span><span class="nx">raw</span><span class="err">`</span><span class="nx">Hi</span><span class="err">\\</span><span class="nx">n</span><span class="err">`</span>
+<span class="c1">// "Hi\\n"</span></code></pre></figure>
+
+<p>String.raw的代码基本如下。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">String</span><span class="p">.</span><span class="nx">raw</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">strings</span><span class="p">,</span> <span class="p">...</span><span class="nx">values</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">index</span> <span class="o">&lt;</span> <span class="nx">values</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">index</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">output</span> <span class="o">+=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">raw</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span> <span class="o">+</span> <span class="nx">values</span><span class="p">[</span><span class="nx">index</span><span class="p">];</span>
+  <span class="p">}</span>
+
+  <span class="nx">output</span> <span class="o">+=</span> <span class="nx">strings</span><span class="p">.</span><span class="nx">raw</span><span class="p">[</span><span class="nx">index</span><span class="p">]</span>
+  <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>String.raw方法可以作为处理模板字符串的基本方法，它会将所有变量替换，而且对斜杠进行转义，方便下一步作为字符串来使用。</p>
+
+<p>String.raw方法也可以作为正常的函数使用。这时，它的第一个参数，应该是一个具有raw属性的对象，且raw属性的值应该是一个数组。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">String</span><span class="p">.</span><span class="nx">raw</span><span class="p">({</span> <span class="na">raw</span><span class="p">:</span> <span class="s1">'test'</span> <span class="p">},</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="c1">// 't0e1s2t'</span>
+
+<span class="c1">// 等同于</span>
+<span class="nb">String</span><span class="p">.</span><span class="nx">raw</span><span class="p">({</span> <span class="na">raw</span><span class="p">:</span> <span class="p">[</span><span class="s1">'t'</span><span class="p">,</span><span class="s1">'e'</span><span class="p">,</span><span class="s1">'s'</span><span class="p">,</span><span class="s1">'t'</span><span class="p">]</span> <span class="p">},</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span></code></pre></figure>
+
+<h3 id="section-4">14. 模板字符串的限制</h3>
+
+<p>前面提到标签模板里面，可以内嵌其他语言。但是，模板字符串默认会将字符串转义，因此导致了无法嵌入其他语言。</p>
+
+<p>举例来说，在标签模板里面可以嵌入Latex语言。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">latex</span><span class="p">(</span><span class="nx">strings</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nb">document</span> <span class="o">=</span> <span class="nx">latex</span><span class="err">`</span>
+<span class="err">\</span><span class="nx">newcommand</span><span class="p">{</span><span class="err">\</span><span class="nx">fun</span><span class="p">}{</span><span class="err">\</span><span class="nx">textbf</span><span class="p">{</span><span class="nx">Fun</span><span class="o">!</span><span class="p">}}</span>  <span class="c1">// 正常工作</span>
+<span class="err">\</span><span class="nx">newcommand</span><span class="p">{</span><span class="err">\</span><span class="nx">unicode</span><span class="p">}{</span><span class="err">\</span><span class="nx">textbf</span><span class="p">{</span><span class="nx">Unicode</span><span class="o">!</span><span class="p">}}</span> <span class="c1">// 报错</span>
+<span class="err">\</span><span class="nx">newcommand</span><span class="p">{</span><span class="err">\</span><span class="nx">xerxes</span><span class="p">}{</span><span class="err">\</span><span class="nx">textbf</span><span class="p">{</span><span class="nx">King</span><span class="o">!</span><span class="p">}}</span> <span class="c1">// 报错</span>
+
+<span class="nx">Breve</span> <span class="nx">over</span> <span class="nx">the</span> <span class="nx">h</span> <span class="nx">goes</span> <span class="err">\</span><span class="nx">u</span><span class="p">{</span><span class="nx">h</span><span class="p">}</span><span class="nx">ere</span> <span class="c1">// 报错</span></code></pre></figure>
+
+<p>上面代码中，变量document内嵌的模板字符串，对于Latex语言来说完全是合法的，但是JavaScript引擎会报错。原因就在于字符串的转义。</p>
+
+<p>模板字符串会将\u00FF和\u{42}当作Unicode字符进行转义，所以\unicode解析时报错；而\x56会被当作十六进制字符串转义，所以\xerxes会报错。</p>
+
+<p>为了解决这个问题，现在有一个提案，放松对标签模板里面的字符串转义的限制。如果遇到不合法的字符串转义，就返回undefined，而不是报错，并且从raw属性上面可以得到原始字符串。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">tag</span><span class="p">(</span><span class="nx">strs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">strs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span>
+  <span class="nx">strs</span><span class="p">.</span><span class="nx">raw</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">===</span> <span class="s2">"\\unicode and \\u{55}"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nx">tag</span><span class="err">`\</span><span class="nx">unicode</span> <span class="nx">and</span> <span class="err">\</span><span class="nx">u</span><span class="p">{</span><span class="mi">55</span><span class="p">}</span><span class="err">`</span></code></pre></figure>
+
+<p>上面代码中，模板字符串原本是应该报错的，但是由于放松了对字符串转义的限制，所以不报错了，JavaScript引擎将第一个字符设置为undefined，但是raw属性依然可以得到原始字符串，因此tag函数还是可以对原字符串进行处理。</p>
+
+<p>注意，这种对字符串转义的放松，只在标签模板解析字符串时生效，不是标签模板的场合，依然会报错。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">bad</span> <span class="o">=</span> <span class="err">`</span><span class="nx">bad</span> <span class="nx">escape</span> <span class="nx">sequence</span><span class="err">:</span> <span class="err">\</span><span class="nx">unicode</span><span class="err">`</span><span class="p">;</span> <span class="c1">// 报错</span></code></pre></figure>
+
