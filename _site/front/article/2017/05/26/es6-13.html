@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ES6语法之十三（编程风格）</title>
+  <meta name="description" content="es6的编程风格">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/05/26/es6-13.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/05/26/es6-13.html">ES6语法之十三（编程风格）</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ES6语法之十三（编程风格）</h1>
+    <p class="post-meta"><time datetime="2017-05-26T10:49:42+08:00" itemprop="datePublished">May 26, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="section">1. 块级作用域</h3>
+
+<p>（1）let 取代 var</p>
+
+<p>ES6提出了两个新的声明变量的命令：let和const。其中，let完全可以取代var，因为两者语义相同，而且let没有副作用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码如果用var替代let，实际上就声明了两个全局变量，这显然不是本意。变量应该只在其声明的代码块内有效，var命令做不到这一点。</p>
+
+<p>var命令存在变量提升效用，let命令没有这个问题。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s1">'use strict'</span><span class="p">;</span>
+
+<span class="k">if</span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span> <span class="c1">// ReferenceError</span>
+  <span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="s1">'hello'</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>上面代码如果使用var替代let，console.log那一行就不会报错，而是会输出undefined，因为变量声明提升到代码块的头部。这违反了变量先声明后使用的原则。</p>
+
+<p>所以，建议不再使用var命令，而是使用let命令取代。</p>
+
+<p>（2）全局常量和线程安全</p>
+
+<p>在let和const之间，建议优先使用const，尤其是在全局环境，不应该设置变量，只应设置常量。</p>
+
+<p>const优于let有几个原因。一个是const可以提醒阅读程序的人，这个变量不应该改变；另一个是const比较符合函数式编程思想，运算不改变值，只是新建值，而且这样也有利于将来的分布式运算；最后一个原因是 JavaScript 编译器会对const进行优化，所以多使用const，有利于提供程序的运行效率，也就是说let和const的本质区别，其实是编译器内部的处理不同。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">c</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">// best</span>
+<span class="kr">const</span> <span class="p">[</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">];</span></code></pre></figure>
+
+<p>const声明常量还有两个好处，一是阅读代码的人立刻会意识到不应该修改这个值，二是防止了无意间修改变量值所导致的错误。</p>
+
+<p>所有的函数都应该设置为常量。</p>
+
+<p>长远来看，JavaScript可能会有多线程的实现（比如Intel的River Trail那一类的项目），这时let表示的变量，只应出现在单线程运行的代码中，不能是多线程共享的，这样有利于保证线程安全。</p>
+
+<h3 id="section-1">2. 字符串</h3>
+
+<p>静态字符串一律使用单引号或反引号，不使用双引号。动态字符串使用反引号。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="s2">"foobar"</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="s1">'foo'</span> <span class="o">+</span> <span class="nx">a</span> <span class="o">+</span> <span class="s1">'bar'</span><span class="p">;</span>
+
+<span class="c1">// acceptable</span>
+<span class="kr">const</span> <span class="nx">c</span> <span class="o">=</span> <span class="err">`</span><span class="nx">foobar</span><span class="err">`</span><span class="p">;</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="s1">'foobar'</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="err">`</span><span class="nx">foo$</span><span class="p">{</span><span class="nx">a</span><span class="p">}</span><span class="nx">bar</span><span class="err">`</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">c</span> <span class="o">=</span> <span class="s1">'foobar'</span><span class="p">;</span></code></pre></figure>
+
+<h3 id="section-2">3. 解构赋值</h3>
+
+<p>使用数组成员对变量赋值时，优先使用解构赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">];</span>
+
+<span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">first</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="kr">const</span> <span class="nx">second</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="p">[</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">]</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">;</span></code></pre></figure>
+
+<p>函数的参数如果是对象的成员，优先使用解构赋值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">function</span> <span class="nx">getFullName</span><span class="p">(</span><span class="nx">user</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">firstName</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">firstName</span><span class="p">;</span>
+  <span class="kr">const</span> <span class="nx">lastName</span> <span class="o">=</span> <span class="nx">user</span><span class="p">.</span><span class="nx">lastName</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kd">function</span> <span class="nx">getFullName</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="p">{</span> <span class="nx">firstName</span><span class="p">,</span> <span class="nx">lastName</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// best</span>
+<span class="kd">function</span> <span class="nx">getFullName</span><span class="p">({</span> <span class="nx">firstName</span><span class="p">,</span> <span class="nx">lastName</span> <span class="p">})</span> <span class="p">{</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>如果函数返回多个值，优先使用对象的解构赋值，而不是数组的解构赋值。这样便于以后添加返回值，以及更改返回值的顺序。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">function</span> <span class="nx">processInput</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">[</span><span class="nx">left</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">bottom</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kd">function</span> <span class="nx">processInput</span><span class="p">(</span><span class="nx">input</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">bottom</span> <span class="p">};</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="p">{</span> <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">processInput</span><span class="p">(</span><span class="nx">input</span><span class="p">);</span></code></pre></figure>
+
+<h3 id="section-3">4. 对象</h3>
+
+<p>单行定义的对象，最后一个成员不以逗号结尾。多行定义的对象，最后一个成员以逗号结尾。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span> <span class="na">k1</span><span class="p">:</span> <span class="nx">v1</span><span class="p">,</span> <span class="na">k2</span><span class="p">:</span> <span class="nx">v2</span><span class="p">,</span> <span class="p">};</span>
+<span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">k1</span><span class="p">:</span> <span class="nx">v1</span><span class="p">,</span>
+  <span class="na">k2</span><span class="p">:</span> <span class="nx">v2</span>
+<span class="p">};</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span> <span class="na">k1</span><span class="p">:</span> <span class="nx">v1</span><span class="p">,</span> <span class="na">k2</span><span class="p">:</span> <span class="nx">v2</span> <span class="p">};</span>
+<span class="kr">const</span> <span class="nx">b</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">k1</span><span class="p">:</span> <span class="nx">v1</span><span class="p">,</span>
+  <span class="na">k2</span><span class="p">:</span> <span class="nx">v2</span><span class="p">,</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>对象尽量静态化，一旦定义，就不得随意添加新的属性。如果添加属性不可避免，要使用Object.assign方法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">a</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">// if reshape unavoidable</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">3</span> <span class="p">});</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="kc">null</span> <span class="p">};</span>
+<span class="nx">a</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span></code></pre></figure>
+
+<p>如果对象的属性名是动态的，可以在创造对象的时候，使用属性表达式定义。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s1">'San Francisco'</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="nx">obj</span><span class="p">[</span><span class="nx">getKey</span><span class="p">(</span><span class="s1">'enabled'</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s1">'San Francisco'</span><span class="p">,</span>
+  <span class="p">[</span><span class="nx">getKey</span><span class="p">(</span><span class="s1">'enabled'</span><span class="p">)]:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>上面代码中，对象obj的最后一个属性名，需要计算得到。这时最好采用属性表达式，在新建obj的时候，将该属性与其他属性定义在一起。这样一来，所有属性就在一个地方定义了。</p>
+
+<p>另外，对象的属性和方法，尽量采用简洁表达法，这样易于描述和书写。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">ref</span> <span class="o">=</span> <span class="s1">'some value'</span><span class="p">;</span>
+
+<span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">atom</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">ref</span><span class="p">:</span> <span class="nx">ref</span><span class="p">,</span>
+
+  <span class="na">value</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+
+  <span class="na">addValue</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">atom</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="p">},</span>
+<span class="p">};</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">atom</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nx">ref</span><span class="p">,</span>
+
+  <span class="na">value</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+
+  <span class="nx">addValue</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">atom</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="p">},</span>
+<span class="p">};</span></code></pre></figure>
+
+<h3 id="section-4">5. 数组</h3>
+
+<p>使用扩展运算符（…）拷贝数组。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">len</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">itemsCopy</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">let</span> <span class="nx">i</span><span class="p">;</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">itemsCopy</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">items</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kr">const</span> <span class="nx">itemsCopy</span> <span class="o">=</span> <span class="p">[...</span><span class="nx">items</span><span class="p">];</span></code></pre></figure>
+
+<p>使用Array.from方法，将类似数组的对象转为数组。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">foo</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span><span class="s1">'.foo'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">nodes</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span></code></pre></figure>
+
+<h3 id="section-5">6. 函数</h3>
+
+<p>立即执行函数可以写成箭头函数的形式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Welcome to the Internet.'</span><span class="p">);</span>
+<span class="p">})();</span></code></pre></figure>
+
+<p>那些需要使用函数表达式的场合，尽量用箭头函数代替。因为这样更简洁，而且绑定了this。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// good</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">((</span><span class="nx">x</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// best</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nx">map</span><span class="p">(</span><span class="nx">x</span> <span class="o">=&gt;</span> <span class="nx">x</span> <span class="o">*</span> <span class="nx">x</span><span class="p">);</span></code></pre></figure>
+
+<p>箭头函数取代Function.prototype.bind，不应再用self/that绑定 this。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">boundMethod</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(...</span><span class="nx">params</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">method</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">self</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// acceptable</span>
+<span class="kr">const</span> <span class="nx">boundMethod</span> <span class="o">=</span> <span class="nx">method</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">);</span>
+
+<span class="c1">// best</span>
+<span class="kr">const</span> <span class="nx">boundMethod</span> <span class="o">=</span> <span class="p">(...</span><span class="nx">params</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">method</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">params</span><span class="p">);</span></code></pre></figure>
+
+<p>简单的、单行的、不会复用的函数，建议采用箭头函数。如果函数体较为复杂，行数较多，还是应该采用传统的函数写法。</p>
+
+<p>所有配置项都应该集中在一个对象，放在最后一个参数，布尔值不可以直接作为参数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">function</span> <span class="nx">divide</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">option</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kd">function</span> <span class="nx">divide</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="p">{</span> <span class="nx">option</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>不要在函数体内使用arguments变量，使用rest运算符（…）代替。因为rest运算符显式表明你想要获取参数，而且arguments是一个类似数组的对象，而rest运算符可以提供一个真正的数组。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">function</span> <span class="nx">concatenateAll</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">args</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">args</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kd">function</span> <span class="nx">concatenateAll</span><span class="p">(...</span><span class="nx">args</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">args</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s1">''</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>使用默认值语法设置函数参数的默认值。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">function</span> <span class="nx">handleThings</span><span class="p">(</span><span class="nx">opts</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">opts</span> <span class="o">=</span> <span class="nx">opts</span> <span class="o">||</span> <span class="p">{};</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kd">function</span> <span class="nx">handleThings</span><span class="p">(</span><span class="nx">opts</span> <span class="o">=</span> <span class="p">{})</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="map">7. Map结构</h3>
+
+<p>注意区分Object和Map，只有模拟现实世界的实体对象时，才使用Object。如果只是需要key: value的数据结构，使用Map结构。因为Map有内建的遍历机制。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Map</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">key</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">keys</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">key</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">value</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">values</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="kd">let</span> <span class="nx">item</span> <span class="nx">of</span> <span class="nx">map</span><span class="p">.</span><span class="nx">entries</span><span class="p">())</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="class">8. Class</h3>
+
+<p>总是用Class，取代需要prototype的操作。因为Class的写法更简洁，更易于理解。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kd">function</span> <span class="nx">Queue</span><span class="p">(</span><span class="nx">contents</span> <span class="o">=</span> <span class="p">[])</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">queue</span> <span class="o">=</span> <span class="p">[...</span><span class="nx">contents</span><span class="p">];</span>
+<span class="p">}</span>
+<span class="nx">Queue</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">pop</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kr">class</span> <span class="nx">Queue</span> <span class="p">{</span>
+  <span class="nx">constructor</span><span class="p">(</span><span class="nx">contents</span> <span class="o">=</span> <span class="p">[])</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_queue</span> <span class="o">=</span> <span class="p">[...</span><span class="nx">contents</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="nx">pop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kr">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_queue</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_queue</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>使用extends实现继承，因为这样更简单，不会有破坏instanceof运算的危险。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">inherits</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'inherits'</span><span class="p">);</span>
+<span class="kd">function</span> <span class="nx">PeekableQueue</span><span class="p">(</span><span class="nx">contents</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">Queue</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">contents</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">inherits</span><span class="p">(</span><span class="nx">PeekableQueue</span><span class="p">,</span> <span class="nx">Queue</span><span class="p">);</span>
+<span class="nx">PeekableQueue</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">peek</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">queue</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="c1">// good</span>
+<span class="kr">class</span> <span class="nx">PeekableQueue</span> <span class="kr">extends</span> <span class="nx">Queue</span> <span class="p">{</span>
+  <span class="nx">peek</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">_queue</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="section-6">9. 模块</h3>
+
+<p>首先，Module语法是JavaScript模块的标准写法，坚持使用这种写法。使用import取代require。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">const</span> <span class="nx">moduleA</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'moduleA'</span><span class="p">);</span>
+<span class="kr">const</span> <span class="nx">func1</span> <span class="o">=</span> <span class="nx">moduleA</span><span class="p">.</span><span class="nx">func1</span><span class="p">;</span>
+<span class="kr">const</span> <span class="nx">func2</span> <span class="o">=</span> <span class="nx">moduleA</span><span class="p">.</span><span class="nx">func2</span><span class="p">;</span>
+
+<span class="c1">// good</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">func1</span><span class="p">,</span> <span class="nx">func2</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'moduleA'</span><span class="p">;</span></code></pre></figure>
+
+<p>使用export取代module.exports。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// commonJS的写法</span>
+<span class="kd">var</span> <span class="nx">React</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'react'</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">Breadcrumbs</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">nav</span> <span class="o">/&gt;</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">Breadcrumbs</span><span class="p">;</span>
+
+<span class="c1">// ES6的写法</span>
+<span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">Breadcrumbs</span> <span class="o">=</span> <span class="nx">React</span><span class="p">.</span><span class="nx">createClass</span><span class="p">({</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">&lt;</span><span class="nx">nav</span> <span class="o">/&gt;</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">Breadcrumbs</span></code></pre></figure>
+
+<p>如果模块只有一个输出值，就使用export default，如果模块有多个输出值，就不使用export default，export default与普通的export不要同时使用。</p>
+
+<p>不要在模块输入中使用通配符。因为这样可以确保你的模块之中，有一个默认输出（export default）。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// bad</span>
+<span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">myObject</span> <span class="s1">'./importModule'</span><span class="p">;</span>
+
+<span class="c1">// good</span>
+<span class="kr">import</span> <span class="nx">myObject</span> <span class="nx">from</span> <span class="s1">'./importModule'</span><span class="p">;</span></code></pre></figure>
+
+<p>如果模块默认输出一个函数，函数名的首字母应该小写。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">makeStyleGuide</span><span class="p">()</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">makeStyleGuide</span><span class="p">;</span></code></pre></figure>
+
+<p>如果模块默认输出一个对象，对象名的首字母应该大写。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">StyleGuide</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">es6</span><span class="p">:</span> <span class="p">{</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">StyleGuide</span><span class="p">;</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/05/26/es6-13" data-title="ES6语法之十三（编程风格）" data-url="/front/article/2017/05/26/es6-13.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://www.jianshu.com/users/b7dc4381aed3/">
+		姚琪
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
