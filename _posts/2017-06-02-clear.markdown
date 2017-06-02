@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "js清除浏览器缓存的几种方法"
-date:   2017-05-31 10:49:42 +0800
+date:   2017-06-02 10:49:42 +0800
 description: "JS 缓存的问题一直都是我们又爱又恨的东西"
 categories: front article
 ---
