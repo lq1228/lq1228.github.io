@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Redux 2 - 入门：动机（Motivation）</title>
+  <meta name="description" content="随着JavaScript的单页应用的要求变得越来越复杂，我们的代码必须比以往管理更多的状态。其中既包含服务器响应和缓存数    据，也包括由本地创建尚未持久化到服务器端的数据。同时UI状态也越发复杂，我们必须管理路由激活，选项卡选择，进度条    ，分页控件，等等。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/06/06/redux2.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/06/06/redux2.html">Redux 2 - 入门：动机（Motivation）</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Redux 2 - 入门：动机（Motivation）</h1>
+    <p class="post-meta"><time datetime="2017-06-06T10:49:42+08:00" itemprop="datePublished">Jun 6, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>随着JavaScript的单页应用的要求变得越来越复杂，我们的代码必须比以往管理更多的状态。其中既包含服务器响应和缓存数据，也包括由本地创建尚未持久化到服务器端的数据。同时UI状态也越发复杂，我们必须管理路由激活，选项卡选择，进度条，分页控件，等等。</p>
+
+<p>管理不断变化的状态非常困难。如果一个模型可以更新另一个模型，一个视图也可以更新一个模型，这个模型又更新了另一个模型，反过来这又导致了其他视图的更新。在某些情况下，你难于理解程序发生了什么，不知道它的状态在什么时候，什么原因又如何发生了变化。当系统变得不足够透明并充满不确定性时，重现和解决Bug将变得非常困难，也难于添加新的需求。</p>
+
+<p>似乎这还不是全部问题，鉴于在前端产品开发中不断加入的新需求，作为开发者，我们期望实现高性能更新，服务器端渲染，在路由跳转之前获得数据，等等其他任务。我们突然发现自己要处理的工作已经变得前所未有的复杂，此时不可避免的会有一个想法：是否到了放弃的时候？，答案当然是NO。</p>
+
+<p>这种复杂性很难处理，因为它混合的两个概念对人类来说都非常难于理解：变化和异步。我将它们称为可乐加曼妥思喷发现象。两个问题分开时都可以漂亮的解决，但一起出现后就变成了一团乱麻。React之类的库中同时删除了异步和DOM的直接操作来解决视图层中的这个问题。但管理状态数据则取决于你自己，这也是Redux出现的原因。</p>
+
+<p>逐步跟随Flux，CQRS和Event Sourcing改进的基础上，通过严格限制更新发生的时机和方式，使得Redux中可以预测状态的变化，这种限制集中体现在Redux的三大原则中。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/06/06/redux2" data-title="Redux 2 - 入门：动机（Motivation）" data-url="/front/article/2017/06/06/redux2.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://wumingli.github.io/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
