@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Redux 4 - 入门：三大原则（Three Principles）"
-date:   2017-06-06 12:49:42 +0800
-description: " "
+date:   2017-06-16 8:49:42 +0800
+description: "单一数据源原则、状态只读、纯函数更改"
 categories: front article
 ---
 
