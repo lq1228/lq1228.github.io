@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Redux 4 - 入门：三大原则（Three Principles）</title>
+  <meta name="description" content="单一数据源原则、状态只读、纯函数更改">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/06/22/redux4.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/06/22/redux4.html">Redux 4 - 入门：三大原则（Three Principles）</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Redux 4 - 入门：三大原则（Three Principles）</h1>
+    <p class="post-meta"><time datetime="2017-06-22T12:49:42+08:00" itemprop="datePublished">Jun 22, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Redux可以用3个基本原则来描述：</p>
+
+<h3 id="single-source-of-truth">单一数据源原则（Single source of truth）</h3>
+
+<p>应用的整个状态存储在单例store的对象树中。</p>
+
+<p>在此基础上非常便于创建通用应用，不需要经过特殊的处理，直接将服务端的状态序列化后混合到客户端状态中即可。单例的状态树使得程序理解和调试都变得非常简单，可以在开发过程中针对某个时刻的状态反复调试，促进开发的节奏。将一个应用中所有的状态都存储在一个单例树上之后，一些在传统开发模式中难以实现的功能——比如回退/前进——突然变得简单起来。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">store</span><span class="p">.</span><span class="nx">getState</span><span class="p">())</span>
+
+<span class="cm">/* Prints
+{
+  visibilityFilter: 'SHOW_ALL',
+  todos: [
+    {
+      text: 'Consider using Redux',
+      completed: true,
+    },
+    {
+      text: 'Keep all state in a single tree',
+      completed: false
+    }
+  ]
+}
+*/</span></code></pre></figure>
+
+<h3 id="state-is-read-only">状态只读（State is read-only）</h3>
+
+<p>改变状态树的唯一方式是通过派发action——一个用来描述发生情况的对象</p>
+
+<p>这确保了无论是用户输入还是网络响应等交互都不能直接修改应用状态。只能通过明确的传递一个Action来表达状态修改的意图。并且所有状态修改的操作均严格按照发生的顺序集中处理，不存在其他遗漏的情况。Action就是普通对象，可以用来记录日志，序列化，存储，也可以用来重现测试或调试Bug。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">store</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">({</span>
+  <span class="na">type</span><span class="p">:</span> <span class="s1">'COMPLETE_TODO'</span><span class="p">,</span>
+  <span class="na">index</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">})</span>
+
+<span class="nx">store</span><span class="p">.</span><span class="nx">dispatch</span><span class="p">({</span>
+  <span class="na">type</span><span class="p">:</span> <span class="s1">'SET_VISIBILITY_FILTER'</span><span class="p">,</span>
+  <span class="na">filter</span><span class="p">:</span> <span class="s1">'SHOW_COMPLETED'</span>
+<span class="p">})</span></code></pre></figure>
+
+<h3 id="changes-are-made-with-pure-functions">纯函数更改（Changes are made with pure functions）</h3>
+
+<p>被称作Reducer的纯函数专门用来响应Action修改状态树。</p>
+
+<p>Reducer是纯函数，接收当前状态和一个Action，并返回修改后的状态。切记是返回一个全新的状态对象，千万避免修改当前状态。创建应用可以从一个单独的Reducer开始，随着应用规模的增长，将其拆分为更小的Reducer用来分别处理状态树的各个部分。Reducer只是函数而已，可以在代码中根据需求控制其调用，传递额外的数据，也可以针对分页之类的常见任务抽象出可重用的Reducer。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">visibilityFilter</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="s1">'SHOW_ALL'</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="s1">'SET_VISIBILITY_FILTER'</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="s1">'ADD_TODO'</span><span class="err">:</span>
+      <span class="k">return</span> <span class="p">[</span>
+        <span class="p">...</span><span class="nx">state</span><span class="p">,</span>
+        <span class="p">{</span>
+          <span class="na">text</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+          <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="k">case</span> <span class="s1">'COMPLETE_TODO'</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">todo</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">===</span> <span class="nx">action</span><span class="p">.</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">todo</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">completed</span><span class="p">:</span> <span class="kc">true</span>
+          <span class="p">})</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">todo</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">combineReducers</span><span class="p">,</span> <span class="nx">createStore</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'redux'</span>
+<span class="kd">let</span> <span class="nx">reducer</span> <span class="o">=</span> <span class="nx">combineReducers</span><span class="p">({</span> <span class="nx">visibilityFilter</span><span class="p">,</span> <span class="nx">todos</span> <span class="p">})</span>
+<span class="kd">let</span> <span class="nx">store</span> <span class="o">=</span> <span class="nx">createStore</span><span class="p">(</span><span class="nx">reducer</span><span class="p">)</span></code></pre></figure>
+
+<p>至此，你应该知道Redux是什么了。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/06/22/redux4" data-title="Redux 4 - 入门：三大原则（Three Principles）" data-url="/front/article/2017/06/22/redux4.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
