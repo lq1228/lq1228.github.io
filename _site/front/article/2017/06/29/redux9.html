@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Redux 9 - 基础：Reducers</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/06/29/redux9.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/06/29/redux9.html">Redux 9 - 基础：Reducers</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Redux 9 - 基础：Reducers</h1>
+    <p class="post-meta"><time datetime="2017-06-29T10:49:42+08:00" itemprop="datePublished">Jun 29, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Action描述的是发生了什么事实，接下来由Reducer更新应用的状态。</p>
+
+<h4 id="designing-the-state-shape">涉及状态的形式（Designing the State Shape）</h4>
+
+<p>在Redux中，应用程序的所有状态存储在一个对象单例中。在编码之前思考其表现形式是一个良好的工作习惯。Store对象所表示的应用程序状态的最小属性集合是什么呢？</p>
+
+<p>在前面的Todo应用中，需要存储两个不同的状态：</p>
+
+<ul>
+    <li>当前可视过滤器的选中状态；</li>
+    <li>实际Todo列表。</li>
+</ul>
+
+<p>在状态树中会同时存储数据和UI状态两种不同类型的值，尽量将这两者分离存储。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="nl">visibilityFilter</span><span class="p">:</span> <span class="s1">'SHOW_ALL'</span><span class="p">,</span>
+  <span class="nx">todos</span><span class="err">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">text</span><span class="p">:</span> <span class="s1">'Consider using Redux'</span><span class="p">,</span>
+      <span class="na">completed</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">text</span><span class="p">:</span> <span class="s1">'Keep all state in a single tree'</span><span class="p">,</span>
+      <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>需要注意实体之间的关系（Note on Relationships）</p>
+
+<p>在复杂的App中，会存在不同的实体相互引用。建议不要相互嵌套，尽量保持状态的规范化。在同一个对象用ID关联所有的实体，不同的实体中使用ID进行对象的引用，遵循数据库范式的约束。这种约束在normalizr’s文档中有详细的描述。比如，在真实的App中状态中，用todosById: { id -&gt; todo }和todos: array<id>这样的结构存储是一个更好的选择。在这里为了保持示例的简单性会适当违反前面的原则。</id></p>
+
+<h4 id="actionhandling-actions">Action处理（Handling Actions）</h4>
+
+<p>目前为止已经确定了State对象的格式，接下来会进行Reducer的编码。Reducer本质上就是一个纯函数，接收当前状态和一个Action作为参数，并返回更新后的最新状态。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">(</span><span class="nx">previousState</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">newState</span></code></pre></figure>
+
+<p>将这个函数叫做Reducer，来源于Array.prototype.reduce(reducer, ?initialValue)中的说法。将其保持纯函数的约束非常重要，下面这些事你千万不能做：</p>
+
+<ul>
+	<li>修改参数；</li>
+	<li>进行API调用或路由跳转这样有副作用的操作；</li>
+	<li>调用非纯函数，比如Date.now()或Math.random()等。</li>
+</ul>
+
+<p>在高级进阶中会进行有副作用操作的讲解。但目前为止，只需要记住Reducer必须是纯函数。输入相同的参数，仅仅计算最新状态并将其返回。没有意外。没有副作用。没有API调用。没有修改。只是纯计算。</p>
+
+<p>在上面概念的基础上，开始逐步实现相关的Reducer，和之前定义的Action逐步集成。</p>
+
+<p>首先指定状态的初始值。Redux首次调用Reducer时传入的是一个undefined参数，此时返回应用的初始状态值即可。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="p">{</span> <span class="nx">VisibilityFilters</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'./actions'</span>
+
+<span class="kr">const</span> <span class="nx">initialState</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">VisibilityFilters</span><span class="p">.</span><span class="nx">SHOW_ALL</span><span class="p">,</span>
+  <span class="na">todos</span><span class="p">:</span> <span class="p">[]</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">state</span> <span class="o">===</span> <span class="s1">'undefined'</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">initialState</span>
+  <span class="p">}</span>
+
+  <span class="c1">// For now, don't handle any actions</span>
+  <span class="c1">// and just return the state given to us.</span>
+  <span class="k">return</span> <span class="nx">state</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>可以使用ES6的参数默认值语法来让编码更紧凑：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">initialState</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// For now, don't handle any actions</span>
+  <span class="c1">// and just return the state given to us.</span>
+  <span class="k">return</span> <span class="nx">state</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>现在来处理SET_VISIBILITY_FILTER状态。所做的工作只是改变状态上的visibilityFilter属性。如下所示：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">initialState</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>谨记：</p>
+
+<ul>
+	<li>不要修改state。上面的代码中使用Object.assign()创建了一个State副本。但Object.assign(state, { visibilityFilter: action.filter })是错误的写法：第一个参数被修改了。第一个参数必须是一个空对象。建议使用对象展开操作符的写法{ ...state, ...newState }代替。</li>
+	<li>default分支默认返回之前的state。对于未知的Action返回之前的state。</li>
+</ul>
+
+<p>Object.assign()是ES6规范的一部分，但目前一些浏览器尚未实现。可以使用一个Polyfill，比如Babel plugin，或者使用一个_.assign()之类的工具库。</p>
+
+<p>switch状态不是真正的样板代码，Flux中的样板代码偏概念性：需要派发一个更新，并在Store上注册一个Dispatcher，Store需要作为一个对象（以及在通用App中的并发处理）。Redux借住Reducer代替事件派发来解决这些难题。</p>
+
+<p>不能根据是否使用switch来区分框架。如果不习惯switch，可以使用createReducer方法来映射状态的处理，参考“减少样板代码”。</p>
+
+<h4 id="actionhandling-more-actions">处理更多的Action（Handling More Actions）</h4>
+
+<p>接下来还有两个Action需要处理！参考SET_VISIBILITY_FILTER的处理，引入ADD_TODO和TOGGLE_TODOAction，接下来首先处理ADD_TODO。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">initialState</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+      <span class="p">})</span>
+    <span class="k">case</span> <span class="nx">ADD_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">todos</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">...</span><span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">,</span>
+          <span class="p">{</span>
+            <span class="na">text</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+            <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">})</span>    
+    <span class="k">default</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>跟之前一样，禁止直接更改state或它的属性，还是返回一个新对象。新的todos对象等同于在旧的todos对象尾部拼接一个新的todo对象。新的todo对象根据Action中的数据构造。</p>
+
+<p>最后，跟前面一张将TOGGLE_TODO处理完成：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">case</span> <span class="nx">TOGGLE_TODO</span><span class="err">:</span>
+  <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">todos</span><span class="p">:</span> <span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">todo</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">===</span> <span class="nx">action</span><span class="p">.</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">todo</span><span class="p">,</span> <span class="p">{</span>
+          <span class="na">completed</span><span class="p">:</span> <span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">completed</span>
+        <span class="p">})</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="nx">todo</span>
+    <span class="p">})</span>
+  <span class="p">})</span></code></pre></figure>
+
+<p>因为上面的代码中只需要处理数组中的一个指定项，并不需要将数组顺序重排，所以用旧的数组元素创建一个新的数组，并将需要修改的元素重新生成。如果这样的操作很常见，建议使用immutability-helper，updeep之类的辅助工具，或者使用Immutable这样支持原生不变数据类型的库。切记不要修改state的任何属性，除非事先将其进行了拷贝。</p>
+
+<h4 id="reducersplitting-reducers">拆分Reducer（Splitting Reducers）</h4>
+
+<p>目前代码整体如下所示，比较冗长：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">initialState</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+      <span class="p">})</span>
+    <span class="k">case</span> <span class="nx">ADD_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">todos</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">...</span><span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">,</span>
+          <span class="p">{</span>
+            <span class="na">text</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+            <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">})</span>
+    <span class="k">case</span> <span class="nx">TOGGLE_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">todos</span><span class="p">:</span> <span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">todo</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+          <span class="k">if</span><span class="p">(</span><span class="nx">index</span> <span class="o">===</span> <span class="nx">action</span><span class="p">.</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">todo</span><span class="p">,</span> <span class="p">{</span>
+              <span class="na">completed</span><span class="p">:</span> <span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">completed</span>
+            <span class="p">})</span>
+          <span class="p">}</span>
+          <span class="k">return</span> <span class="nx">todo</span>
+        <span class="p">})</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>是否有办法让其变得更简单？todos和visibilityFilter两者看起来是完全独立的两部分。某些情况下，状态字段之间存在相互依赖，但在这个案例中，可以简单的将todos拆分到单独的方法中：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">ADD_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="p">[</span>
+        <span class="p">...</span><span class="nx">state</span><span class="p">,</span>
+        <span class="p">{</span>
+          <span class="na">text</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+          <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="k">case</span> <span class="nx">TOGGLE_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">todo</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">===</span> <span class="nx">action</span><span class="p">.</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">todo</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">completed</span><span class="p">:</span> <span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">completed</span>
+          <span class="p">})</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">todo</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">initialState</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+      <span class="p">})</span>
+    <span class="k">case</span> <span class="nx">ADD_TODO</span><span class="err">:</span>
+    <span class="k">case</span> <span class="nx">TOGGLE_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">state</span><span class="p">,</span> <span class="p">{</span>
+        <span class="na">todos</span><span class="p">:</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>注意todos也接收一个state参数，但这个参数是一个数组！todoApp只是将状态的一部分交给todos管理，todos只需要处理这个片段即可。这种方式叫做Reducer组合，也是构建Redux应用的基本模式。</p>
+
+<p>继续尝试Reducer组合模式，也可以将visibilityFilter的管理拆分出来。</p>
+
+<p>下面的导入语法中，使用ES6析构赋值语法来定义SHOW_ALL：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="p">{</span> <span class="nx">SHOW_ALL</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">VisibilityFilters</span><span class="p">;</span></code></pre></figure>
+
+<p>继续编码：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">visibilityFilter</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">SHOW_ALL</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>现在可以将主Reducer重写，其负责调用其他的Reducer来管理状态的不同部分，并将他们合并到一个对象中。主Reducer也不再需要知道完整的初始化状态。当子Reducer接收undefined时，返回各自的初始状态即可。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">ADD_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="p">[</span>
+        <span class="p">...</span><span class="nx">state</span><span class="p">,</span>
+        <span class="p">{</span>
+          <span class="na">text</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+          <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="k">case</span> <span class="nx">TOGGLE_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">todo</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">===</span> <span class="nx">action</span><span class="p">.</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">todo</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">completed</span><span class="p">:</span> <span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">completed</span>
+          <span class="p">})</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">todo</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">visibilityFilter</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">SHOW_ALL</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{},</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">visibilityFilter</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">visibilityFilter</span><span class="p">,</span> <span class="nx">action</span><span class="p">),</span>
+    <span class="na">todos</span><span class="p">:</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>注意，每个Reducer管理全局状态中各自的那一部分状态，他们的state参数各不相同，分别表示各自所管理的那一部分状态。</p>
+
+<p>目前看起来还是非常不错的！当应用进一步变大是，可以将Reducer拆分到单独的文件中，保持各自的完全独立，分别管理不同的数据域。</p>
+
+<p>最后，Redux提供了一个叫做combineReducers()的工具方法来实现上面的样板代码逻辑。接下来如下重构todoApp：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="p">{</span> <span class="nx">combineReducers</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'redux'</span>
+
+<span class="kr">const</span> <span class="nx">todoApp</span> <span class="o">=</span> <span class="nx">combineReducers</span><span class="p">({</span>
+  <span class="nx">visibilityFilter</span><span class="p">,</span>
+  <span class="nx">todos</span>
+<span class="p">})</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">todoApp</span></code></pre></figure>
+
+<p>等价于原来的下面部分：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="nx">todoApp</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{},</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">visibilityFilter</span><span class="p">:</span> <span class="nx">visibilityFilter</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">visibilityFilter</span><span class="p">,</span> <span class="nx">action</span><span class="p">),</span>
+    <span class="na">todos</span><span class="p">:</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">todos</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>也可以包含不同键值，或起不同的方法名。下面的两种写法是等价的：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">reducer</span> <span class="o">=</span> <span class="nx">combineReducers</span><span class="p">({</span>
+  <span class="na">a</span><span class="p">:</span> <span class="nx">doSomethingWithA</span><span class="p">,</span>
+  <span class="na">b</span><span class="p">:</span> <span class="nx">processB</span><span class="p">,</span>
+  <span class="na">c</span><span class="p">:</span> <span class="nx">c</span>
+<span class="p">})</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">reducer</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{},</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">a</span><span class="p">:</span> <span class="nx">doSomethingWithA</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">a</span><span class="p">,</span> <span class="nx">action</span><span class="p">),</span>
+    <span class="na">b</span><span class="p">:</span> <span class="nx">processB</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">b</span><span class="p">,</span> <span class="nx">action</span><span class="p">),</span>
+    <span class="na">c</span><span class="p">:</span> <span class="nx">c</span><span class="p">(</span><span class="nx">state</span><span class="p">.</span><span class="nx">c</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>combineReducers()只是返回一个方法，在这个方法内部根据状态的不同部分对应的键名来调用同名的Reducer，并所有Reducer的执行结果合并进一个对象中。这只是一个普通方法。跟通常的Reducer一样，如果子Reducer的执行结果不变，则其返回值也不会变化。</p>
+
+<p>ES6重度用户说明（Note for ES6 Savvy Users）</p>
+
+<p>combineReducers方法接收一个对象参数，可以将顶级的Reducer在单独的文件中export，然后使用import * as reducers将他们引用到同一个对象中：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="p">{</span> <span class="nx">combineReducers</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'redux'</span>
+<span class="kr">import</span> <span class="o">*</span> <span class="nx">as</span> <span class="nx">reducers</span> <span class="nx">from</span> <span class="s1">'./reducers'</span>
+
+<span class="kr">const</span> <span class="nx">todoApp</span> <span class="o">=</span> <span class="nx">combineReducers</span><span class="p">(</span><span class="nx">reducers</span><span class="p">)</span></code></pre></figure>
+
+<p>import *目前是一个比较新的语法，为避免混乱在文档中不会使用这个语法，但在其他例子中有可能看到这种用法。</p>
+
+<h4 id="source-code">源代码（Source Code）</h4>
+
+<p>reducers.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="p">{</span> <span class="nx">combineReducers</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'redux'</span>
+<span class="kr">import</span> <span class="p">{</span> <span class="nx">ADD_TODO</span><span class="p">,</span> <span class="nx">TOGGLE_TODO</span><span class="p">,</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="p">,</span> <span class="nx">VisibilityFilters</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'./actions'</span>
+<span class="kr">const</span> <span class="p">{</span> <span class="nx">SHOW_ALL</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">VisibilityFilters</span>
+
+<span class="kd">function</span> <span class="nx">visibilityFilter</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">SHOW_ALL</span><span class="p">,</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">action</span><span class="p">.</span><span class="nx">filter</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">todos</span><span class="p">(</span><span class="nx">state</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">action</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="nx">action</span><span class="p">.</span><span class="nx">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="nx">ADD_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="p">[</span>
+        <span class="p">...</span><span class="nx">state</span><span class="p">,</span>
+        <span class="p">{</span>
+          <span class="na">text</span><span class="p">:</span> <span class="nx">action</span><span class="p">.</span><span class="nx">text</span><span class="p">,</span>
+          <span class="na">completed</span><span class="p">:</span> <span class="kc">false</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="k">case</span> <span class="nx">TOGGLE_TODO</span><span class="err">:</span>
+      <span class="k">return</span> <span class="nx">state</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">todo</span><span class="p">,</span> <span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">index</span> <span class="o">===</span> <span class="nx">action</span><span class="p">.</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">assign</span><span class="p">({},</span> <span class="nx">todo</span><span class="p">,</span> <span class="p">{</span>
+            <span class="na">completed</span><span class="p">:</span> <span class="o">!</span><span class="nx">todo</span><span class="p">.</span><span class="nx">completed</span>
+          <span class="p">})</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">todo</span>
+      <span class="p">})</span>
+    <span class="nl">default</span><span class="p">:</span>
+      <span class="k">return</span> <span class="nx">state</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">const</span> <span class="nx">todoApp</span> <span class="o">=</span> <span class="nx">combineReducers</span><span class="p">({</span>
+  <span class="nx">visibilityFilter</span><span class="p">,</span>
+  <span class="nx">todos</span>
+<span class="p">})</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">todoApp</span></code></pre></figure>
+
+<h4 id="next-steps">下一步（Next Steps）</h4>
+
+<p>接下来，将演示如何创建一个Redux Store来保存状态和Reducer的调用。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/06/29/redux9" data-title="Redux 9 - 基础：Reducers" data-url="/front/article/2017/06/29/redux9.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
