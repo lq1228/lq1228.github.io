@@ -141,8 +141,6 @@ CSS3中出现了诸多*-start/*-end属性（亦称为CSS逻辑属性），例如
 
 此时，margin-left:20px在图片direction变化后，就无效了；但是，margin-start就不会有此问题，所谓start, 指的是文档流开始的方向，换句话说，如果页面是默认的文档流，则margin-start等同于margin-left，如果是水平从右往左文档流，则margin-start等同于margin-right。margin-end也是类似的。
 
-百变星君剧照
-
 webkit内核的浏览器还支持*-before和*-end，默认流下的margin-before近似于margin-top，margin-after近似于margin-bottom，然而，规范貌似没提及，FireFox也没支持，*-before和*-after出场的机会并不多，为什么呢？因为实际上，配合writing-mode，*-start/*-end已经可以满足我们对逻辑位置的需求了，水平和垂直都可以控制，对立方向适用老的*-top/*-bottom.
 
 例如，我们设置writing-mode值为vertical-rl，此时margin-start等同于margin-top，如果此时margin-start，margin-top同时存在，会遵循权重和后来居上原则进行相互的覆盖。
