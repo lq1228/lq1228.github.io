@@ -6,8 +6,8 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 14 Jul 2017 11:30:50 +0800</pubDate>
-    <lastBuildDate>Fri, 14 Jul 2017 11:30:50 +0800</lastBuildDate>
+    <pubDate>Fri, 14 Jul 2017 11:34:38 +0800</pubDate>
+    <lastBuildDate>Fri, 14 Jul 2017 11:34:38 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
     
       <item>
@@ -138,8 +138,6 @@ vertical-lr表示文本是垂直方向(vertical)展示，然后阅读的顺序�
 &lt;p&gt;在很久以前，我们的认知里，网页布局就一种流向，就是从左往右，从上往下，因此，我们使用margin-left/margin-right没有任何问题。但是，如果我们流是可以变化的，例如，一张图片距离左边缘20像素，我们希望其文档流是从右往左，同时距离右侧是20像素，怎么办？&lt;/p&gt;
 
 &lt;p&gt;此时，margin-left:20px在图片direction变化后，就无效了；但是，margin-start就不会有此问题，所谓start, 指的是文档流开始的方向，换句话说，如果页面是默认的文档流，则margin-start等同于margin-left，如果是水平从右往左文档流，则margin-start等同于margin-right。margin-end也是类似的。&lt;/p&gt;
-
-&lt;p&gt;百变星君剧照&lt;/p&gt;
 
 &lt;p&gt;webkit内核的浏览器还支持&lt;em&gt;-before和&lt;/em&gt;-end，默认流下的margin-before近似于margin-top，margin-after近似于margin-bottom，然而，规范貌似没提及，FireFox也没支持，&lt;em&gt;-before和&lt;/em&gt;-after出场的机会并不多，为什么呢？因为实际上，配合writing-mode，&lt;em&gt;-start/&lt;/em&gt;-end已经可以满足我们对逻辑位置的需求了，水平和垂直都可以控制，对立方向适用老的&lt;em&gt;-top/&lt;/em&gt;-bottom.&lt;/p&gt;
 
