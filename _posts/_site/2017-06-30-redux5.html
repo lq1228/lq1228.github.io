@@ -1,0 +1,64 @@
+<p>Redux类似于一个混血儿，和一些现有模式和技术比较相似，但也存在一些重要的不同。下面将分析一下Redux和这些技术之间的相同点和不同点。</p>
+
+<h3 id="flux">Flux</h3>
+
+<p>Redux与Flux相同点：</p>
+
+<ul>
+    <li> Redux的灵感来源于Flux的一些重要特性。跟Flux一样，Redux规定在一个确定的应用层中更新数据模型（Flux中的“Stores”对应于Redux中的“Reducer”），以避免在代码中直接修改数据，同时两者都会用一个简单的“Action”对象描述每一个修改和变化。</li>
+</ul>
+
+<p>Redux与Flux相同点：</p>
+
+<ul>
+    <li> 跟Flux不同的是，Redux中不存在Dispatcher的概念。这是因为Redux中使用纯函数代替了事件派发对象，纯函数易于组合，并且不依赖额外的对象管理。从不同的角度理解Flux，既可以看做两者的差异，也可以看做不同的实现方式。Flux通常被描述为(state, action) =&gt; state。从这个意义上说，Redux确实是Flux的一种实现，只是其采用了更简单的纯函数。</li>
+    <li> 于Flux另一个显著的不同是Redux假设你从不更改数据。你只需使用简单对象或者数据来存储状态就好，但坚决反对在Reducer内部对其进行修改。你应该总是返回一个新的对象，使用对象展开运算符，或者Immutable的库可以简化对象的操作。</li>
+</ul>
+
+<p>虽然从技术的角度可以编写一个非纯函数型的Reducer以提高数据修改的性能，但确实不鼓励这样做。如时间旅行，记录/重放，或热加载之类的开发功能将被破坏。此外在大多数真实应用中修改数据并不能带来性能上的提升，如Om所示，即使你不进行对象的分配，依然可以通过避免昂贵的重绘和重算来取得性能优势，因为在纯函数型的Reducer中可以清晰的知道什么发生了变化。</p>
+
+<h3 id="elm">Elm</h3>
+
+<p>Elm是Evan Czaplicki受Haskell启发而创建的一套函数式编程语言。强制“模型、视图、更新”架构，其中的更新部分的函数签名是：(action, state) =&gt; state。Redux中的Reducer和Elm中的“Updater”起相同的作用。</p>
+
+<p>跟Redux不同的是，Elm是一门语言，所以它可以从强制纯函数，静态类型，开箱不可变，和模式匹配（使用case表达式）等获得很多优势。即使你不打算将Elm用在工作中，学习一下Elm的架构思想总是好的，并将这种思想用在工作中。这里有一个有趣的JavaScript库演示了类似想法的实现。我们将其看做Redux灵感的来源。可以通过使用Flow之类的类型检查器获得接近于Elm中的静态类型。</p>
+
+<h3 id="immutable">Immutable</h3>
+
+<p>Immutable是一个实现了不可变数据结构的JavaScript库。拥有高性能和一组易于使用的惯用JavaScript API。</p>
+
+<p>Immutable以及相似的库于Redux不冲突，可以自由的将他们组合在一起！</p>
+
+<p>Redux不关心状态如何存储，可以用一个简单对象来实现，也可以使用一个不可变对象来实现，或者其他方式实现。。你可能需要为通用App实现一套（反）序列化机制，并将服务器端的数据混合进客户端，但无论无何，你可以使用任意的只要支持不可变数据存储的库。比如，不能使用Backbone作为Redux状态，因为Backbone的Model是可变的。</p>
+
+<p>需要注意的是，即使所选用的不可变库支持游标，在Redux应用中也禁止使用该特性。整个状态树永远是只读状态，应该使用Redux进行状态的更新，并在其中订阅相关的更新。因此，在Redux中通过游标写入没有任何意义。如果只是通过逐步细化游标在状态树和UI树之间解耦，应该使用选择器代替。选择器是一组Getter方法的组合。reselect是一个强大并且实现简洁的选择器组合库。</p>
+
+<h3 id="baobab">Baobab</h3>
+
+<p>Baobab是另一个流行的JavaScript不可变数据类型库，拥有一组更新普通JavaScript对象的API。但将其和Redux一起使用，几乎没有任何益处。</p>
+
+<p>Baobab提供的大多数功能是数据游标相关的数据更新，但是Redux强制只能通过Action来更新数据。所以，这是针对同一个问题的不同解决思路，两者之间没有互补的关系。</p>
+
+<p>跟Immutable不同，Baobab底层并没有一个特殊高效的数据结构实现，所以将其和Redux一起使用不会获得任何好处。在这种情况下，用一个简单的JavaScript对象更简单一些。</p>
+
+<h3 id="rxjs">RxJS</h3>
+
+<p>RxJS是一个非常优秀的用来管理App中的复杂异步数据的实现方式。实际上，这是一个致力于创建可观察人机交互模型的库。</p>
+
+<p>Redux和RxJS一起使用是否会取得良好的效果吗？当然是。这两者在一起工作非常友好。比如，使用RxJS可以很方便的将Redux store封装为一个可观察对象：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">toObservable</span><span class="p">(</span><span class="nx">store</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="nx">subscribe</span><span class="p">({</span> <span class="nx">next</span> <span class="p">})</span> <span class="p">{</span>
+      <span class="kr">const</span> <span class="nx">unsubscribe</span> <span class="o">=</span> <span class="nx">store</span><span class="p">.</span><span class="nx">subscribe</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nx">next</span><span class="p">(</span><span class="nx">store</span><span class="p">.</span><span class="nx">getState</span><span class="p">()))</span>
+      <span class="nx">next</span><span class="p">(</span><span class="nx">store</span><span class="p">.</span><span class="nx">getState</span><span class="p">())</span>
+      <span class="k">return</span> <span class="p">{</span> <span class="nx">unsubscribe</span> <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>类似的，也可以将不同的异步流整合到Action中，在将其store.dispatch()。</p>
+
+<p>有一个问题是：假如你正在使用Rx，那么你是否还有必要使用Redux？也许不，用Rx重新实现Redux并不是一件难事。有人说用两行Rx代码.scan()即可实现，这完全可能。</p>
+
+<p>对于Redux，如果你心中还有疑虑，建议通读其源码（这里不会进行更深入的讲解），和其系统内代码（比如Redux开发工具）。如果你不关心这么多，只是想获取灵活的数据，可以看看Cycle，或者将其和Redux一起使用。接下来一起看看怎么用Redux。</p>

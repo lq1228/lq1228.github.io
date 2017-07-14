@@ -1,0 +1,28 @@
+<p>现在各大现代浏览器已经对writing-mode实现了非常标准的支持，兼容性也已经不成问题了，我们也可以放心使用啦。</p>
+
+<h3 id="writing-mode">一. writing-mode的原本作用</h3>
+
+<p>和float属性有些类似，writing-mode原本设计的是控制内联元素的显示的（即所谓的文本布局-Text Layout）。因为在亚洲，尤其像中国这样的东亚国家，存在文字的排版不是水平式的，而是垂直的，例如中国的古诗古文, 因此，writing-mode就是用来实现文字可以竖着呈现的。</p>
+
+<p>writing-mode语法
+writing-mode的语法学习相比其他CSS属性要高一些，因为我们需要记住两套不同的语法。一个是IE私有属性，第二个是CSS3规范属性。</p>
+
+<p>先看下未来所需的CSS3语法：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/* 关键字值 */</span>
+<span class="nx">writing</span><span class="o">-</span><span class="nx">mode</span><span class="err">:</span> <span class="nx">horizontal</span><span class="o">-</span><span class="nx">tb</span><span class="p">;</span>    <span class="cm">/* 默认值 */</span>
+<span class="nx">writing</span><span class="o">-</span><span class="nx">mode</span><span class="err">:</span> <span class="nx">vertical</span><span class="o">-</span><span class="nx">rl</span><span class="p">;</span>
+<span class="nx">writing</span><span class="o">-</span><span class="nx">mode</span><span class="err">:</span> <span class="nx">vertical</span><span class="o">-</span><span class="nx">lr</span><span class="p">;</span>
+
+<span class="cm">/* 全局值-关键字inherit IE8+，initial和unset IE13才支持 */</span>
+<span class="nx">writing</span><span class="o">-</span><span class="nx">mode</span><span class="err">:</span> <span class="nx">inherit</span><span class="p">;</span>
+<span class="nx">writing</span><span class="o">-</span><span class="nx">mode</span><span class="err">:</span> <span class="nx">initial</span><span class="p">;</span>
+<span class="nx">writing</span><span class="o">-</span><span class="nx">mode</span><span class="err">:</span> <span class="nx">unset</span><span class="p">;</span></code></pre></figure>
+
+<p>各个关键字属性值的含义，我们透明名称就能知道其大概的意思，例如，默认值horizontal-tb表示，文本流是水平方向(horizontal)的，元素是从上往下(tb:top-bottom)堆叠的。</p>
+
+<p>vertical-rl表示文本是垂直方向(vertical)展示，然后阅读的顺序是从右往左(rl:right-left)，跟我们古诗的阅读顺序一致。
+vertical-lr表示文本是垂直方向(vertical)展示，然后阅读的顺序还是默认的从左往右(lr:left-right)，也就是仅仅是水平变垂直。</p>
+
+<p>这里不详细介绍IE浏览器的语法，感兴趣可以看<a href="https://msdn.microsoft.com/zh-cn/library/ms531187(v=vs.85).aspx">IE官方文档</a></p>
+
