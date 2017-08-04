@@ -1,0 +1,148 @@
+---
+layout: post
+title:  "Redux 8 - 基础：Action"
+date:   2017-08-04 10:49:42 +0800
+description: "Action是应用发送到Store中数据的信息载体，也是Store中数据的唯一来源。使用store.dispatch()方法可以将他们发送到Store中。"
+categories: front article
+---
+
+Action是应用发送到Store中数据的信息载体，也是Store中数据的唯一来源。使用store.dispatch()方法可以将他们发送到Store中。
+
+下面这个Action示例表示添加一个新的Todo项：
+
+{% highlight javascript %}
+const ADD_TODO = 'ADD_TODO'
+
+{
+  type: ADD_TODO,
+  text: 'Build my first Redux app'
+}
+{% endhighlight %}
+
+Action只是一个简单的JavaScript对象，其必须包含一个表示正在发生行为类型的type属性。Type属性通常被定义为一个字符串常量。当程序足够大的时候，可能需要将所有的类型定义迁移到一个单独的文件中。
+
+{% highlight javascript %}
+import { ADD_TODO, REMOVE_TODO } from '../actionTypes'
+{% endhighlight %}
+
+将Action类型常量定义在一个单独的文件中并不是必须的，甚至根本不需要将Action类型定义出来。在一个小项目中，直接使用字符串字面量是更简单的做法。但是在一个复杂的项目中将这些变量显式的定义出来就有优势了。阅读减少模板代码获取更多的实践技巧以保持代码的简洁。
+
+Action对象结构中type之外部分取决于你。如果有兴趣，可以参考Flux Standard Action来构建Action对象。
+
+接下来再创建一个表示用户点选完成Todo的Action类型。由于所有Todo存储在一个数组中，可以通过index来指向一个具体的Todo。在真实的应用场景中，我们需要在新条目创建的时候构建适应范围更广的唯一ID。
+
+{% highlight javascript %}
+{
+  type: TOGGLE_TODO,
+  index: 5
+}
+{% endhighlight %}
+
+最好在每个Action中传递尽可能少的数据，例如，传递一个单独的index要优于传递整个Todo对象。
+
+最后，再添加一个用来更改当前Todo显示状态的Action类型。
+
+{% highlight javascript %}
+{
+  type: SET_VISIBILITY_FILTER,
+  filter: SHOW_COMPLETED
+}
+{% endhighlight %}
+
+#### Action Creators
+
+Action Creator是用来创建Action对象。概念上“Action”和“Action Creator”非常容易混淆，使用这两个术语时要注意区分两者概念上的差别。
+
+在Redux中，Action Creator仅仅返回一个Action：
+
+{% highlight javascript %}
+function addTodo(text) {
+  return {
+    type: ADD_TODO,
+    text
+  }
+}
+{% endhighlight %}
+
+这使得他们易于移植，并且易于测试。
+
+在正宗的Flux中，Action Creator在调用的时候常常会同时触发一个事件派发，就像下面这样：
+
+{% highlight javascript %}
+function addTodoWithDispatch(text) {
+  const action = {
+    type: ADD_TODO,
+    text
+  }
+  dispatch(action)
+}
+{% endhighlight %}
+
+在Redux中不是这样的。需要将Action Creator的执行结果显式的传入到dispatch()方法中：
+
+{% highlight javascript %}
+dispatch(addTodo(text))
+dispatch(completeTodo(index))
+{% endhighlight %}
+
+或者，创建一个绑定Action Creator以自动派发事件：
+
+{% highlight javascript %}
+const boundAddTodo = (text) => dispatch(addTodo(text))
+const boundCompleteTodo = (index) => dispatch(completeTodo(index))
+{% endhighlight %}
+
+这样就可以直接调用他们了：
+
+{% highlight javascript %}
+boundAddTodo(text)
+boundCompleteTodo(index)
+{% endhighlight %}
+
+可以通过store.dispatch()直接访问dispatch()方法，但更方便的是使用帮助方法，如react-redux中的connect()方法。使用bindActionCreators()将多个Action Creator绑定到dispatch()方法。
+
+Action Creator也可以使用在异步处理中，阅读进阶教程中的async actions学习如何处理Ajax响应，以及如何将Action Creator组合到异步流程中。但是在完全掌握这里的基础部分之前，千万不要直接跳到异步Action章节，这里的基础部分涵盖了很多进阶教程和异步Action中的重要概念。
+
+#### 源代码（Source Code）
+
+actions.js
+
+{% highlight javascript %}
+/*
+ * action types
+ */
+
+export const ADD_TODO = 'ADD_TODO'
+export const TOGGLE_TODO = 'TOGGLE_TODO'
+export const SET_VISIBILITY_FILTER = 'SET_VISIBILITY_FILTER'
+
+/*
+ * other constants
+ */
+
+export const VisibilityFilters = {
+  SHOW_ALL: 'SHOW_ALL',
+  SHOW_COMPLETED: 'SHOW_COMPLETED',
+  SHOW_ACTIVE: 'SHOW_ACTIVE'
+}
+
+/*
+ * action creators
+ */
+
+export function addTodo(text) {
+  return { type: ADD_TODO, text }
+}
+
+export function toggleTodo(index) {
+  return { type: TOGGLE_TODO, index }
+}
+
+export function setVisibilityFilter(filter) {
+  return { type: SET_VISIBILITY_FILTER, filter }
+}
+{% endhighlight %}
+
+#### 下一步（Next Steps）
+
+接下来要定义一些Reducer用来具体说明当派发这些Action的时候如何处理状态更新。
