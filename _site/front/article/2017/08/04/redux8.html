@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Redux 8 - 基础：Action</title>
+  <meta name="description" content="Action是应用发送到Store中数据的信息载体，也是Store中数据的唯一来源。使用store.dispatch()方法可以将他们发送到Store中。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/08/04/redux8.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/08/04/redux8.html">Redux 8 - 基础：Action</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Redux 8 - 基础：Action</h1>
+    <p class="post-meta"><time datetime="2017-08-04T10:49:42+08:00" itemprop="datePublished">Aug 4, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Action是应用发送到Store中数据的信息载体，也是Store中数据的唯一来源。使用store.dispatch()方法可以将他们发送到Store中。</p>
+
+<p>下面这个Action示例表示添加一个新的Todo项：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">ADD_TODO</span> <span class="o">=</span> <span class="s1">'ADD_TODO'</span>
+
+<span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">ADD_TODO</span><span class="p">,</span>
+  <span class="nx">text</span><span class="err">:</span> <span class="s1">'Build my first Redux app'</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Action只是一个简单的JavaScript对象，其必须包含一个表示正在发生行为类型的type属性。Type属性通常被定义为一个字符串常量。当程序足够大的时候，可能需要将所有的类型定义迁移到一个单独的文件中。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="p">{</span> <span class="nx">ADD_TODO</span><span class="p">,</span> <span class="nx">REMOVE_TODO</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">'../actionTypes'</span></code></pre></figure>
+
+<p>将Action类型常量定义在一个单独的文件中并不是必须的，甚至根本不需要将Action类型定义出来。在一个小项目中，直接使用字符串字面量是更简单的做法。但是在一个复杂的项目中将这些变量显式的定义出来就有优势了。阅读减少模板代码获取更多的实践技巧以保持代码的简洁。</p>
+
+<p>Action对象结构中type之外部分取决于你。如果有兴趣，可以参考Flux Standard Action来构建Action对象。</p>
+
+<p>接下来再创建一个表示用户点选完成Todo的Action类型。由于所有Todo存储在一个数组中，可以通过index来指向一个具体的Todo。在真实的应用场景中，我们需要在新条目创建的时候构建适应范围更广的唯一ID。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">TOGGLE_TODO</span><span class="p">,</span>
+  <span class="nx">index</span><span class="err">:</span> <span class="mi">5</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>最好在每个Action中传递尽可能少的数据，例如，传递一个单独的index要优于传递整个Todo对象。</p>
+
+<p>最后，再添加一个用来更改当前Todo显示状态的Action类型。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="p">,</span>
+  <span class="nx">filter</span><span class="err">:</span> <span class="nx">SHOW_COMPLETED</span>
+<span class="p">}</span></code></pre></figure>
+
+<h4 id="action-creators">Action Creators</h4>
+
+<p>Action Creator是用来创建Action对象。概念上“Action”和“Action Creator”非常容易混淆，使用这两个术语时要注意区分两者概念上的差别。</p>
+
+<p>在Redux中，Action Creator仅仅返回一个Action：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">addTodo</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="nx">ADD_TODO</span><span class="p">,</span>
+    <span class="nx">text</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>这使得他们易于移植，并且易于测试。</p>
+
+<p>在正宗的Flux中，Action Creator在调用的时候常常会同时触发一个事件派发，就像下面这样：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">addTodoWithDispatch</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kr">const</span> <span class="nx">action</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">type</span><span class="p">:</span> <span class="nx">ADD_TODO</span><span class="p">,</span>
+    <span class="nx">text</span>
+  <span class="p">}</span>
+  <span class="nx">dispatch</span><span class="p">(</span><span class="nx">action</span><span class="p">)</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>在Redux中不是这样的。需要将Action Creator的执行结果显式的传入到dispatch()方法中：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">dispatch</span><span class="p">(</span><span class="nx">addTodo</span><span class="p">(</span><span class="nx">text</span><span class="p">))</span>
+<span class="nx">dispatch</span><span class="p">(</span><span class="nx">completeTodo</span><span class="p">(</span><span class="nx">index</span><span class="p">))</span></code></pre></figure>
+
+<p>或者，创建一个绑定Action Creator以自动派发事件：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">boundAddTodo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">dispatch</span><span class="p">(</span><span class="nx">addTodo</span><span class="p">(</span><span class="nx">text</span><span class="p">))</span>
+<span class="kr">const</span> <span class="nx">boundCompleteTodo</span> <span class="o">=</span> <span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">dispatch</span><span class="p">(</span><span class="nx">completeTodo</span><span class="p">(</span><span class="nx">index</span><span class="p">))</span></code></pre></figure>
+
+<p>这样就可以直接调用他们了：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">boundAddTodo</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span>
+<span class="nx">boundCompleteTodo</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span></code></pre></figure>
+
+<p>可以通过store.dispatch()直接访问dispatch()方法，但更方便的是使用帮助方法，如react-redux中的connect()方法。使用bindActionCreators()将多个Action Creator绑定到dispatch()方法。</p>
+
+<p>Action Creator也可以使用在异步处理中，阅读进阶教程中的async actions学习如何处理Ajax响应，以及如何将Action Creator组合到异步流程中。但是在完全掌握这里的基础部分之前，千万不要直接跳到异步Action章节，这里的基础部分涵盖了很多进阶教程和异步Action中的重要概念。</p>
+
+<h4 id="source-code">源代码（Source Code）</h4>
+
+<p>actions.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="cm">/*
+ * action types
+ */</span>
+
+<span class="kr">export</span> <span class="kr">const</span> <span class="nx">ADD_TODO</span> <span class="o">=</span> <span class="s1">'ADD_TODO'</span>
+<span class="kr">export</span> <span class="kr">const</span> <span class="nx">TOGGLE_TODO</span> <span class="o">=</span> <span class="s1">'TOGGLE_TODO'</span>
+<span class="kr">export</span> <span class="kr">const</span> <span class="nx">SET_VISIBILITY_FILTER</span> <span class="o">=</span> <span class="s1">'SET_VISIBILITY_FILTER'</span>
+
+<span class="cm">/*
+ * other constants
+ */</span>
+
+<span class="kr">export</span> <span class="kr">const</span> <span class="nx">VisibilityFilters</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">SHOW_ALL</span><span class="p">:</span> <span class="s1">'SHOW_ALL'</span><span class="p">,</span>
+  <span class="na">SHOW_COMPLETED</span><span class="p">:</span> <span class="s1">'SHOW_COMPLETED'</span><span class="p">,</span>
+  <span class="na">SHOW_ACTIVE</span><span class="p">:</span> <span class="s1">'SHOW_ACTIVE'</span>
+<span class="p">}</span>
+
+<span class="cm">/*
+ * action creators
+ */</span>
+
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">addTodo</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nx">ADD_TODO</span><span class="p">,</span> <span class="nx">text</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">toggleTodo</span><span class="p">(</span><span class="nx">index</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nx">TOGGLE_TODO</span><span class="p">,</span> <span class="nx">index</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">export</span> <span class="kd">function</span> <span class="nx">setVisibilityFilter</span><span class="p">(</span><span class="nx">filter</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="nx">SET_VISIBILITY_FILTER</span><span class="p">,</span> <span class="nx">filter</span> <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h4 id="next-steps">下一步（Next Steps）</h4>
+
+<p>接下来要定义一些Reducer用来具体说明当派发这些Action的时候如何处理状态更新。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/08/04/redux8" data-title="Redux 8 - 基础：Action" data-url="/front/article/2017/08/04/redux8.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
