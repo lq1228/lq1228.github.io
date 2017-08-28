@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>cropperjs的翻译和学习</title>
+  <meta name="description" content="这个插件，经测试，也可以用在react项目中哦~">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/08/24/cropperjs.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/08/24/cropperjs.html">cropperjs的翻译和学习</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">cropperjs的翻译和学习</h1>
+    <p class="post-meta"><time datetime="2017-08-24T10:49:42+08:00" itemprop="datePublished">Aug 24, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>原文地址：<a href="https://github.com/fengyuanchen/cropperjs">https://github.com/fengyuanchen/cropperjs</a></p>
+
+<p>例子：<a href="https://fengyuanchen.github.io/cropperjs/">https://fengyuanchen.github.io/cropperjs/</a></p>
+
+<h3 id="cropperjs">Cropper.js</h3>
+
+<p>一个基于javascript的图片裁切功能的库</p>
+
+<p>通过canvas实现图片裁剪，最后在通过canvas获取裁剪区域的图片base64串.</p>
+
+<h4 id="features">Features特征</h4>
+
+<ul>
+    <li>支持38个选项</li>
+    <li>支持的27种方法</li> 
+    <li>支持6事件</li> 
+    <li>支持触摸（移动）</li> 
+    <li>支持缩放</li> 
+    <li>支持旋转</li> 
+    <li>支持缩放（翻转）</li> 
+    <li>支持多个尺寸裁剪</li> 
+    <li>在canvas上获取裁剪区域图片</li> 
+    <li>支持在浏览器端通过canvas生成裁剪区域图片</li> 
+    <li>跨浏览器支持 </li> 
+</ul>
+
+<h4 id="main">Main主要</h4>
+
+<p>dist/</p>
+
+<p>├── cropper.css       ( 5 KB)</p>
+
+<p>├── cropper.min.css   ( 4 KB)</p>
+
+<p>├── cropper.js        (90 KB, UMD)</p>
+
+<p>├── cropper.min.js    (33 KB, UMD, compressed)</p>
+
+<p>├── cropper.common.js (90 KB, CommonJS)</p>
+
+<p>└── cropper.esm.js    (90 KB, ES Module)</p>
+
+<h4 id="getting-started-">Getting started 入门</h4>
+
+<h5 id="section">快速启动</h5>
+
+<p>四快速启动选项：</p>
+<ul>
+    <li>下载最新版本。</li>
+    <li>克隆库：git clone https://github.com/fengyuanchen/cropperjs.git。</li>
+    <li>NPM安装: npm install cropperjs。</li>
+    <li>Bower安装：bower install cropperjs。</li>
+</ul>
+
+<h5 id="section-1">安装后，引入文件</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="o">&lt;</span><span class="nx">link</span>  <span class="nx">href</span><span class="o">=</span><span class="s2">"/path/to/cropper.css"</span> <span class="nx">rel</span><span class="o">=</span><span class="s2">"stylesheet"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">script</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"/path/to/cropper.js"</span><span class="o">&gt;&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h5 id="usage">Usage使用</h5>
+
+<p>Cropper的构造函数初始化</p>
+
+<ul>
+    <li> Browser: window.Cropper </li>
+    <li> CommonJS: var Cropper = require('cropperjs') </li>
+    <li> ES2015: import Cropper from 'cropperjs' </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="c1">// Wrap the image or canvas element with a block element (container)</span>
+	<span class="o">&lt;</span><span class="nx">div</span><span class="o">&gt;</span>
+	  <span class="o">&lt;</span><span class="nx">img</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"image"</span> <span class="nx">src</span><span class="o">=</span><span class="s2">"picture.jpg"</span><span class="o">&gt;</span>
+	<span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>	<span class="c1">//Limit image width to avoid overflow the container </span>
+	<span class="nx">img</span> <span class="p">{</span>
+	  <span class="nx">max</span><span class="o">-</span><span class="nx">width</span><span class="err">:</span> <span class="mi">100</span><span class="o">%</span><span class="p">;</span> <span class="c1">//This rule is very important, please do not ignore this!</span>
+	<span class="p">}</span>
+	<span class="kd">var</span> <span class="nx">image</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'image'</span><span class="p">);</span>
+	<span class="kd">var</span> <span class="nx">cropper</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Cropper</span><span class="p">(</span><span class="nx">image</span><span class="p">,</span> <span class="p">{</span>
+	  <span class="na">aspectRatio</span><span class="p">:</span> <span class="mi">16</span> <span class="o">/</span> <span class="mi">9</span><span class="p">,</span>
+	  <span class="na">crop</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">x</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">y</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">width</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">rotate</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">scaleX</span><span class="p">);</span>
+		<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">scaleY</span><span class="p">);</span>
+	  <span class="p">}</span>
+	<span class="p">});</span></code></pre></figure>
+
+<h5 id="section-2">注意事项</h5>
+
+<ul>
+    <li>cropper的大小会从图像的父元素的大小继承，所以，一定要有一个可见的块元素包装;如果你在一个modal中使用cropper,应该在modal显示完全后，初始化cropper，否则，你不会得到一个正确的裁切区域</li>
+    <li>输出的裁剪数据基于原始图像大小，所以你可以使用它们来直接裁剪图像</li>
+    <li>如果你想在跨域图像上开始裁剪，请确保您的浏览器支持HTML5的CORS设置属性，你的图像服务器支持访问允许来源选项[参见HTTP访问控制CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)</li>
+</ul>
+
+<h5 id="section-3">已知问题</h5>
+
+<ul>
+    <li>已知的IOS资源限制：由于ios设备限制内存，当你在裁剪一个大的图像的时候，浏览器可能会崩溃; 为了避免这种情况，你可以控制图片大小，最好低于1024像素</li>
+    <li>已知图像尺寸的增加:当使用HTMLCanvasElement.toDataURL方法导出图像时，图像大小可能大于原始图像；建议使用cropper.getCroppedCanvas().toDataURL('image/jpeg')来导出图像</li>
+</ul>
+
+<h4 id="options">Options选项</h4>
+
+<p><img src="/images/cropper/cropper.png" alt="cropper" /></p>
+
+<h5 id="viewmode">viewMode(显示模式)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0</p>
+
+<p>Options:</p>
+
+<p>0: 裁剪框只能在1内移动</p>
+
+<p>1: 裁剪框只能在2内移动</p>
+
+<p>2: 2图片 不全部铺满1 （即缩小时可以有一边出现空隙）</p>
+
+<p>3: 2图片 全部铺满1 （即 再怎么缩小也不会出现空隙）</p>
+
+<h5 id="dragmode">dragMode(拖动模式)</h5>
+
+<p>Type: String</p>
+
+<p>Default: ‘crop’</p>
+
+<p>Options:</p>
+
+<p>‘crop’: 当鼠标点击一处时根据这个点重新生成一个裁剪框</p>
+
+<p>‘move’: 可以拖动图片</p>
+
+<p>‘none’: 图片就不能拖动了</p>
+
+<h5 id="aspectratio11">aspectRatio(裁剪框比例,如:1：1)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: NaN</p>
+
+<h5 id="data">data</h5>
+
+<p>Type: Object</p>
+
+<p>Default: null</p>
+
+<p>如果你有以前的裁剪数据存储，将传递给SetData方法时自动建立</p>
+
+<h5 id="preview-">preview (裁剪选框内的图像预览)</h5>
+
+<p>Type: Element or String</p>
+
+<p>Default: ‘’</p>
+
+<p>一个元素或一个有效的选择器，如：document.querySelectorAll</p>
+
+<h5 id="notes">Notes</h5>
+
+<p>最大宽度是预览容器初始宽度。</p>
+
+<p>最大高度是预览容器的初始高度。</p>
+
+<p>如果你设置一个分辨率选项，一定要设置相同的纵横比的预览容器。</p>
+
+<p>如果预览是没有得到正确的显示，设置溢出：隐藏式的预览容器。</p>
+
+<h5 id="responsive-cropper">responsive (是否在窗口尺寸改变的时候重置cropper)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="restore-">restore (是否调整窗口大小后恢复裁剪区域)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="checkcrossorigin-">checkCrossOrigin (检查当前图像时否跨域)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<p>如果图像是跨域图像，当克隆这个图像的时候，一个crossorigin属性和时间戳将添加到源图像的src属性中，避免浏览器缓存错误</p>
+
+<p>通过添加crossorigin属性的图像将停止添加时间戳的图像的URL,并停止加载图像</p>
+
+<p>如果图像的crossorigin属性的值是“use-credentials”，然后withCredentials属性设置为true时，读取图像数据通过 XMLHttpRequest</p>
+
+<h5 id="checkorientation-exif">checkOrientation (检查当前图像的方向的EXIF信息)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<p>更确切地说，读取旋转或翻转图像的方向值，然后用1（默认值）覆盖定位值，以避免iOS设备上的某些问题（1, 2）。</p>
+
+<p>需要设置的可旋转和可扩展的选项真的同时。</p>
+
+<p>注意：不要一直相信这一点，因为一些JPG图像有不正确的（不是标准的）定位值。</p>
+
+<h5 id="modal-">modal (是否在剪裁框上显示黑色的模态窗口)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="guides-">guides (是否在剪裁框上显示虚线)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="center--">center (是否显示裁剪框 中间的+)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="highlight-">highlight (是否在剪裁框上显示白色的模态窗口)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="background--croppercss-cropper-bg">background (是否在容器上显示网格背景。 想改背景,可以修改cropper.css样式中的 cropper-bg)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="autocrop-">autoCrop (是否允许在初始化时自动出现裁剪框)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="autocroparea-08800-1">autoCropArea (默认值0.8（图片的80%）。0-1之间的数值，定义自动剪裁框的大小)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0.8 (80% of the image)</p>
+
+<h5 id="movable-">movable (是否允许移动图片)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="rotatable-">rotatable (是否允许旋转图片)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="scalable-">scalable (是否允许扩展图片)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="zoomable-">zoomable (是否允许缩放图片)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="zoomontouch-">zoomOnTouch (是否允许触摸缩放图片,触摸屏上两手指操作。)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="zoomonwheel--">zoomOnWheel (是否允许鼠标滚轴 缩放图片)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="wheelzoomratio-01--01-10">wheelZoomRatio (默认0.1 表示滚轴缩放图片比例。即滚一下。图片缩放多少。如 0.1 就是图片的10%)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0.1</p>
+
+<h5 id="cropboxmovable-">cropBoxMovable (是否允许拖动裁剪框)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="cropboxresizable--">cropBoxResizable (是否允许拖动 改变裁剪框大小)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="toggledragmodeondblclick---crop-move-crop-movecrop">toggleDragModeOnDblclick (是否允许 拖动模式 “crop” 跟“move” 的切换状态。。即当点下为crop 模式，如果未松开拖动这时就是“move”模式。放开后又为“crop”模式)</h5>
+
+<p>Type: Boolean</p>
+
+<p>Default: true</p>
+
+<h5 id="mincontainerwidth-">minContainerWidth (容器的最小宽度)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 200</p>
+
+<h5 id="mincontainerheight-">minContainerHeight (容器的最小高度)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 180</p>
+
+<h5 id="mincanvaswidth-canvas-image-wrapper">minCanvasWidth (canvas 的最小宽度image wrapper)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0</p>
+
+<h5 id="mincanvasheight-canvas-image-wrapper">minCanvasHeight (canvas 的最小高度image wrapper)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0</p>
+
+<h5 id="mincropboxwidth-">minCropBoxWidth (裁剪区域的最小宽度)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0</p>
+
+<h5 id="mincropboxheight-">minCropBoxHeight (裁剪区域的最小高度)</h5>
+
+<p>Type: Number</p>
+
+<p>Default: 0</p>
+
+<h5 id="ready">ready</h5>
+
+<p>Type: Function</p>
+
+<p>Default: null</p>
+
+<h5 id="cropstart">cropstart</h5>
+
+<p>Type: Function</p>
+
+<p>Default: null</p>
+
+<h5 id="cropmove">cropmove</h5>
+
+<p>Type: Function</p>
+
+<p>Default: null</p>
+
+<h5 id="cropend">cropend</h5>
+
+<p>Type: Function</p>
+
+<p>Default: null</p>
+
+<h5 id="crop">crop</h5>
+
+<p>Type: Function</p>
+
+<p>Default: null</p>
+
+<h5 id="zoom">zoom</h5>
+
+<p>Type: Function</p>
+
+<p>Default: null</p>
+
+<h4 id="section-4">方法</h4>
+
+<p>如果一个方法不需要返回任何值，它将返回cropper实例</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Cropper</span><span class="p">(</span><span class="nx">image</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">ready</span><span class="p">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// this.cropper[method](argument1, , argument2, ..., argumentN);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">cropper</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+
+    <span class="c1">// Allows chain composition</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">cropper</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">).</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">45</span><span class="p">).</span><span class="nx">scale</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<h5 id="crop-">crop() (手动显示裁切框)</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Cropper</span><span class="p">(</span><span class="nx">image</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">autoCrop</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">ready</span><span class="p">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Do something here</span>
+    <span class="c1">// ...</span>
+
+    <span class="c1">// And then</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">cropper</span><span class="p">.</span><span class="nx">crop</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<h5 id="reset-">reset() (重置图像裁切框的初始状态)</h5>
+
+<h5 id="clear-">clear() ()</h5>
+
+<h5 id="replaceurl-onlycolorchanged-srccropper">replace(url[, onlyColorChanged]) (替换图像的src和重建cropper)</h5>
+
+<p>url: Type: String</p>
+
+<p>A new image url.</p>
+
+<p>onlyColorChanged (optional): Type: Boolean</p>
+
+<p>如果只改变颜色，没有大小，那么cropper只需要改变所有相关图像的采样率转换器，不需要重建的cropper。这可用于应用过滤器</p>
+
+<p>如果不存在，其默认值为false</p>
+
+<h5 id="enable-cropper">enable() (解封cropper)</h5>
+
+<h5 id="disable-cropper">disable() (禁用cropper)</h5>
+
+<h5 id="destroy-cropper">destroy() (销毁cropper和从图像中删除实例)</h5>
+
+<h5 id="moveoffsetx-offsety">move(offsetX[, offsetY])</h5>
+
+<p>offsetX:</p>
+
+<p>Type: Number</p>
+
+<p>Moving size (px) in the horizontal direction.</p>
+
+<p>offsetY (optional):</p>
+
+<p>Type: Number</p>
+
+<p>Moving size (px) in the vertical direction.</p>
+
+<p>If not present, its default value is offsetX.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//Move the canvas (image wrapper) with relative offsets.</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">move</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span></code></pre></figure>
+
+<h5 id="movetox-y">moveTo(x[, y])</h5>
+
+<p>x:</p>
+
+<p>Type: Number</p>
+
+<p>The left value of the canvas</p>
+
+<p>y (optional):</p>
+
+<p>Type: Number</p>
+
+<p>The top value of the canvas</p>
+
+<p>If not present, its default value is x.</p>
+
+<p>Move the canvas (image wrapper) to an absolute point.</p>
+
+<h5 id="zoomratio-image-wrapper">zoom(ratio) (缩放画布（image wrapper）与相对比例)</h5>
+
+<p>ratio:</p>
+
+<p>Type: Number</p>
+
+<p>Zoom in: requires a positive number (ratio &gt; 0)</p>
+
+<p>Zoom out: requires a negative number (ratio &lt; 0)</p>
+
+<p>Zoom the canvas (image wrapper) with a relative ratio.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">cropper</span><span class="p">.</span><span class="nx">zoom</span><span class="p">(</span><span class="mf">0.1</span><span class="p">);</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">zoom</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span><span class="p">);</span></code></pre></figure>
+
+<h5 id="zoomtoratio-image-wrapper">zoomTo(ratio) (缩放画布（image wrapper）到绝对比)</h5>
+
+<p>ratio:</p>
+
+<p>Type: Number</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">cropper</span><span class="p">.</span><span class="nx">zoomTo</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// 1:1 (canvasData.width === canvasData.naturalWidth)</span></code></pre></figure>
+
+<h5 id="rotatedegree">rotate(degree)</h5>
+
+<p>degree:</p>
+
+<p>Type: Number</p>
+
+<p>Rotate right: requires a positive number (degree &gt; 0)</p>
+
+<p>Rotate left: requires a negative number (degree &lt; 0)</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">cropper</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="mi">90</span><span class="p">);</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">rotate</span><span class="p">(</span><span class="o">-</span><span class="mi">90</span><span class="p">);</span></code></pre></figure>
+
+<h5 id="rotatetodegree-">rotateTo(degree) (图像旋转到绝对的程度)</h5>
+
+<p>degree:</p>
+
+<p>Type: Number</p>
+
+<h5 id="scalescalex-scaley">scale(scaleX[, scaleY])</h5>
+
+<p>scaleX:</p>
+
+<p>Type: Number</p>
+
+<p>Default: 1</p>
+
+<p>当它不等于1的时候，缩放因子来对图像的横坐标的应用</p>
+
+<p>scaleY (optional):</p>
+
+<p>Type: Number</p>
+
+<p>缩放因子为纵坐标的图像应用,如果不存在，其默认值是scaleX</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//Scale the image.</span>
+<span class="c1">//Requires CSS3 2D Transforms support (IE 9+).</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Flip both horizontal and vertical</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// Flip horizontal</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">scale</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// Flip vertical</span></code></pre></figure>
+
+<h5 id="scalexscalex-">scaleX(scaleX) (尺度图像的横坐标)</h5>
+
+<p>scaleX:</p>
+
+<p>Type: Number</p>
+
+<p>Default: 1</p>
+
+<p>当它不等于1的时候，缩放因子来对图像的横坐标的应用</p>
+
+<h5 id="scaleyscaley-">scaleY(scaleY) (尺度图像的纵坐标)</h5>
+
+<p>scaleY:</p>
+
+<p>Type: Number</p>
+
+<p>Default: 1</p>
+
+<p>当它不等于1的时候，缩放因子来对图像的纵坐标的应用</p>
+
+<h5 id="getdatarounded-">getData([rounded]) (输出最终的裁剪区域的位置和大小的数据（基于原始图像的自然大小）)</h5>
+
+<p>rounded (optional):</p>
+
+<p>Type: Boolean</p>
+
+<p>Default: false</p>
+
+<p>Set true to get rounded values.
+(return value):</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>x: the offset left of the cropped area</p>
+
+<p>y: the offset top of the cropped area</p>
+
+<p>width: the width of the cropped area</p>
+
+<p>height: the height of the cropped area</p>
+
+<p>rotate: the rotated degrees of the image</p>
+
+<p>scaleX: the scaling factor to apply on the abscissa of the image</p>
+
+<p>scaleY: the scaling factor to apply on the ordinate of the image</p>
+
+<p><img src="/images/cropper/getData.jpg" alt="cropper" /></p>
+
+<h5 id="setdatadata-">setData(data) (改变裁剪区域的位置和大小的新数据)</h5>
+
+<p>data:</p>
+
+<p>Type: Object</p>
+
+<p>Properties: See the getData method.</p>
+
+<p>You may need to round the data properties before pass it in.</p>
+
+<h5 id="getcontainerdata-">getContainerData() (输出尺寸数据)</h5>
+
+<p>(return value):</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>width: the current width of the container</p>
+
+<p>height: the current height of the container</p>
+
+<p><img src="/images/cropper/getContainerData.jpg" alt="cropper" /></p>
+
+<h5 id="getimagedata-">getImageData() (输出图像的位置，大小和其他数据)</h5>
+
+<p>(return value):</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>left: the offset left of the image</p>
+
+<p>top: the offset top of the image</p>
+
+<p>width: the width of the image</p>
+
+<p>height: the height of the image</p>
+
+<p>naturalWidth: the natural width of the image</p>
+
+<p>naturalHeight: the natural height of the image</p>
+
+<p>aspectRatio: the aspect ratio of the image</p>
+
+<p>rotate: the rotated degrees of the image if rotated</p>
+
+<p>scaleX: the scaling factor to apply on the abscissa of the image if scaled</p>
+
+<p>scaleY: the scaling factor to apply on the ordinate of the image if scaled</p>
+
+<h5 id="getcanvasdata--image-wrapper">getCanvasData() ( 输出画布（image wrapper）的位置和大小的数据)</h5>
+
+<p>(return value):</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>left: the offset left of the canvas</p>
+
+<p>top: the offset top of the canvas</p>
+
+<p>width: the width of the canvas</p>
+
+<p>height: the height of the canvas</p>
+
+<p>naturalWidth: the natural width of the canvas (read only)</p>
+
+<p>naturalHeight: the natural height of the canvas (read only)</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">imageData</span> <span class="o">=</span> <span class="nx">cropper</span><span class="p">.</span><span class="nx">getImageData</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">canvasData</span> <span class="o">=</span> <span class="nx">cropper</span><span class="p">.</span><span class="nx">getCanvasData</span><span class="p">();</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nx">imageData</span><span class="p">.</span><span class="nx">rotate</span> <span class="o">%</span> <span class="mi">180</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">canvasData</span><span class="p">.</span><span class="nx">naturalWidth</span> <span class="o">===</span> <span class="nx">imageData</span><span class="p">.</span><span class="nx">naturalWidth</span><span class="p">);</span> <span class="c1">// true</span>
+<span class="p">}</span></code></pre></figure>
+
+<h5 id="setcanvasdatadata-image-wrapper">setCanvasData(data) (改变画布（image wrapper）的位置和新的数据大小)</h5>
+
+<p>data:</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>left: the new offset left of the canvas</p>
+
+<p>top: the new offset top of the canvas</p>
+
+<p>width: the new width of the canvas</p>
+
+<p>height: the new height of the canvas</p>
+
+<h5 id="getcropboxdata-">getCropBoxData() (输出裁剪框的位置和大小的数据)</h5>
+
+<p>(return value):</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>left: the offset left of the crop box</p>
+
+<p>top: the offset top of the crop box</p>
+
+<p>width: the width of the crop box</p>
+
+<p>height: the height of the crop box</p>
+
+<h5 id="setcropboxdatadata-">setCropBoxData(data) (改变裁剪框的位置和新的数据的大小)</h5>
+
+<p>data:</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>left: the new offset left of the crop box</p>
+
+<p>top: the new offset top of the crop box</p>
+
+<p>width: the new width of the crop box</p>
+
+<p>height: the new height of the crop box</p>
+
+<h5 id="getcroppedcanvasoptions-">getCroppedCanvas([options]) (返回画布上绘制的裁切图像)</h5>
+
+<p>options (optional):</p>
+
+<p>Type: Object</p>
+
+<p>Properties:</p>
+
+<p>width: the destination width of the output canvas</p>
+
+<p>height: the destination height of the output canvas</p>
+
+<p>fillColor: a color to fill any alpha values in the output canvas</p>
+
+<p>imageSmoothingEnabled: set to change if images are smoothed (true, default) or not (false)</p>
+
+<p>imageSmoothingQuality: set the quality of image smoothing, one of “low”, “medium”, or “high”</p>
+
+<p>(return value):</p>
+
+<p>Type: HTMLCanvasElement</p>
+
+<p>A canvas drawn the cropped image.</p>
+
+<p>注意事项：</p>
+
+<p>输出的canvas的纵横比将安装到裁切框的长宽比自动。</p>
+
+<p>如果你想得到一个JPEG图像输出的画布，你应该设置的设置选项，如果没有，在JPEG图像的透明部分，默认情况下会变黑。</p>
+
+<p>浏览器支持情况：</p>
+
+<p>Basic image: requires Canvas support (IE 9+).</p>
+
+<p>Rotated image: requires CSS3 2D Transforms support (IE 9+).</p>
+
+<p>Cross-origin image: requires HTML5 CORS settings attributes support (IE 11+).</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">cropper</span><span class="p">.</span><span class="nx">getCroppedCanvas</span><span class="p">();</span>
+
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">getCroppedCanvas</span><span class="p">({</span>
+  <span class="na">width</span><span class="p">:</span> <span class="mi">160</span><span class="p">,</span>
+  <span class="na">height</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
+  <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#fff'</span><span class="p">,</span>
+  <span class="na">imageSmoothingEnabled</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+  <span class="na">imageSmoothingQuality</span><span class="p">:</span> <span class="s1">'high'</span><span class="p">,</span>
+<span class="p">});</span>
+
+<span class="c1">// Upload cropped image to server if the browser supports `HTMLCanvasElement.toBlob`</span>
+<span class="nx">cropper</span><span class="p">.</span><span class="nx">getCroppedCanvas</span><span class="p">().</span><span class="nx">toBlob</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">blob</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">formData</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">FormData</span><span class="p">();</span>
+
+  <span class="nx">formData</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">'croppedImage'</span><span class="p">,</span> <span class="nx">blob</span><span class="p">);</span>
+
+  <span class="c1">// Use `jQuery.ajax` method</span>
+  <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="s1">'/path/to/upload'</span><span class="p">,</span> <span class="p">{</span>
+    <span class="na">method</span><span class="p">:</span> <span class="s2">"POST"</span><span class="p">,</span>
+    <span class="na">data</span><span class="p">:</span> <span class="nx">formData</span><span class="p">,</span>
+    <span class="na">processData</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">contentType</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="na">success</span><span class="p">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Upload success'</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="na">error</span><span class="p">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'Upload error'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="p">});</span></code></pre></figure>
+
+<h5 id="setaspectratioaspectratio-">setAspectRatio(aspectRatio) (改变裁剪框的纵横比)</h5>
+
+<p>aspectRatio:</p>
+
+<p>Type: Number</p>
+
+<p>Requires a positive number.</p>
+
+<h5 id="setdragmodemode-">setDragMode([mode]) (改变拖动模式)</h5>
+
+<p>mode (optional):</p>
+
+<p>Type: String</p>
+
+<p>Default: ‘none’</p>
+
+<p>Options: ‘none’, ‘crop’, ‘move’</p>
+
+<p>你可以通过双击cropper切换crop和move模式</p>
+
+<h4 id="events">Events事件</h4>
+
+<h5 id="ready-1">ready</h5>
+
+<p>这个事件当目标图像已加载并准备生成实例</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">cropper</span><span class="p">;</span>
+
+<span class="nx">image</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'ready'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">cropper</span> <span class="o">===</span> <span class="nx">cropper</span><span class="p">);</span>
+  <span class="c1">// -&gt; true</span>
+<span class="p">});</span>
+
+<span class="nx">cropper</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Cropper</span><span class="p">(</span><span class="nx">image</span><span class="p">);</span></code></pre></figure>
+
+<h5 id="cropstart-canvasimage-wrapper">cropstart (这个事件，当canvas（image wrapper）或裁切框开始变化)</h5>
+
+<p>event.detail.originalEvent:</p>
+
+<p>Type: Event</p>
+
+<p>Options: mousedown, touchstart and pointerdown</p>
+
+<p>event.detail.action:</p>
+
+<p>Type: String</p>
+
+<p>Options:</p>
+
+<p>‘crop’: create a new crop box</p>
+
+<p>‘move’: move the canvas (image wrapper)</p>
+
+<p>‘zoom’: zoom in / out the canvas (image wrapper) by touch.</p>
+
+<p>‘e’: resize the east side of the crop box</p>
+
+<p>‘w’: resize the west side of the crop box</p>
+
+<p>’s’: resize the south side of the crop box</p>
+
+<p>‘n’: resize the north side of the crop box</p>
+
+<p>‘se’: resize the southeast side of the crop box</p>
+
+<p>‘sw’: resize the southwest side of the crop box</p>
+
+<p>‘ne’: resize the northeast side of the crop box</p>
+
+<p>‘nw’: resize the northwest side of the crop box</p>
+
+<p>‘all’: move the crop box (all directions)</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">image</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'cropstart'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">originalEvent</span><span class="p">);</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">action</span><span class="p">);</span>
+<span class="p">});</span></code></pre></figure>
+
+<h5 id="cropmove-image-wrapper">cropmove (这个事件当画布（image wrapper）或裁切框的变化)</h5>
+
+<p>event.detail.originalEvent:</p>
+
+<p>Type: Event</p>
+
+<p>Options: mousemove, touchmove and pointermove.</p>
+
+<p>event.detail.action: the same as “cropstart”.</p>
+
+<h5 id="cropend-image-wrapper">cropend (这个事件当画布（image wrapper）或裁切框停止改变)</h5>
+
+<p>event.detail.originalEvent:</p>
+
+<p>Type: Event</p>
+
+<p>Options: mouseup, touchend, touchcancel, pointerup and pointercancel.</p>
+
+<p>event.detail.action: the same as “cropstart”.</p>
+
+<h5 id="crop--1">crop (当画布有改变时触发)</h5>
+
+<p>event.detail.x</p>
+
+<p>event.detail.y</p>
+
+<p>event.detail.width</p>
+
+<p>event.detail.height</p>
+
+<p>event.detail.rotate</p>
+
+<p>event.detail.scaleX</p>
+
+<p>event.detail.scaleY</p>
+
+<h5 id="zoom-">zoom (这一事件触发时，马上启动实例来放大或缩小画布)</h5>
+
+<p>event.detail.originalEvent:</p>
+
+<p>Type: Event</p>
+
+<p>Options: wheel, touchmove.</p>
+
+<p>event.detail.oldRatio:</p>
+
+<p>Type: Number</p>
+
+<p>The old (current) ratio of the canvas</p>
+
+<p>event.detail.ratio:</p>
+
+<p>Type: Number</p>
+
+<p>The new (next) ratio of the canvas (canvasData.width / canvasData.naturalWidth)</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">image</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'zoom'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+
+  <span class="c1">// Zoom in</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">ratio</span> <span class="o">&gt;</span> <span class="nx">e</span><span class="p">.</span><span class="nx">detail</span><span class="p">.</span><span class="nx">oldRatio</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span> <span class="c1">// Prevent zoom in</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Zoom out</span>
+  <span class="c1">// ...</span>
+<span class="p">});</span></code></pre></figure>
+
+<h4 id="section-5">浏览器支持</h4>
+<ul>
+	<li>Chrome (latest)</li>
+	<li>Firefox (latest)</li> 
+	<li>Safari (latest)</li> 
+	<li>Opera (latest)</li> 
+	<li>Edge (latest)</li> 
+	<li> Internet Explorer 9+</li> 
+</ul>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/08/24/cropperjs" data-title="cropperjs的翻译和学习" data-url="/front/article/2017/08/24/cropperjs.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

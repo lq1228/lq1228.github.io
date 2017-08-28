@@ -6,9 +6,663 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 24 Aug 2017 16:37:12 +0800</pubDate>
-    <lastBuildDate>Thu, 24 Aug 2017 16:37:12 +0800</lastBuildDate>
+    <pubDate>Mon, 28 Aug 2017 13:18:46 +0800</pubDate>
+    <lastBuildDate>Mon, 28 Aug 2017 13:18:46 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>calendar的翻译和学习</title>
+        <description>&lt;p&gt;原文地址：&lt;a href=&quot;https://github.com/react-component/calendar&quot;&gt;https://github.com/react-component/calendar&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;例子：&lt;a href=&quot;http://react-component.github.io/calendar/&quot;&gt;http://react-component.github.io/calendar/&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;react-calendar&quot;&gt;React Calendar&lt;/h3&gt;
+
+&lt;p&gt;基于react的日历组件&lt;/p&gt;
+
+&lt;h4 id=&quot;feature&quot;&gt;Feature(特征)&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;支持IE9及以上浏览器，Firefox，Safari，&lt;/li&gt; 
+    &lt;li&gt;支持日、月、年、十年选择面板&lt;/li&gt; 
+    &lt;li&gt;支持周数&lt;/li&gt; 
+    &lt;li&gt;支持en_US和zh_CN locale（UI），使用moment.utcOffset设置时区&lt;/li&gt; 
+    &lt;li&gt;支持的aria和键盘可访问性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;keyboard&quot;&gt;Keyboard(键盘)&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;前一个月（PageUp）&lt;/li&gt;
+    &lt;li&gt;下个月（PageDown）&lt;/li&gt;
+    &lt;li&gt;标签为小时输入：最后一小时（Up），接下来的一个小时（Down）&lt;/li&gt;
+    &lt;li&gt;标签为小时输入：最后一分钟(Up)，一分钟（Down）&lt;/li&gt;
+    &lt;li&gt;标签为小时输入：最后一秒（Up），下一秒（Down）&lt;/li&gt;
+    &lt;li&gt;去年（Control + left）&lt;/li&gt;
+    &lt;li&gt;明年（Control + right）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;install-&quot;&gt;install (安装)&lt;/h4&gt;
+
+&lt;p&gt;npm install rc-calendar&lt;/p&gt;
+
+&lt;h4 id=&quot;usage-&quot;&gt;Usage (使用)&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Calendar&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;rc-calendar&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;react&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;react-dom&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Calendar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;development&quot;&gt;Development&lt;/h4&gt;
+
+&lt;p&gt;npm install
+npm start&lt;/p&gt;
+
+&lt;h4 id=&quot;api&quot;&gt;API&lt;/h4&gt;
+
+&lt;h5 id=&quot;rc-calendar-props&quot;&gt;1. rc-calendar props&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;prefixCls&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;className&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;根节点的附加CSS类&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;style&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;根DOM节点的附加样式&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dateRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;(current, value) =&amp;gt; React.Node&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日期&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;renderSidebar&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;侧栏&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;renderFooter&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;额外的页脚&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;value&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;defaultValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;locale&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;import from ‘rc-calendar/lib/locale/en_US’&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历设置&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;format&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;depends on whether you set timePicker and your locale&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;用于格式化/解析日期（没有时间）到输入的值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;disabledDate&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否禁用当前日期的选择&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;disabledTime&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;a function which return a object with member of disabledHours/disabledMinutes/disabledSeconds according to rc-time-picker&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showDateInput&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;true&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否在日历面板上方显示输入&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showWeekNumber&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否显示周数&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showToday&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;true&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否显示当前按钮&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showOk&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;auto&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;页脚是否有OK按钮&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;timePicker&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;React Element&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;rc-timer-picker/lib/module/panel element&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onSelect&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dateInputPlaceholder&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日期输入框的占位符&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;mode&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;enum(‘time’, ‘date’, ‘month’, ‘year’, ‘decade’)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;‘date’&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;控制应该显示哪种面板&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onPanelChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment, mode)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;面板更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h5 id=&quot;rc-calendarlibrangecalendar-props&quot;&gt;2. rc-calendar/lib/RangeCalendar props&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;prefixCls&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;className&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;根节点的附加CSS类&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;style&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;根DOM节点的附加样式&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;renderSidebar&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;侧栏&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;renderFooter&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;额外的页脚&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;selectedValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment[]&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;2个元素的当前选定值范围&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;defaultSelectedValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment[]&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;默认选定值范围&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;locale&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;import from ‘rc-calendar/lib/locale/en_US’&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历设置&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;format&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;depends on whether you set timePicker and your locale&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;用于格式化/解析日期（没有时间）到输入的值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;disabledDate&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否禁用当前日期的选择&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showWeekNumber&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否显示周数&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showToday&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;true&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否显示当前按钮&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showOk&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;auto&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;页脚是否有OK按钮&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;showClear&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否有明确的按钮在标题&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;timePicker&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;React Element&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;rc-timer-picker/lib/module/panel element&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onSelect&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dateInputPlaceholder&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日期输入框的占位符&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;type&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;enum(‘both’,’start’, ‘end’)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;both&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否固定开始或结束选定的值。检查开始端范围示例&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;mode&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;enum(‘time’, ‘date’, ‘month’, ‘year’, ‘decade’)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;[‘date’, ‘date’]&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;控制应该显示哪种面板&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onPanelChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment[], mode)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;面板更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;hoverValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment[]&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;控制悬停的值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onHoverChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(hoverValue: moment[])&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;悬停值更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h5 id=&quot;rc-calendarlibmonthcalendar-props&quot;&gt;3. rc-calendar/lib/MonthCalendar props&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;prefixCls&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;className&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;根节点的附加CSS类&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;style&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;根DOM节点的附加样式&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;value&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;defaultValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;locale&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;import from ‘rc-calendar/lib/locale/en_US’&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历设置&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;disabledDate&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;是否禁用当前日期的选择&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onSelect&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;monthCellRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格渲染方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dateCellRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义日期单元格渲染方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;monthCellContentRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格内容呈现方法，内容将追加到单元格中。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h5 id=&quot;rc-calendarlibpicker-props&quot;&gt;4. rc-calendar/lib/Picker props&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;prefixCls&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;calendar&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Calendar React Element&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;disabled&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;选择器是否已禁用&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;placement&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;Object&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td&gt;one of [‘left’,’right’,’top’,’bottom’, ‘topLeft’, ‘topRight’, ‘bottomLeft’, ‘bottomRight’]&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;align&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Object: alignConfig of &lt;a href=&quot;https://github.com/yiminghe/dom-align&quot;&gt;dom-align&lt;/a&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;值将合并到位置的对齐配置中。&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;animation&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;index.css支持’slide-up’&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;transitionName&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;css class for animation&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;value&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;defaultValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onOpenChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;(open:boolean) =&amp;gt; void&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;当打开/关闭日历容器时调用&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;open&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;控制容器开启的状态&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;getCalendarContainer&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; HTMLElement&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;将要呈现的日历的DOM节点&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h5 id=&quot;rc-calendarlibfullcalendar-props&quot;&gt;5. rc-calendar/lib/FullCalendar props&lt;/h5&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
+      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;prefixCls&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Select&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;React Component Class&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;选择组件类&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;value&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;defaultValue&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;defaultType&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;string&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;data&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;默认面板类型：日期/月份&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;type&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;strint&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;面板类型：日期/月份&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onTypeChange&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function(type)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;当面板类型更改时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;fullscreen&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;bool&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;monthCellRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格渲染方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dataCellRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义日期单元格渲染方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;monthCellContentRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格内容呈现方法，内容将追加到单元格中&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dateCellContentRender&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;自定义日期单元格内容呈现方法，内容将追加到单元格中。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;onSelect&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
+      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h4 id=&quot;test-case-&quot;&gt;Test Case (测试用例)&lt;/h4&gt;
+
+&lt;p&gt;npm test
+npm run chrome-test&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 28 Aug 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/08/28/calendar.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/28/calendar.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>cropperjs的翻译和学习</title>
@@ -949,8 +1603,8 @@
 &lt;/ul&gt;
 </description>
         <pubDate>Thu, 24 Aug 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/08/24/flux.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/24/flux.html</guid>
+        <link>http://lq1228.github.io//front/article/2017/08/24/cropperjs.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/24/cropperjs.html</guid>
         
         
         <category>front</category>
@@ -1801,90 +2455,6 @@ vertical-lr表示文本是垂直方向(vertical)展示，然后阅读的顺序�
         <pubDate>Mon, 05 Jun 2017 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2017/06/05/redux1.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/06/05/redux1.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>js清除浏览器缓存的几种方法</title>
-        <description>&lt;p&gt;JS 缓存的问题一直都是我们又爱又恨的东西。也是我们比较头痛的问题， 一方面为了提高网站响应速度,减少服务器的负担,和节省带宽，将需要将静态资源缓存在客户端， 但是另一方面，当js 文件有改动的时候，如何快速的将客户端缓存的js文件都失效，这是非常头痛的问题。 以至于每次客户反馈问题的时候，我们第一个解决办法都是清理浏览器缓存。&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;一、使用参数&lt;/h3&gt;
-
-&lt;p&gt;第一、脚本并不存在，而是服务端动态生成的，因此带了个版本号，以示区别。 即上面代码对于文件来说 等价于 但浏览器会认为他是 该文件的某个版本！&lt;/p&gt;
-
-&lt;p&gt;第二、客户端会缓存这些css或js文件，因此每次升级了js或css文件后，改变版本号，客户端浏览器就会重新下载新的js或css文件 ，刷新缓存的作用。&lt;/p&gt;
-
-&lt;p&gt;第二种情况最多，也可能两种同时存在。 
-版本号，可以是一个随机数，也可以是一个递增的值，大版本小版本的方式，或者根据脚本的生成时间书写，比如就是精确到了生成脚本的秒，而 2.3.3 就是大版本小版本的方式。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;二、清除浏览器缓存的几种方法&lt;/h3&gt;
-
-&lt;h4 id=&quot;meta&quot;&gt;1. meta方法&lt;/h4&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;//不缓存&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;META&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;EQUIV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pragma&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CONTENT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;no-cache&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;META&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;EQUIV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cache-Control&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CONTENT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;no-cache, must-revalidate&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;META&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;HTTP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;EQUIV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;expires&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;CONTENT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;form&quot;&gt;2. 清理form表单的临时缓存&lt;/h4&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;onLoad&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;javascript:document.yourFormName.reset()&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;其实form表单的缓存对于我们书写还是有帮助的，一般情况不建议清理，但是有时候为了安全问题等，需要清理一下！&lt;/p&gt;
-
-&lt;h4 id=&quot;jquery-ajax&quot;&gt;3. jquery ajax清除浏览器缓存&lt;/h4&gt;
-
-&lt;p&gt;方法一，用ajax请求服务器最新文件，并加上请求头If-Modified-Since和Cache-Control,如下:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;www.haorooms.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;dataType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;json&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{},&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;beforeSend&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xmlHttp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt; 
-	    &lt;span class=&quot;nx&quot;&gt;xmlHttp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRequestHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;If-Modified-Since&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
-	    &lt;span class=&quot;nx&quot;&gt;xmlHttp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRequestHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cache-Control&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;no-cache&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;//操作&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;async&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;方法二，直接用cache:false,&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;www.haorooms.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;dataType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;json&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{},&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
-    &lt;span class=&quot;na&quot;&gt;ifModified&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-
-    &lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;//操作&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;async&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;方法三：用随机数，随机数也是避免缓存的一种很不错的方法！&lt;/p&gt;
-
-&lt;p&gt;URL 参数后加上 “?ran=” + Math.random(); //当然这里参数 ran可以任意取了&lt;/p&gt;
-
-&lt;p&gt;方法四：用随机时间，和随机数一样。&lt;/p&gt;
-
-&lt;p&gt;在 URL 参数后加上 “?timestamp=” + new Date().getTime();&lt;/p&gt;
-
-&lt;h4 id=&quot;php&quot;&gt;4. 用php后端清理&lt;/h4&gt;
-
-&lt;p&gt;在服务端加 header(“Cache-Control: no-cache, must-revalidate”);等等(如php中)&lt;/p&gt;
-</description>
-        <pubDate>Fri, 02 Jun 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/06/02/clear.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/06/02/clear.html</guid>
         
         
         <category>front</category>

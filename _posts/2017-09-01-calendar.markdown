@@ -1,0 +1,171 @@
+---
+layout: post
+title:  "calendar的翻译和学习"
+date:   2017-08-31 10:49:42 +0800
+description: "基于react的日历组件 "
+categories: front article
+---
+
+原文地址：[https://github.com/react-component/calendar](https://github.com/react-component/calendar)
+
+例子：[http://react-component.github.io/calendar/](http://react-component.github.io/calendar/)
+
+### React Calendar
+
+基于react的日历组件
+
+#### Feature(特征)
+
+<ul>
+    <li>支持IE9及以上浏览器，Firefox，Safari，</li> 
+    <li>支持日、月、年、十年选择面板</li> 
+    <li>支持周数</li> 
+    <li>支持en_US和zh_CN locale（UI），使用moment.utcOffset设置时区</li> 
+    <li>支持的aria和键盘可访问性</li>
+</ul>
+
+#### Keyboard(键盘)
+
+<ul>
+    <li>前一个月（PageUp）</li>
+    <li>下个月（PageDown）</li>
+    <li>标签为小时输入：最后一小时（Up），接下来的一个小时（Down）</li>
+    <li>标签为小时输入：最后一分钟(Up)，一分钟（Down）</li>
+    <li>标签为小时输入：最后一秒（Up），下一秒（Down）</li>
+    <li>去年（Control + left）</li>
+    <li>明年（Control + right）</li>
+</ul>
+
+#### install (安装)
+
+npm install rc-calendar
+
+#### Usage (使用)
+
+{% highlight javascript %}
+import Calendar from 'rc-calendar';
+import React from 'react';
+import ReactDOM from 'react-dom';
+ReactDOM.render(<Calendar />, container);
+{% endhighlight %}
+
+#### Development
+
+npm install
+npm start
+
+#### API
+
+##### 1. rc-calendar props
+
+| name        | type           | default  | description  |
+| ------------- |:-------------:| -----:| -----:|
+| prefixCls     | String |  |该组件prefixcls |
+| className     | String |  | 根节点的附加CSS类  |
+| style      | Object |  | 根DOM节点的附加样式  |
+| dateRender      | (current, value) => React.Node |  | 日期  |
+| renderSidebar      |  () => React.Node |  | 侧栏  |
+| renderFooter      |  () => React.Node |  | 额外的页脚  |
+| value      | moment |  | 输入值的当前值  |
+| defaultValue      | moment |  | 如输入的默认值  |
+| locale      | Object | import from 'rc-calendar/lib/locale/en_US' | 日历设置  |
+| format      | String | depends on whether you set timePicker and your locale  | 用于格式化/解析日期（没有时间）到输入的值 |
+| disabledDate      | Function(current:moment):Boolean   |  | 是否禁用当前日期的选择  |
+| disabledTime      | Function(current:moment):Object |  | a function which return a object with member of disabledHours/disabledMinutes/disabledSeconds according to rc-time-picker  |
+| showDateInput      | Boolean | true | 是否在日历面板上方显示输入  |
+| showWeekNumber      | Boolean | false | 是否显示周数 |
+| showToday      | Boolean | true | 是否显示当前按钮  |
+| showOk      | Boolean | auto | 页脚是否有OK按钮  |
+| timePicker      | React Element |  | rc-timer-picker/lib/module/panel element  |
+| onSelect      | Function(date: moment) |  | 从日历中选择日期时调用  |
+| onChange      | Function(date: moment) |  | 日历（下一年/下个月/键盘）日期更改时调用  |
+| dateInputPlaceholder      | String |  | 日期输入框的占位符  |
+| mode      | enum('time', 'date', 'month', 'year', 'decade') | 'date' | 控制应该显示哪种面板  |
+| onPanelChange      |  Function(date: moment, mode) |  | 面板更改时调用  |
+
+##### 2. rc-calendar/lib/RangeCalendar props
+
+| name        | type           | default  | description  |
+| ------------- |:-------------:| -----:| -----:|
+| prefixCls     | String |  |该组件prefixcls |
+| className     | String |  | 根节点的附加CSS类  |
+| style      | Object |  | 根DOM节点的附加样式  |
+| renderSidebar      |  () => React.Node |  | 侧栏  |
+| renderFooter      |  () => React.Node |  | 额外的页脚  |
+| selectedValue      | moment[]  |  | 2个元素的当前选定值范围  |
+| defaultSelectedValue      | moment[]  |  | 默认选定值范围  |
+| locale      | Object | import from 'rc-calendar/lib/locale/en_US' | 日历设置  |
+| format      | String | depends on whether you set timePicker and your locale  | 用于格式化/解析日期（没有时间）到输入的值 |
+| disabledDate      | Function(current:moment):Boolean   |  | 是否禁用当前日期的选择  |
+| showWeekNumber      | Boolean | false | 是否显示周数 |
+| showToday      | Boolean | true | 是否显示当前按钮  |
+| showOk      | Boolean | auto | 页脚是否有OK按钮  |
+| showClear   | Boolean  | false | 是否有明确的按钮在标题  |
+| timePicker      | React Element |  | rc-timer-picker/lib/module/panel element  |
+| onSelect      | Function(date: moment) |  | 从日历中选择日期时调用  |
+| onChange      | Function(date: moment) |  | 日历（下一年/下个月/键盘）日期更改时调用  |
+| dateInputPlaceholder      | String |  | 日期输入框的占位符  |
+| type      | enum('both','start', 'end')  | both | 是否固定开始或结束选定的值。检查开始端范围示例  |
+| mode      | enum('time', 'date', 'month', 'year', 'decade') | ['date', 'date'] | 控制应该显示哪种面板  |
+| onPanelChange      | Function(date: moment[], mode)  |  | 面板更改时调用  |
+| hoverValue      | moment[]  |  | 控制悬停的值  |
+| onHoverChange      | Function(hoverValue: moment[])  |  | 悬停值更改时调用  |
+
+##### 3. rc-calendar/lib/MonthCalendar props
+
+| name        | type           | default  | description  |
+| ------------- |:-------------:| -----:| -----:|
+| prefixCls     | String |  |该组件prefixcls |
+| className     | String |  | 根节点的附加CSS类  |
+| style      | Object |  | 根DOM节点的附加样式  |
+| value      | moment |  | 输入值的当前值  |
+| defaultValue      | moment |  | 如输入的默认值  |
+| locale      | Object | import from 'rc-calendar/lib/locale/en_US' | 日历设置  |
+| disabledDate      | Function(current:moment):Boolean   |  | 是否禁用当前日期的选择  |
+| onSelect      | Function(date: moment) |  | 从日历中选择日期时调用  |
+| monthCellRender      | function |  | 自定义月份单元格渲染方法  |
+| dateCellRender      | function |  | 自定义日期单元格渲染方法  |
+| monthCellContentRender      | function |  | 自定义月份单元格内容呈现方法，内容将追加到单元格中。  |
+| onChange      | Function(date: moment) |  | 日历（下一年/下个月/键盘）日期更改时调用  |
+
+##### 4. rc-calendar/lib/Picker props
+
+| name        | type           | default  | description  |
+| ------------- |:-------------:| -----:| -----:|
+| prefixCls     | String |  |该组件prefixcls |
+| calendar     | Calendar React Element |  | |
+| disabled     | Boolean |  |选择器是否已禁用 |
+| placement     | String|Object  |  |one of ['left','right','top','bottom', 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'] |
+|  align    | Object: alignConfig of [dom-align](https://github.com/yiminghe/dom-align) |  |值将合并到位置的对齐配置中。 |
+| animation     | String |  | index.css支持'slide-up'|
+| transitionName     | String |  |  css class for animation|
+| value      | moment |  | 输入值的当前值  |
+| defaultValue      | moment |  | 如输入的默认值  |
+| onChange      | Function(date: moment) |  | 日历（下一年/下个月/键盘）日期更改时调用  |
+| onOpenChange     | (open:boolean) => void |  | 当打开/关闭日历容器时调用|
+| open     | Boolean |  | 控制容器开启的状态 |
+| getCalendarContainer     |() => HTMLElement  |  | 将要呈现的日历的DOM节点|
+
+##### 5. rc-calendar/lib/FullCalendar props
+
+| name        | type           | default  | description  |
+| ------------- |:-------------:| -----:| -----:|
+| prefixCls     | String |  |该组件prefixcls |
+| Select     | React Component Class |  |选择组件类 |
+| value      | moment |  | 输入值的当前值  |
+| defaultValue      | moment |  | 如输入的默认值  |
+| defaultType      | string | data | 默认面板类型：日期/月份  |
+| type      | strint |  | 面板类型：日期/月份  |
+| onTypeChange      | function(type) |  | 当面板类型更改时调用  |
+| fullscreen      | bool | false |   |
+| monthCellRender      | function |  | 自定义月份单元格渲染方法  |
+| dataCellRender      | function |  | 自定义日期单元格渲染方法  |
+| monthCellContentRender      | function |  | 自定义月份单元格内容呈现方法，内容将追加到单元格中  |
+| dateCellContentRender      | function |  | 自定义日期单元格内容呈现方法，内容将追加到单元格中。  |
+| onSelect      | Function(date: moment) |  | 从日历中选择日期时调用  |
+
+#### Test Case (测试用例)
+
+npm test
+
+npm run chrome-test
