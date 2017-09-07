@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>calendar的翻译和学习</title>
+  <meta name="description" content="基于react的日历组件 ">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/08/31/calendar.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/08/31/calendar.html">calendar的翻译和学习</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">calendar的翻译和学习</h1>
+    <p class="post-meta"><time datetime="2017-08-31T10:49:42+08:00" itemprop="datePublished">Aug 31, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>原文地址：<a href="https://github.com/react-component/calendar">https://github.com/react-component/calendar</a></p>
+
+<p>例子：<a href="http://react-component.github.io/calendar/">http://react-component.github.io/calendar/</a></p>
+
+<h3 id="react-calendar">React Calendar</h3>
+
+<p>基于react的日历组件</p>
+
+<h4 id="feature">Feature(特征)</h4>
+
+<ul>
+    <li>支持IE9及以上浏览器，Firefox，Safari，</li> 
+    <li>支持日、月、年、十年选择面板</li> 
+    <li>支持周数</li> 
+    <li>支持en_US和zh_CN locale（UI），使用moment.utcOffset设置时区</li> 
+    <li>支持的aria和键盘可访问性</li>
+</ul>
+
+<h4 id="keyboard">Keyboard(键盘)</h4>
+
+<ul>
+    <li>前一个月（PageUp）</li>
+    <li>下个月（PageDown）</li>
+    <li>标签为小时输入：最后一小时（Up），接下来的一个小时（Down）</li>
+    <li>标签为小时输入：最后一分钟(Up)，一分钟（Down）</li>
+    <li>标签为小时输入：最后一秒（Up），下一秒（Down）</li>
+    <li>去年（Control + left）</li>
+    <li>明年（Control + right）</li>
+</ul>
+
+<h4 id="install-">install (安装)</h4>
+
+<p>npm install rc-calendar</p>
+
+<h4 id="usage-">Usage (使用)</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">Calendar</span> <span class="nx">from</span> <span class="s1">'rc-calendar'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">React</span> <span class="nx">from</span> <span class="s1">'react'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">ReactDOM</span> <span class="nx">from</span> <span class="s1">'react-dom'</span><span class="p">;</span>
+<span class="nx">ReactDOM</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="o">&lt;</span><span class="nx">Calendar</span> <span class="o">/&gt;</span><span class="p">,</span> <span class="nx">container</span><span class="p">);</span></code></pre></figure>
+
+<h4 id="development">Development</h4>
+
+<p>npm install
+npm start</p>
+
+<h4 id="api">API</h4>
+
+<h5 id="rc-calendar-props">1. rc-calendar props</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th style="text-align: center">type</th>
+      <th style="text-align: right">default</th>
+      <th style="text-align: right">description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prefixCls</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">该组件prefixcls</td>
+    </tr>
+    <tr>
+      <td>className</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">根节点的附加CSS类</td>
+    </tr>
+    <tr>
+      <td>style</td>
+      <td style="text-align: center">Object</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">根DOM节点的附加样式</td>
+    </tr>
+    <tr>
+      <td>dateRender</td>
+      <td style="text-align: center">(current, value) =&gt; React.Node</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日期</td>
+    </tr>
+    <tr>
+      <td>renderSidebar</td>
+      <td style="text-align: center">() =&gt; React.Node</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">侧栏</td>
+    </tr>
+    <tr>
+      <td>renderFooter</td>
+      <td style="text-align: center">() =&gt; React.Node</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">额外的页脚</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">输入值的当前值</td>
+    </tr>
+    <tr>
+      <td>defaultValue</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">如输入的默认值</td>
+    </tr>
+    <tr>
+      <td>locale</td>
+      <td style="text-align: center">Object</td>
+      <td style="text-align: right">import from ‘rc-calendar/lib/locale/en_US’</td>
+      <td style="text-align: right">日历设置</td>
+    </tr>
+    <tr>
+      <td>format</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right">depends on whether you set timePicker and your locale</td>
+      <td style="text-align: right">用于格式化/解析日期（没有时间）到输入的值</td>
+    </tr>
+    <tr>
+      <td>disabledDate</td>
+      <td style="text-align: center">Function(current:moment):Boolean</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">是否禁用当前日期的选择</td>
+    </tr>
+    <tr>
+      <td>disabledTime</td>
+      <td style="text-align: center">Function(current:moment):Object</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">a function which return a object with member of disabledHours/disabledMinutes/disabledSeconds according to rc-time-picker</td>
+    </tr>
+    <tr>
+      <td>showDateInput</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">true</td>
+      <td style="text-align: right">是否在日历面板上方显示输入</td>
+    </tr>
+    <tr>
+      <td>showWeekNumber</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">false</td>
+      <td style="text-align: right">是否显示周数</td>
+    </tr>
+    <tr>
+      <td>showToday</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">true</td>
+      <td style="text-align: right">是否显示当前按钮</td>
+    </tr>
+    <tr>
+      <td>showOk</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">auto</td>
+      <td style="text-align: right">页脚是否有OK按钮</td>
+    </tr>
+    <tr>
+      <td>timePicker</td>
+      <td style="text-align: center">React Element</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">rc-timer-picker/lib/module/panel element</td>
+    </tr>
+    <tr>
+      <td>onSelect</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">从日历中选择日期时调用</td>
+    </tr>
+    <tr>
+      <td>onChange</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日历（下一年/下个月/键盘）日期更改时调用</td>
+    </tr>
+    <tr>
+      <td>dateInputPlaceholder</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日期输入框的占位符</td>
+    </tr>
+    <tr>
+      <td>mode</td>
+      <td style="text-align: center">enum(‘time’, ‘date’, ‘month’, ‘year’, ‘decade’)</td>
+      <td style="text-align: right">‘date’</td>
+      <td style="text-align: right">控制应该显示哪种面板</td>
+    </tr>
+    <tr>
+      <td>onPanelChange</td>
+      <td style="text-align: center">Function(date: moment, mode)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">面板更改时调用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="rc-calendarlibrangecalendar-props">2. rc-calendar/lib/RangeCalendar props</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th style="text-align: center">type</th>
+      <th style="text-align: right">default</th>
+      <th style="text-align: right">description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prefixCls</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">该组件prefixcls</td>
+    </tr>
+    <tr>
+      <td>className</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">根节点的附加CSS类</td>
+    </tr>
+    <tr>
+      <td>style</td>
+      <td style="text-align: center">Object</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">根DOM节点的附加样式</td>
+    </tr>
+    <tr>
+      <td>renderSidebar</td>
+      <td style="text-align: center">() =&gt; React.Node</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">侧栏</td>
+    </tr>
+    <tr>
+      <td>renderFooter</td>
+      <td style="text-align: center">() =&gt; React.Node</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">额外的页脚</td>
+    </tr>
+    <tr>
+      <td>selectedValue</td>
+      <td style="text-align: center">moment[]</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">2个元素的当前选定值范围</td>
+    </tr>
+    <tr>
+      <td>defaultSelectedValue</td>
+      <td style="text-align: center">moment[]</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">默认选定值范围</td>
+    </tr>
+    <tr>
+      <td>locale</td>
+      <td style="text-align: center">Object</td>
+      <td style="text-align: right">import from ‘rc-calendar/lib/locale/en_US’</td>
+      <td style="text-align: right">日历设置</td>
+    </tr>
+    <tr>
+      <td>format</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right">depends on whether you set timePicker and your locale</td>
+      <td style="text-align: right">用于格式化/解析日期（没有时间）到输入的值</td>
+    </tr>
+    <tr>
+      <td>disabledDate</td>
+      <td style="text-align: center">Function(current:moment):Boolean</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">是否禁用当前日期的选择</td>
+    </tr>
+    <tr>
+      <td>showWeekNumber</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">false</td>
+      <td style="text-align: right">是否显示周数</td>
+    </tr>
+    <tr>
+      <td>showToday</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">true</td>
+      <td style="text-align: right">是否显示当前按钮</td>
+    </tr>
+    <tr>
+      <td>showOk</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">auto</td>
+      <td style="text-align: right">页脚是否有OK按钮</td>
+    </tr>
+    <tr>
+      <td>showClear</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right">false</td>
+      <td style="text-align: right">是否有明确的按钮在标题</td>
+    </tr>
+    <tr>
+      <td>timePicker</td>
+      <td style="text-align: center">React Element</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">rc-timer-picker/lib/module/panel element</td>
+    </tr>
+    <tr>
+      <td>onSelect</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">从日历中选择日期时调用</td>
+    </tr>
+    <tr>
+      <td>onChange</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日历（下一年/下个月/键盘）日期更改时调用</td>
+    </tr>
+    <tr>
+      <td>dateInputPlaceholder</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日期输入框的占位符</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td style="text-align: center">enum(‘both’,’start’, ‘end’)</td>
+      <td style="text-align: right">both</td>
+      <td style="text-align: right">是否固定开始或结束选定的值。检查开始端范围示例</td>
+    </tr>
+    <tr>
+      <td>mode</td>
+      <td style="text-align: center">enum(‘time’, ‘date’, ‘month’, ‘year’, ‘decade’)</td>
+      <td style="text-align: right">[‘date’, ‘date’]</td>
+      <td style="text-align: right">控制应该显示哪种面板</td>
+    </tr>
+    <tr>
+      <td>onPanelChange</td>
+      <td style="text-align: center">Function(date: moment[], mode)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">面板更改时调用</td>
+    </tr>
+    <tr>
+      <td>hoverValue</td>
+      <td style="text-align: center">moment[]</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">控制悬停的值</td>
+    </tr>
+    <tr>
+      <td>onHoverChange</td>
+      <td style="text-align: center">Function(hoverValue: moment[])</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">悬停值更改时调用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="rc-calendarlibmonthcalendar-props">3. rc-calendar/lib/MonthCalendar props</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th style="text-align: center">type</th>
+      <th style="text-align: right">default</th>
+      <th style="text-align: right">description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prefixCls</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">该组件prefixcls</td>
+    </tr>
+    <tr>
+      <td>className</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">根节点的附加CSS类</td>
+    </tr>
+    <tr>
+      <td>style</td>
+      <td style="text-align: center">Object</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">根DOM节点的附加样式</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">输入值的当前值</td>
+    </tr>
+    <tr>
+      <td>defaultValue</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">如输入的默认值</td>
+    </tr>
+    <tr>
+      <td>locale</td>
+      <td style="text-align: center">Object</td>
+      <td style="text-align: right">import from ‘rc-calendar/lib/locale/en_US’</td>
+      <td style="text-align: right">日历设置</td>
+    </tr>
+    <tr>
+      <td>disabledDate</td>
+      <td style="text-align: center">Function(current:moment):Boolean</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">是否禁用当前日期的选择</td>
+    </tr>
+    <tr>
+      <td>onSelect</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">从日历中选择日期时调用</td>
+    </tr>
+    <tr>
+      <td>monthCellRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义月份单元格渲染方法</td>
+    </tr>
+    <tr>
+      <td>dateCellRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义日期单元格渲染方法</td>
+    </tr>
+    <tr>
+      <td>monthCellContentRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义月份单元格内容呈现方法，内容将追加到单元格中。</td>
+    </tr>
+    <tr>
+      <td>onChange</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日历（下一年/下个月/键盘）日期更改时调用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="rc-calendarlibpicker-props">4. rc-calendar/lib/Picker props</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th style="text-align: center">type</th>
+      <th style="text-align: right">default</th>
+      <th style="text-align: right">description</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prefixCls</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">该组件prefixcls</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>calendar</td>
+      <td style="text-align: center">Calendar React Element</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right"> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>disabled</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">选择器是否已禁用</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>placement</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right">Object</td>
+      <td style="text-align: right"> </td>
+      <td>one of [‘left’,’right’,’top’,’bottom’, ‘topLeft’, ‘topRight’, ‘bottomLeft’, ‘bottomRight’]</td>
+    </tr>
+    <tr>
+      <td>align</td>
+      <td style="text-align: center">Object: alignConfig of <a href="https://github.com/yiminghe/dom-align">dom-align</a></td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">值将合并到位置的对齐配置中。</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>animation</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">index.css支持’slide-up’</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>transitionName</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">css class for animation</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">输入值的当前值</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>defaultValue</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">如输入的默认值</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>onChange</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">日历（下一年/下个月/键盘）日期更改时调用</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>onOpenChange</td>
+      <td style="text-align: center">(open:boolean) =&gt; void</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">当打开/关闭日历容器时调用</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>open</td>
+      <td style="text-align: center">Boolean</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">控制容器开启的状态</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>getCalendarContainer</td>
+      <td style="text-align: center">() =&gt; HTMLElement</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">将要呈现的日历的DOM节点</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h5 id="rc-calendarlibfullcalendar-props">5. rc-calendar/lib/FullCalendar props</h5>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th style="text-align: center">type</th>
+      <th style="text-align: right">default</th>
+      <th style="text-align: right">description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>prefixCls</td>
+      <td style="text-align: center">String</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">该组件prefixcls</td>
+    </tr>
+    <tr>
+      <td>Select</td>
+      <td style="text-align: center">React Component Class</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">选择组件类</td>
+    </tr>
+    <tr>
+      <td>value</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">输入值的当前值</td>
+    </tr>
+    <tr>
+      <td>defaultValue</td>
+      <td style="text-align: center">moment</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">如输入的默认值</td>
+    </tr>
+    <tr>
+      <td>defaultType</td>
+      <td style="text-align: center">string</td>
+      <td style="text-align: right">data</td>
+      <td style="text-align: right">默认面板类型：日期/月份</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td style="text-align: center">strint</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">面板类型：日期/月份</td>
+    </tr>
+    <tr>
+      <td>onTypeChange</td>
+      <td style="text-align: center">function(type)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">当面板类型更改时调用</td>
+    </tr>
+    <tr>
+      <td>fullscreen</td>
+      <td style="text-align: center">bool</td>
+      <td style="text-align: right">false</td>
+      <td style="text-align: right"> </td>
+    </tr>
+    <tr>
+      <td>monthCellRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义月份单元格渲染方法</td>
+    </tr>
+    <tr>
+      <td>dataCellRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义日期单元格渲染方法</td>
+    </tr>
+    <tr>
+      <td>monthCellContentRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义月份单元格内容呈现方法，内容将追加到单元格中</td>
+    </tr>
+    <tr>
+      <td>dateCellContentRender</td>
+      <td style="text-align: center">function</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">自定义日期单元格内容呈现方法，内容将追加到单元格中。</td>
+    </tr>
+    <tr>
+      <td>onSelect</td>
+      <td style="text-align: center">Function(date: moment)</td>
+      <td style="text-align: right"> </td>
+      <td style="text-align: right">从日历中选择日期时调用</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="test-case-">Test Case (测试用例)</h4>
+
+<p>npm test</p>
+
+<p>npm run chrome-test</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/08/31/calendar" data-title="calendar的翻译和学习" data-url="/front/article/2017/08/31/calendar.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
