@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>JavaScript设计模式 - 代理模式</title>
+  <meta name="description" content=" 代理模式是为一个对象提供一个代用品或占位符，以便控制对它的访问">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/09/07/Design-pattern1.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/09/07/Design-pattern1.html">JavaScript设计模式 - 代理模式</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">JavaScript设计模式 - 代理模式</h1>
+    <p class="post-meta"><time datetime="2017-09-07T10:49:42+08:00" itemprop="datePublished">Sep 7, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>代理模式是为一个对象提供一个代用品或占位符，以便控制对它的访问</p>
+
+<p>代理模式使得代理对象控制具体对象的引用。代理几乎可以是任何对象：文件，资源，内存中的对象等。</p>
+
+<p>为了说明代理的意义，需要引入一个<a href="https://lq1228.github.io/front/article/2017/01/13/Basic-principle.html">面向对象的设计原则</a> - 单一指责原则。 单一职责原则，就一个类(通常也包括对象和函数等)而言，应该只专注于做一件事和仅有一个引起它变化的原因。所谓职责，我们可以理解他为功能，就是设计的这个类功能应该只有一个，而不是两个或更多。也可以理解为引用变化的原因，当你发现有两个变化会要求我们修改这个类，那么你就要考虑撤分这个类了。因为职责是变化的一个轴线，当需求变化时，该变化会反映类的职责的变化。</p>
+
+<p>另外，在面向对象的程序设计中，大多数情况下，若违反其他任何原则，同时将违反开放 - 封闭原则。</p>
+
+<p>代理模式是我们实现高内聚低耦合设计思路的一种实现方式，其中最常用的是虚拟代理和缓存代理:</p>
+
+<h4 id="section">虚拟代理</h4>
+
+<p>虚拟代理是把一些开销很大的对象，延迟到真正需要它的时候才去创建执行</p>
+
+<p>示例: 虚拟代理实现图片预加载</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 图片加载函数</span>
+<span class="kd">var</span> <span class="nx">myImage</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">imgNode</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">"img"</span><span class="p">);</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">imgNode</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">setSrc</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">src</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">imgNode</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">src</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">})();</span>
+
+<span class="c1">// 引入代理对象</span>
+<span class="kd">var</span> <span class="nx">proxyImage</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">img</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">;</span>
+    <span class="nx">img</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="c1">// 图片加载完成，正式加载图片</span>
+        <span class="nx">myImage</span><span class="p">.</span><span class="nx">setSrc</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">src</span> <span class="p">);</span>
+    <span class="p">};</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">setSrc</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">src</span><span class="p">){</span>
+            <span class="c1">// 图片未被载入时，加载一张提示图片</span>
+            <span class="nx">myImage</span><span class="p">.</span><span class="nx">setSrc</span><span class="p">(</span><span class="s2">"file://c:/loading.png"</span><span class="p">);</span>
+            <span class="nx">img</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">src</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">})();</span></code></pre></figure>
+
+<p>示例: 虚拟代理合并HTTP请求</p>
+
+<p>假设一个功能需要频繁的进行网络请求，这会造成相当大的开销，解决方案是通过一个代理函数来收集一段时间之内的请求，一次性发给服务器。</p>
+
+<p>例如：做一个文件同步的功能，当我们选中一个文件时，就同步到另外一台备用服务器上</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 文件同步函数</span>
+<span class="kd">var</span> <span class="nx">synchronousFile</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">id</span> <span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">"开始同步文件，id为："</span> <span class="o">+</span> <span class="nx">id</span> <span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">// 使用代理合并请求</span>
+<span class="kd">var</span> <span class="nx">proxySynchronousFile</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="p">[],</span> <span class="c1">// 保存一段时间内需要同步的ID</span>
+        <span class="nx">timer</span><span class="p">;</span> <span class="c1">// 定时器指针</span>
+
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">id</span> <span class="p">){</span>
+        <span class="nx">cache</span><span class="p">[</span><span class="nx">cache</span><span class="p">.</span><span class="nx">length</span><span class="p">]</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span> <span class="nx">timer</span> <span class="p">){</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">timer</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span> <span class="kd">function</span><span class="p">(){</span>
+            <span class="nx">proxySynchronousFile</span><span class="p">(</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s2">","</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// 2s 后向本体发送需要同步的ID集合</span>
+            <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">timer</span> <span class="p">);</span> <span class="c1">// 清空定时器</span>
+            <span class="nx">timer</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="nx">cache</span> <span class="o">=</span> <span class="p">[];</span> <span class="c1">// 晴空id列表</span>
+        <span class="p">},</span><span class="mi">2000</span> <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">})();</span>
+
+<span class="c1">// 绑定点击事件</span>
+<span class="kd">var</span> <span class="nx">checkbox</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span> <span class="s2">"input"</span> <span class="p">);</span>
+
+<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">c</span><span class="p">;</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">checkbox</span><span class="p">[</span><span class="nx">i</span><span class="o">++</span><span class="p">];</span> <span class="p">){</span>
+    <span class="nx">c</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="k">if</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">checked</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">){</span>
+            <span class="c1">// 使用代理进行文件同步</span>
+            <span class="nx">proxySynchronousFile</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h4 id="section-1">缓存代理</h4>
+
+<p>缓存代理可以为一些开销大的运算结果提供暂时的存储，在下次运算时，如果传递进来的参数跟之前一致，则可以返回前面的运算结果。</p>
+
+<p>示例: 为乘法、加法等创建缓存代理</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// 计算乘积</span>
+<span class="kd">var</span> <span class="nx">mult</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="nx">a</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">a</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="c1">// 计算加和</span>
+<span class="kd">var</span> <span class="nx">plus</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">){</span>
+        <span class="nx">a</span> <span class="o">+=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">a</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="c1">// 创建缓存代理的工厂</span>
+<span class="kd">var</span> <span class="nx">createProxyFactory</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">){</span>
+    <span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="p">{};</span> <span class="c1">// 缓存 - 存放参数和计算后的值</span>
+    <span class="k">return</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">join</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span> <span class="nx">args</span> <span class="k">in</span> <span class="nx">cache</span> <span class="p">){</span> <span class="c1">// 判断出入的参数是否被计算过</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="s2">"使用缓存代理"</span> <span class="p">);</span>
+            <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">args</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nx">cache</span><span class="p">[</span><span class="nx">args</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+<span class="c1">// 创建代理</span>
+<span class="kd">var</span> <span class="nx">proxyMult</span> <span class="o">=</span> <span class="nx">createProxyFactory</span><span class="p">(</span> <span class="nx">mult</span> <span class="p">),</span>
+    <span class="nx">proxyPlus</span> <span class="o">=</span> <span class="nx">createProxyFactory</span><span class="p">(</span> <span class="nx">plus</span> <span class="p">);</span>
+
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">proxyMult</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// 输出： 24</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">proxyMult</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// 输出： 缓存代理 24</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">proxyPlus</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// 输出： 10</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">proxyPlus</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// 输出： 缓存代理 10</span></code></pre></figure>
+
+<h4 id="section-2">其他代理模式</h4>
+
+<ul>
+	<li>防火墙代理： 控制网络资源的访问，保护主题不让“坏人”接近</li>
+	<li>远程代理：为一个对象在不同的地址空间提供局部代表，在Java中，远程代理可以是另一个虚拟机中的对象</li>
+	<li>保护代理：用于对象应该有不同访问权限的情况</li>
+	<li>智能引用代理：取代了简单的指针，它在访问对象时执行一些附加操作，比如计算一个对象被引用的次数</li>
+	<li>写时复制代理：通常用于复制一个庞大对象的情况。写时复制代理延迟了复制的过程，当对象被真正修改时，才对它进行复制操作。写时复制代理是虚拟代理的一种变体，DLL（操作系统中的动态连接库）是其典型运用场景。</li>
+</ul>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/09/07/Design-pattern1" data-title="JavaScript设计模式 - 代理模式" data-url="/front/article/2017/09/07/Design-pattern1.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

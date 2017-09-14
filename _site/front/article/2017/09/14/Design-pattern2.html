@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>观察者模式与发布/订阅模式</title>
+  <meta name="description" content="">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/09/14/Design-pattern2.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/09/14/Design-pattern2.html">观察者模式与发布/订阅模式</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">观察者模式与发布/订阅模式</h1>
+    <p class="post-meta"><time datetime="2017-09-14T10:49:42+08:00" itemprop="datePublished">Sep 14, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>定义对象间的一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都将得到通知。</p>
+
+<p>这是在很多场合下都把观察者（Observer）模式 与 发布（Publish）/订阅（Subscribe）模式这两种模式看成是等同的原因。</p>
+
+<p>同时它们之间也是存在差异的，下面2个图就很清晰的表现了出来</p>
+
+<h3 id="section">发布／订阅模式</h3>
+
+<p><img src="/images/design-pattern/Publish.png" alt="发布／订阅模式" /></p>
+
+<h3 id="section-1">观察者模式</h3>
+
+<p><img src="/images/design-pattern/Observer.png" alt="观察者模式" /></p>
+
+<p>总结</p>
+
+<ul>
+    <li>
+        1. 从两张图片可以看到，最大的区别是调度的地方。
+
+        虽然两种模式都存在订阅者和发布者（具体观察者可认为是订阅者、具体目标可认为是发布者），但是观察者模式是由具体目标调度的，而发布/订阅模式是统一由调度中心调的，所以观察者模式的订阅者与发布者之间是存在依赖的，而发布/订阅模式则不会。
+    </li>
+    <li>
+        2. 两种模式都可以用于松散耦合，改进代码管理和潜在的复用。
+    </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">pubsub</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">myObject</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Storage for topics that can be broadcast</span>
+    <span class="c1">// or listened to</span>
+    <span class="kd">var</span> <span class="nx">topics</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="c1">// An topic identifier</span>
+    <span class="kd">var</span> <span class="nx">subUid</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="c1">// Publish or broadcast events of interest</span>
+    <span class="c1">// with a specific topic name and arguments</span>
+    <span class="c1">// such as the data to pass along</span>
+    <span class="nx">myObject</span><span class="p">.</span><span class="nx">publish</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">topic</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">topics</span><span class="p">[</span><span class="nx">topic</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">subscribers</span> <span class="o">=</span> <span class="nx">topics</span><span class="p">[</span><span class="nx">topic</span><span class="p">],</span>
+            <span class="nx">len</span> <span class="o">=</span> <span class="nx">subscribers</span> <span class="p">?</span> <span class="nx">subscribers</span><span class="p">.</span><span class="nx">length</span> <span class="p">:</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="nx">len</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">subscribers</span><span class="p">[</span><span class="nx">len</span><span class="p">].</span><span class="nx">func</span><span class="p">(</span> <span class="nx">topic</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="c1">// Subscribe to events of interest</span>
+    <span class="c1">// with a specific topic name and a</span>
+    <span class="c1">// callback function, to be executed</span>
+    <span class="c1">// when the topic/event is observed</span>
+    <span class="nx">myObject</span><span class="p">.</span><span class="nx">subscribe</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">topic</span><span class="p">,</span> <span class="nx">func</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">topics</span><span class="p">[</span><span class="nx">topic</span><span class="p">])</span> <span class="p">{</span>
+            <span class="nx">topics</span><span class="p">[</span><span class="nx">topic</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+        <span class="p">}</span>
+        <span class="kd">var</span> <span class="nx">token</span> <span class="o">=</span> <span class="p">(</span> <span class="o">++</span><span class="nx">subUid</span> <span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+        <span class="nx">topics</span><span class="p">[</span><span class="nx">topic</span><span class="p">].</span><span class="nx">push</span><span class="p">({</span>
+            <span class="na">token</span><span class="p">:</span> <span class="nx">token</span><span class="p">,</span>
+            <span class="na">func</span><span class="p">:</span> <span class="nx">func</span>
+        <span class="p">});</span>
+        <span class="k">return</span> <span class="nx">token</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="c1">// Unsubscribe from a specific</span>
+    <span class="c1">// topic, based on a tokenized reference</span>
+    <span class="c1">// to the subscription</span>
+    <span class="nx">myObject</span><span class="p">.</span><span class="nx">unsubscribe</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">token</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">m</span> <span class="k">in</span> <span class="nx">topics</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">topics</span><span class="p">[</span><span class="nx">m</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span> <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">j</span> <span class="o">=</span> <span class="nx">topics</span><span class="p">[</span><span class="nx">m</span><span class="p">].</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">j</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span> <span class="nx">topics</span><span class="p">[</span><span class="nx">m</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">token</span> <span class="o">===</span> <span class="nx">token</span> <span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">topics</span><span class="p">[</span><span class="nx">m</span><span class="p">].</span><span class="nx">splice</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="mi">1</span> <span class="p">);</span>
+                        <span class="k">return</span> <span class="nx">token</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">};</span>
+<span class="p">}(</span> <span class="nx">pubsub</span> <span class="p">));</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//观察者列表</span>
+<span class="kd">function</span> <span class="nx">ObserverList</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="p">}</span>
+<span class="nx">ObserverList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">){</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">ObserverList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">count</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nx">ObserverList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">index</span> <span class="p">){</span>
+  <span class="k">if</span><span class="p">(</span> <span class="nx">index</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">index</span> <span class="o">&lt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">.</span><span class="nx">length</span> <span class="p">){</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">[</span> <span class="nx">index</span> <span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+<span class="nx">ObserverList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">indexOf</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">startIndex</span> <span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="nx">startIndex</span><span class="p">;</span>
+  <span class="k">while</span><span class="p">(</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">.</span><span class="nx">length</span> <span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="nx">obj</span> <span class="p">){</span>
+      <span class="k">return</span> <span class="nx">i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="nx">ObserverList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">removeAt</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">index</span> <span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">observerList</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span> <span class="nx">index</span><span class="p">,</span> <span class="mi">1</span> <span class="p">);</span>
+<span class="p">};</span>
+
+<span class="c1">//目标</span>
+<span class="kd">function</span> <span class="nx">Subject</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">observers</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ObserverList</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="nx">Subject</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">addObserver</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">observer</span> <span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">observers</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">observer</span> <span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">Subject</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">removeObserver</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">observer</span> <span class="p">){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">observers</span><span class="p">.</span><span class="nx">removeAt</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">observers</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">observer</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">);</span>
+<span class="p">};</span>
+<span class="nx">Subject</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">notify</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">context</span> <span class="p">){</span>
+  <span class="kd">var</span> <span class="nx">observerCount</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">observers</span><span class="p">.</span><span class="nx">count</span><span class="p">();</span>
+  <span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">observerCount</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">observers</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">i</span><span class="p">).</span><span class="nx">update</span><span class="p">(</span> <span class="nx">context</span> <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="c1">//观察者</span>
+<span class="kd">function</span> <span class="nx">Observer</span><span class="p">(){</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">update</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+    <span class="c1">// ...</span>
+  <span class="p">};</span>
+<span class="p">}</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/09/14/Design-pattern2" data-title="观察者模式与发布/订阅模式" data-url="/front/article/2017/09/14/Design-pattern2.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="">
+		
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
