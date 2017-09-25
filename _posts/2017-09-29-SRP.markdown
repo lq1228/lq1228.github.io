@@ -1,0 +1,198 @@
+---
+layout: post
+title:  "单一职责原则"
+date:   2017-09-29 10:49:42 +0800
+description: "单一职责原则，就一个类而言，应该只专注于做一件事和仅有一个引起它变化的原因。"
+categories: front article
+---
+
+SRP简介（SRP–Single-Responsibility Principle）：单一职责原则，就一个类而言，应该只专注于做一件事和仅有一个引起它变化的原因。所谓职责，我们可以理解他为功能，就是设计的这个类功能应该只有一个，而不是两个或更多。也可以理解为引用变化的原因，当你发现有两个变化会要求我们修改这个类，那么你就要考虑撤分这个类了。因为职责是变化的一个轴线，当需求变化时，该变化会反映类的职责的变化。
+
+#### 使用SRP注意点：
+
+<ul>
+    <li> 一个合理的类，应该仅有一个引起它变化的原因，即单一职责；</li>
+    <li> 在没有变化征兆的情况下应用SRP或其他原则是不明智的；</li> 
+    <li> 在需求实际发生变化时就应该应用SRP等原则来重构代码；</li> 
+    <li> 使用测试驱动开发会迫使我们在设计出现臭味之前分离不合理代码；</li> 
+    <li> 如果测试不能迫使职责分离，僵化性和脆弱性的臭味会变得很强烈，那就应该用Facade或Proxy模式对代码重构。</li> 
+</ul>
+
+### 设计模式中的SRP原则
+
+#### 代理模式
+
+下面看下图片预加载的例子。通过增加虚拟代理的方式，把预加载图片的职责放在代理对象中，而本体仅仅负责往页面中添加img标签，这也是最原始的职责。
+
+myImage负责往页面中添加img标签
+
+{% highlight javascript %}
+var myImage = (function(){
+    var imgNode = document.createElement( 'img' ); 
+    document.body.appendChild( imgNode );
+    return {
+        setSrc: function( src ){
+            imgNode.src = src; }
+    } 
+})();
+{% endhighlight %}
+
+proxyImage负责预加载图 ，并在预加载完成之后把请求交给本体 myImage
+
+{% highlight javascript %}
+var proxyImage = (function(){ 
+    var img = new Image; 
+    img.onload = function(){
+        myImage.setSrc(this.src); 
+    }
+    return {
+        setSrc: function( src ){
+            myImage.setSrc( 'file:// /C:/Users/svenzeng/Desktop/loading.gif' );
+            img.src = src;
+        }
+    } 
+})();
+
+proxyImage.setSrc( 'http:// imgcache.qq.com/music/photo/000GGDys0yA0Nk.jpg' );
+{% endhighlight %}
+
+把添加img标签的功能和预加载图片的职责分开放到两个对象中，这两个对象各自都只有一个被修改的动机。在它们各自发生改变的时候，也不会影响另外的对象。
+
+#### 迭代器模式
+
+{% highlight javascript %}
+var appendDiv = function(data) { 
+	for(vari=0, l=data.length; i<l; i++) {
+ 		var div = document.createElement( 'div' ); 
+ 		div.innerHTML = data[ i ]; 
+ 		document.body.appendChild( div );
+	} 
+};
+appendDiv([1,2,3,4,5,6]);
+{% endhighlight %}
+
+这段代码一般用于ajax请求之后，在回调函数中便利ajax请求返回的数据，然后在页面中渲染节点。
+
+appendDiv函数本来只是负责渲染数据，但是这里它承担了遍历聚合对象data的职责。如果data数据格式从array变成了object，那遍历data的代码就会出现问题，必须改成for(var i in data)的方式,这时候必须去修改appendDiv里的代码了。
+
+我们有必要把便利data的职责提取出来，这正式迭代器模式的意义，迭代器模式提供了一种方法来访问聚合对象，而不用暴露这个对象的内部表示。
+
+{% highlight javascript %}
+var each = function(obj, callback) { 
+	var value,
+	i=0,
+	length = obj.length,
+	isArray = isArraylike( obj );
+	if (isArray) { //迭代类数组       
+		for(i; i<length; i++) { // isArraylike函数未实现，可以翻阅jQuery源代码    
+			callback.call(obj[i], i, obj[i]); 
+		}
+	} else {
+		for ( i in obj ) { //迭代object对象  
+			value = callback.call(obj[i], i, obj[i]);
+		}
+	}
+	return obj;
+};
+
+var appendDiv = function(data) { 
+	each(data, function(i, n) {
+		var div = document.createElement( 'div' ); 
+		div.innerHTML = n; 
+		document.body.appendChild( div );
+	}); 
+};
+
+appendDiv([1,2,3,4,5,6]); 
+appendDiv({a:1,b:2,c:3,d:4} );
+{% endhighlight %}
+
+#### 单例模式
+
+{% highlight javascript %}
+var createLoginLayer = (function() { 
+	var div;
+	return function() { 
+		if(!div) {
+			div = document.createElement('div'); 
+			div.innerHTML = '我是登录浮窗'; 
+			div.style.display = 'none'; 
+			document.body.appendChild( div );
+		}
+		return div; 
+	}
+})();
+{% endhighlight %}
+
+现在我们把管理单例的职责和创建登录浮窗的职责分别封装在两个方法里，这两个方法可以独立变化而不互相影响，当它它们连接在一起的时候，就完成了创建唯一登录浮窗的功能：
+
+{% highlight javascript %}
+var getSingle = function(fn) { //获取单例   
+	var result;
+	return function() {
+		return result || (result = fn.apply(this, arguments);
+	);
+}
+
+var createLoginLayer = function() { //创建登录浮窗       
+	var div = document.createElement( 'div' ); 
+	div.innerHTML = '我是登录浮窗'; 
+	document.body.appendChild( div );
+	return div; 
+};
+
+var createSingleLoginLayer = getSingle(createLoginLayer);
+
+var loginLayer1 = createSingleLoginLayer(); 
+var loginLayer2 = createSingleLoginLayer();
+
+alert ( loginLayer1 === loginLayer2 ); //输出：true
+{% endhighlight %}
+
+#### 装饰者模式
+
+使用装饰者模式的时候，我们通常让类或者对象一开始只具有一些基础的职责，更多的职责在代码运行时被动态装饰到对象上面。装饰者模式可以为对象动态添加职责，从另一个角度来看， 这也是分离职责的一种方式。
+
+{% highlight javascript %}
+<html> 
+	<body>
+		<button tag="login" id="button">点击打开登录浮层</button> 
+	</body>
+	<script>
+		Function.prototype.after = function(afterfn) {
+			var __self = this;
+			return function() {
+				var ret = __self.apply(this, arguments); 
+				afterfn.apply(this, arguments);
+				return ret;
+			} 
+		};
+		var showLogin = function() {
+			console.log('打开登录浮层');
+		};
+
+		var log = function() {
+			console.log('上报标签为：' + this.getAttribute('tag'));
+		};
+
+		document.getElementById('button').onclick = showLogin.after(log);
+		//打开登录浮层之后上报数据
+	</script>
+</html> 
+{% endhighlight %}
+
+### 何时应该分离职责       
+
+SRP原则是所有原则中最简单也是最难运用的原则之一。
+
+要明确的是并不是所有的职责都应该一一分离。
+
+一方面，如果随着需求的变化，有两个职责总是同时变化，那就不必分离他们。比如ajax请求的时候，创建xhr对象和发送xhr请求几乎总是在一起的，那么就没必要分开。
+
+另一方面，职责的变化轴线仅当它们确定会发生变化时才具有意义，即使两个职责已经被耦合在一起，但它们还没有发生改变的征兆，那么也许没有必要主动分离它们，在代码需要重构的时候再分离也不迟。
+
+### SRP原则的优缺点
+
+SRP原则的优点是降低了单个类或者对象的复杂度，按照职责把对象分解成更小的粒度，这有助于代码的复用，也有利于进行单元测试。当一个职责需要变更的时候，不会影响到其他的职责。
+
+SRP原则的缺点，最明显的是会增加编写代码的复杂度。当我们按照职责把对象分解成更小的粒度后，实际上也增大了这些对象之间相互联系的难度。
