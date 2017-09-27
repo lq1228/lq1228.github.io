@@ -6,95 +6,9 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 27 Sep 2017 11:32:11 +0800</pubDate>
-    <lastBuildDate>Wed, 27 Sep 2017 11:32:11 +0800</lastBuildDate>
+    <pubDate>Wed, 27 Sep 2017 11:49:03 +0800</pubDate>
+    <lastBuildDate>Wed, 27 Sep 2017 11:49:03 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
-    
-      <item>
-        <title>最少知识原则</title>
-        <description>&lt;p&gt;最少知识原则也叫迪米特法则（Law of Demeter，LoD），“迪米特”这个名字源自1987年美国东北大学一个名为“Demeter”的研究项目。&lt;/p&gt;
-
-&lt;p&gt;最少知识原则(LKP)说的是一个软件实体应当尽可能少地与其他实体发生相互作用。这里的软件实体是一个广义的概念，不仅包括对象，还包括系统、类、模块、函数、变量等。&lt;/p&gt;
-
-&lt;p&gt;如果两个对象之间不必彼此直接通信，那么这两个对象就不要发生直接的相互联系。常见的做法是引入一个第三者对象，来承担这些对象之间的通信作用。如果一些对象需要向另一些对象发起请求，可以通过第三者对象来转发这些请求。&lt;/p&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;设计模式中的最少知识原则&lt;/h3&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;中介者模式&lt;/h4&gt;
-
-&lt;p&gt;中介者模式很好的体现了最少知识原则。通过增加一个中介者对象，让所有的相关对象都通过中介者对象来通信，而不是互相引用。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;外观模式&lt;/h4&gt;
-
-&lt;p&gt;外观模式主要是为子系统中的一组接口提供一个一致的界面，外观模式定义了一个高层接口，这个接口使子系统更加容易使用。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/lkp/lkp.jpeg&quot; alt=&quot;外观模式&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;外观模式的作用是对客户屏蔽一组子系统的复杂性。外观模式对客户提供一个简单易用的高层接口，高层接口会把客户的请求转发给子系统来完成具体的功能实现。大多数客户都可以通过请求外观接口来达到访问子系统的目的。但在一段使用了外观模式的程序中，请求外观并不是强制的。如果外观不能满足客户的个性化需求，那么客户也可以选择越过外观直接访问子系统。&lt;/p&gt;
-
-&lt;p&gt;外观模式容易跟普通的封装实现混淆。这两者都封装了一些事物，但外观的关键是定义一个高层接口去封装一组“子系统”。“子系统”可以理解为一组函数的集合。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
-    &lt;span class=&quot;nx&quot;&gt;a1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;a2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;B&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
-    &lt;span class=&quot;nx&quot;&gt;b1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;b2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;facade&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
-    &lt;span class=&quot;nx&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;facade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;外观模式和最少知识原则之间的关系&lt;/p&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;为一组子系统提供一个简单便利的访问入口&lt;/li&gt;
-    &lt;li&gt;隔离客户与复杂子系统之间的联系，客户不用去了解子系统的细节&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;封装在最少知识原则中的体现&lt;/h4&gt;
-
-&lt;p&gt;封装在很大程度上表达的是数据的隐藏。一个模块或者对象可以将内部的数据或者实现细节隐藏起来，只暴露必要的接口API 供外界访问。对象之间难免产生联系，当一个对象必须引用另外一个对象的时候，我们可以让对象只暴露必要的接口，让对象之间的联系限制在最小的范围之中。&lt;/p&gt;
-
-&lt;p&gt;封装也用来限制变量的作用域。变量作用域的规定：&lt;/p&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;变量在全局声明，或者在代码的任何位置隐士声明（不用var），则该变量在全局可见；&lt;/li&gt;
-    &lt;li&gt;变量在函数内声明（使用var），则在函数内可见。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;如果我们要编写一个具有缓存效果的计算乘积的函数function mult(){}，我们需要一个对象var cache={}来保存已经计算过的结果。cache对象显然只对mult有用，把cache对象放在mult形成的闭包中，显然比把它放在全局作用域更加合适&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mult&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;,&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; 
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;mult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 输出：6&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;虽然遵守最小知识原则减少了对象之间的依赖，但也有可能增加一些庞大到难以维护的第三者对象。跟单一职责原则一样，在实际开发中，是否选择让代码符合最少知识原则，要根据具体的环境来定。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 23 Sep 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/09/23/LKP.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/09/23/LKP.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
     
       <item>
         <title>命令模式</title>
@@ -2621,6 +2535,106 @@ vertical-lr表示文本是垂直方向(vertical)展示，然后阅读的顺序�
         <pubDate>Fri, 30 Jun 2017 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2017/06/30/redux5.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/06/30/redux5.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>Redux 4 - 入门：三大原则（Three Principles）</title>
+        <description>&lt;p&gt;Redux可以用3个基本原则来描述：&lt;/p&gt;
+
+&lt;h3 id=&quot;single-source-of-truth&quot;&gt;单一数据源原则（Single source of truth）&lt;/h3&gt;
+
+&lt;p&gt;应用的整个状态存储在单例store的对象树中。&lt;/p&gt;
+
+&lt;p&gt;在此基础上非常便于创建通用应用，不需要经过特殊的处理，直接将服务端的状态序列化后混合到客户端状态中即可。单例的状态树使得程序理解和调试都变得非常简单，可以在开发过程中针对某个时刻的状态反复调试，促进开发的节奏。将一个应用中所有的状态都存储在一个单例树上之后，一些在传统开发模式中难以实现的功能——比如回退/前进——突然变得简单起来。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Prints
+{
+  visibilityFilter: &#39;SHOW_ALL&#39;,
+  todos: [
+    {
+      text: &#39;Consider using Redux&#39;,
+      completed: true,
+    },
+    {
+      text: &#39;Keep all state in a single tree&#39;,
+      completed: false
+    }
+  ]
+}
+*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;state-is-read-only&quot;&gt;状态只读（State is read-only）&lt;/h3&gt;
+
+&lt;p&gt;改变状态树的唯一方式是通过派发action——一个用来描述发生情况的对象&lt;/p&gt;
+
+&lt;p&gt;这确保了无论是用户输入还是网络响应等交互都不能直接修改应用状态。只能通过明确的传递一个Action来表达状态修改的意图。并且所有状态修改的操作均严格按照发生的顺序集中处理，不存在其他遗漏的情况。Action就是普通对象，可以用来记录日志，序列化，存储，也可以用来重现测试或调试Bug。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;COMPLETE_TODO&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SET_VISIBILITY_FILTER&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_COMPLETED&#39;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;changes-are-made-with-pure-functions&quot;&gt;纯函数更改（Changes are made with pure functions）&lt;/h3&gt;
+
+&lt;p&gt;被称作Reducer的纯函数专门用来响应Action修改状态树。&lt;/p&gt;
+
+&lt;p&gt;Reducer是纯函数，接收当前状态和一个Action，并返回修改后的状态。切记是返回一个全新的状态对象，千万避免修改当前状态。创建应用可以从一个单独的Reducer开始，随着应用规模的增长，将其拆分为更小的Reducer用来分别处理状态树的各个部分。Reducer只是函数而已，可以在代码中根据需求控制其调用，传递额外的数据，也可以针对分页之类的常见任务抽象出可重用的Reducer。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;visibilityFilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_ALL&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SET_VISIBILITY_FILTER&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;filter&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;ADD_TODO&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;completed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;COMPLETE_TODO&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;todo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;assign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({},&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;completed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todo&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;combineReducers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createStore&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;redux&#39;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reducer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;combineReducers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;visibilityFilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todos&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createStore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reducer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;至此，你应该知道Redux是什么了。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 22 Jun 2017 12:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/06/22/redux4.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/06/22/redux4.html</guid>
         
         
         <category>front</category>
