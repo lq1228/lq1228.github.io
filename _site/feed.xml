@@ -6,9 +6,644 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 27 Sep 2017 16:51:13 +0800</pubDate>
-    <lastBuildDate>Wed, 27 Sep 2017 16:51:13 +0800</lastBuildDate>
+    <pubDate>Fri, 27 Oct 2017 11:35:53 +0800</pubDate>
+    <lastBuildDate>Fri, 27 Oct 2017 11:35:53 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>React Native 搭建开发环境</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;安装必须的软件&lt;/h4&gt;
+
+&lt;h5 id=&quot;homebrew&quot;&gt;Homebrew&lt;/h5&gt;
+
+&lt;p&gt;Homebrew, Mac系统的包管理器，用于安装NodeJS和一些其他必需的工具软件。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;usr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ruby&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;译注：在Max OS X 10.11（El Capitan)版本中，homebrew在安装软件时可能会碰到/usr/local目录不可写的权限问题。可以使用下面的命令修复：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chown&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;R&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;whoami&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;usr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;local&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;node&quot;&gt;Node&lt;/h5&gt;
+
+&lt;p&gt;使用Homebrew来安装Node.js.&lt;/p&gt;
+
+&lt;p&gt;React Native需要NodeJS 4.0或更高版本。本文发布时Homebrew默认安装的是6.x版本，完全满足要求。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;brew&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;node&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;安装完node后建议设置npm镜像以加速后面的过程（或使用科学上网工具）。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;registry&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//registry.npm.taobao.org --global&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;disturl&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//npm.taobao.org/dist --global&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;react-nativereact-native-cli&quot;&gt;React Native的命令行工具（react-native-cli）&lt;/h5&gt;
+
+&lt;p&gt;React Native的命令行工具用于执行创建、初始化、更新项目、运行打包服务（packager）等任务。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;react&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;native&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cli&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;如果你看到EACCES: permission denied这样的权限报错，那么请参照上文的homebrew译注，修复/usr/local目录的所有权：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;chown&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;R&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;whoami&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;usr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;local&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;xcode&quot;&gt;Xcode&lt;/h5&gt;
+
+&lt;p&gt;React Native目前需要Xcode 7.0 或更高版本。你可以通过App Store或是到Apple开发者官网上下载。这一步骤会同时安装Xcode IDE和Xcode的命令行工具。&lt;/p&gt;
+
+&lt;p&gt;虽然一般来说命令行工具都是默认安装了，但你最好还是启动Xcode，并在Xcode–Preferences–Locations菜单中检查一下是否装有某个版本的Command Line Tools。Xcode的命令行工具中也包含一些必须的工具，比如git等。&lt;/p&gt;
+
+&lt;h4 id=&quot;android-studio&quot;&gt;Android Studio&lt;/h4&gt;
+
+&lt;p&gt;如果需要安装到Android平台的话，需要以下操作，如果是ios, 可以直接跳到推荐安装的工具或者测试安装了&lt;/p&gt;
+
+&lt;p&gt;React Native目前需要Android Studio2.0或更高版本。&lt;/p&gt;
+
+&lt;p&gt;Android Studio需要Java Development Kit [JDK] 1.8或更高版本。你可以在命令行中输入 javac -version来查看你当前安装的JDK版本。如果版本不合要求，则可以到 官网上下载。
+Android Studio包含了运行和测试React Native应用所需的Android SDK和模拟器。&lt;/p&gt;
+
+&lt;p&gt;除非特别注明，请不要改动安装过程中的选项。比如Android Studio默认安装了 Android Support Repository，而这也是React Native必须的（否则在react-native run-android时会报appcompat-v7包找不到的错误）。&lt;/p&gt;
+
+&lt;p&gt;安装过程中有一些需要改动的选项：&lt;/p&gt;
+
+&lt;p&gt;选择Custom选项：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/react-native/android1.png&quot; alt=&quot;android&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;勾选Performance和Android Virtual Device&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/react-native/android2.png&quot; alt=&quot;android&quot; /&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;安装完成后，在Android Studio的启动欢迎界面中选择Configure&lt;/td&gt;
+      &lt;td&gt;SDK Manager。&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/react-native/android3.png&quot; alt=&quot;android&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在SDK Platforms窗口中，选择Show Package Details，然后在Android 6.0 (Marshmallow)中勾选Google APIs、Intel x86 Atom System Image、Intel x86 Atom_64 System Image以及Google APIs Intel x86 Atom_64 System Image。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/react-native/android4.png&quot; alt=&quot;android&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在SDK Tools窗口中，选择Show Package Details，然后在Android SDK Build Tools中勾选Android SDK Build-Tools 23.0.1。（必须是这个版本）&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/react-native/android5.png&quot; alt=&quot;android&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;androidhome&quot;&gt;ANDROID_HOME环境变量&lt;/h5&gt;
+
+&lt;p&gt;确保ANDROID_HOME环境变量正确地指向了你安装的Android SDK的路径。具体的做法是把下面的命令加入到~/.bash_profile文件中：(译注：~表示用户目录，即/Users/你的用户名/，而小数点开头的文件在Finder中是隐藏的，并且这个文件有可能并不存在。请在终端下使用sudo vi ~/.bash_profile命令创建或编辑。如不熟悉vi操作，请点击这里学习）&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;//如果你不是通过Android Studio安装的sdk，则其路径可能不同，请自行确定清楚。&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ANDROID_HOME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=~&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Library/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Android&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sdk&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;然后使用下列命令使其立即生效（否则重启后才生效）：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/.bash_profile&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;可以使用echo $ANDROID_HOME检查此变量是否已正确设置。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;推荐安装的工具&lt;/h4&gt;
+
+&lt;h5 id=&quot;watchman&quot;&gt;Watchman&lt;/h5&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://facebook.github.io/watchman/docs/install.html&quot;&gt;Watchman&lt;/a&gt;是由Facebook提供的监视文件系统变更的工具。安装此工具可以提高开发时的性能（packager可以快速捕捉文件的变化从而实现实时刷新）。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;brew&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;watchman&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;flow&quot;&gt;Flow&lt;/h5&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://flow.org/&quot;&gt;Flow&lt;/a&gt;是一个静态的JS类型检查工具。译注：你在很多示例中看到的奇奇怪怪的冒号问号，以及方法参数中像类型一样的写法，都是属于这个flow工具的语法。这一语法并不属于ES标准，只是Facebook自家的代码规范。所以新手可以直接跳过（即不需要安装这一工具，也不建议去费力学习flow相关语法）。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;brew&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;flow&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;nuclide&quot;&gt;Nuclide&lt;/h5&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://nuclide.io/&quot;&gt;Nuclide&lt;/a&gt;是由Facebook提供的基于atom的集成开发环境，可用于编写、&lt;a href=&quot;https://nuclide.io/docs/platforms/react-native/#running-applications&quot;&gt;运行&lt;/a&gt;和 &lt;a href=&quot;https://nuclide.io/docs/platforms/react-native/#debugging&quot;&gt;调试&lt;/a&gt;React Native应用。&lt;/p&gt;
+
+&lt;p&gt;点击这里阅读&lt;a href=&quot;https://nuclide.io/docs/quick-start/getting-started/&quot;&gt;Nuclide的入门文档&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;译注：我们更推荐使用&lt;a href=&quot;https://www.jetbrains.com/webstorm/&quot;&gt;WebStorm&lt;/a&gt;或&lt;a href=&quot;http://www.sublimetext.com/&quot;&gt;Sublime Text&lt;/a&gt;来编写React Native应用。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;测试安装&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;react&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;native&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;init&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;AwesomeProject&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;AwesomeProject&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;react&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;native&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ios&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;你也可以在Nuclide中打开AwesomeProject文件夹 然后运行，或是双击ios/AwesomeProject.xcodeproj文件然后在Xcode中点击Run按钮。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;修改项目&lt;/h4&gt;
+
+&lt;p&gt;现在你已经成功运行了项目，我们可以开始尝试动手改一改了：&lt;/p&gt;
+
+&lt;p&gt;使用你喜欢的编辑器打开index.ios.js并随便改上几行。
+在iOS Emulator中按下⌘-R就可以刷新APP并看到你的最新修改！
+完成了！
+恭喜！你已经成功运行并修改了你的第一个React Native应用。&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 27 Oct 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/10/27/react-native1.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/10/27/react-native1.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>开放-封闭原则</title>
+        <description>&lt;p&gt;开放-封闭原则最早由Eiffel语言的设计者Bertrand Meyer在其著作Object-Oriented Software Construction中提出。它的定义：软件实体（类、模式、函数）等应该是可以扩展的，但是不可修改。&lt;/p&gt;
+
+&lt;h4 id=&quot;windowonload&quot;&gt;扩展window.onload函数&lt;/h4&gt;
+
+&lt;p&gt;通过增加代码，而不是修改代码的方式，给window.onload函数添加新功能&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nb&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;after&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;afterfn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__self&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+        &lt;span class=&quot;nx&quot;&gt;afterfn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){}).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;after&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByTagName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;*&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;通过动态装饰函数的方式，我们完全不用理会从前的window.onload函数的内部实现，无论它优雅或是丑陋。即使我们作为维护者，拿到的是一份混淆压缩过的代码也没有关系。只要它从前是个稳定运行的函数，那以后也不会因为我们的新增需求而产生错误。&lt;/p&gt;
+
+&lt;p&gt;由此引出开放-封闭原则的思想：当需要改变一个程序的功能或者给这个程序增加新功能的时候，可以使用增加代码的方式，但是不允许改动程序的源代码。&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;用对象的多态性消除条件分支&lt;/h4&gt;
+
+&lt;p&gt;过多的条件分支语句是造成程序违反开放-封闭原则的一个常见原因。每当需要增加一个新的if语句时，都要被迫改动原函数。把if换成swich-case是没有用的，这是一种换汤不换药的做法，可以考虑利用对象的多态性来重构它们。&lt;/p&gt;
+
+&lt;p&gt;借用动物发出叫声的例子，最初的代码：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;嘎嘎嘎&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;咯咯咯&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){};&lt;/span&gt; 
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; 
+&lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;增加一只狗，需要改成:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;嘎嘎嘎&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;咯咯咯&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;instanceof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//增加够叫声代码&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;汪汪汪&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Dog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){};&lt;/span&gt; 
+
+&lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//增加一只小狗&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;利用多态的思想，我们把程序中不变的部分隔离出来（动物都会叫），然后把可变的部分封装起来（不同类型的动物发出不同的叫声），这样程序就有了可扩展性。当我们要增加一只狗发出叫声时，只需增加一段代码即可，而不用改动原有的makeSound函数：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;animal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sound&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;嘎嘎嘎&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sound&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;咯咯咯&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//嘎嘎嘎&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chicken&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//咯咯咯&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;//增加动物狗，不需要改动原有代码&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Dog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sound&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;汪汪汪&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;makeSound&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//汪汪汪&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;找出变化的地方&lt;/h4&gt;
+
+&lt;p&gt;开放-封闭原则时一个看起来比较虚幻的原则，并没有实际的模版教导我们怎样亦步亦趋地实现它。但我们还是能找到一些让程序尽量遵守开放-封闭原则的规律，最明显的就是找出程序中将要发生变化的地方，然后把变化封装起来。&lt;/p&gt;
+
+&lt;p&gt;通过封装变化的方式，可以把系统中稳定不变的部分和容易变化的部分隔离开来。在系统的演变过程中，我们只需要替换那些容易变化的部分，如果这些部分是已经封装好的，那么替换起来也相对容易。而变化部分之外的就是稳定的部分。在系统的演变过程中，稳定的部分是不需要改变的。&lt;/p&gt;
+
+&lt;p&gt;除了利用对象的多态外，还有其他方式帮助我们遵守开放-封闭原则:&lt;/p&gt;
+
+&lt;h5 id=&quot;section-2&quot;&gt;放置挂钩&lt;/h5&gt;
+
+&lt;p&gt;放置挂钩（hook）也是分离变化的一种方式。我们在程序有可能发生变化的地方放置一个挂钩，挂钩的返回结果决定了程序的下一步走向。这样，原本的代码执行路径上就出现了一个分叉路口，程序未来的执行方向被预埋下多种可能性。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;使用回调函数&lt;/h5&gt;
+
+&lt;p&gt;在JavaScript中，函数可以作为参数传递给另外一个函数，这是高阶函数的意义之一。在这种情况下，我们通常会把这个函数称为回调函数。策略模式和命令模式都可以用回调函数轻松实现。&lt;/p&gt;
+
+&lt;p&gt;回调函数时一种特殊的挂钩。我们可以把一部分易于变化的逻辑封装在回调函数里，然后把回调函数当作参数传入一个稳定和封闭的函数中。当回调函数被执行的时候，程序就可以因为回调函数的内部逻辑不同，而产生不同的结果。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ajax异步请求用户信息后要做一些事情：&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getUserInfo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;http:// xxx.com/getUserInfo&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;getUserInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;userName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;getUserInfo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;userId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;在不支持Array.prototype.map的浏览器中，我们可以简单地模拟实现一个map函数。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arrayMap&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt; 
+        &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arrayMap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arrayMap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//  输出：[ 2, 4, 6 ]&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//  输出：[ 3, 6, 9 ]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;arrayMap函数的作用是把一个数组“映射”为另外一个数组。映射的步骤是不变的，而映射的规则可变，于是我们把这部分规则放在回调函数中，传入arrayMap函数。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;设计模式中的开放-封闭原则&lt;/h4&gt;
+
+&lt;p&gt;几乎所有的设计模式都是遵守开放-封闭原则的，我们见到的好设计，通常都经得起开放-封闭原则的考验。不管是具体的各种设计模式，还是更抽象的面向对象设计原则，比如单一职责原则，最少知识原则，依赖倒置原则等，都是为了让程序遵守开放-封闭原则而出现的。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;发布-订阅模式&lt;/h5&gt;
+
+&lt;p&gt;发布-订阅模式用来降低多个对象之间的依赖关系，它可以取代对象之间硬编码的通知机制，一个对象不用再显式地调用另外一个对象的某个街口。当有新的订阅者出现时，发布者的代码不需要进行任何修改；同样当发布者需要改变时，也不会影响到之前的订阅者。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-6&quot;&gt;模版方法模式&lt;/h5&gt;
+
+&lt;p&gt;模版方法模式是一种典型的通过封装变化来提高系统扩展性的设计模式。在一个运用了模版方法的程序中，子类的方法种类和执行顺序都是不变的，所以我们把这部分逻辑抽出来放到父类的模版方法里；而子类的方法具体怎么实现是可变的，于是把这部分变化的逻辑封装到子类中。通过增加新的子类，便能给系统增加新的功能，并不需要改动抽象父类以及其他的子类，这也是符合开放-封闭原则的。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-7&quot;&gt;策略模式&lt;/h5&gt;
+
+&lt;p&gt;策略模式和模版方法模式是一对竞争者。在大多数情况下，它们可以互相替换使用。模版方法模式基于继承的思想，而策略模式则偏重于组合和委托。&lt;/p&gt;
+
+&lt;p&gt;策略模式将各种算法都封装成单独的策略类，这些策略类可以被交换使用，策略和使用策略的客户代码可以分别独立进行修改而互不影响。我们增加一个新的策略类也非常方便，完全不用修改之前的代码。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-8&quot;&gt;代理模式&lt;/h5&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://lq1228.github.io/front/article/2017/09/07/Design-pattern1.html&quot;&gt;代理模式见之前的文章&lt;/a&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;section-9&quot;&gt;职责链模式&lt;/h5&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;order500yuan&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;orderType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;c1&quot;&gt;//具体代码略    &lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;order200yuan&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;orderType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+    &lt;span class=&quot;c1&quot;&gt;//具体代码略    &lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;orderNormal&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Chain&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;orderType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;pay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;stock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;    
+    &lt;span class=&quot;c1&quot;&gt;//具体代码略    &lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;order500yuan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setNextSuccessor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;order200yuan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setNextSuccessor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;orderNormal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;order500yuan&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;passRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//500元定金预购，得到100优惠卷&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;这样，当我们增加一个新类型的订单函数时，不需要改动原有的订单函数代码，只需要在链条中增加一个新的节点。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;开放-封闭原则的相对性&lt;/h4&gt;
+
+&lt;p&gt;让程序符合开放-封闭原则的代价是引入更多的抽象层次，更多的抽象有可能增加代码的复杂度。更何况，有些代码是无论如何也不能完全封闭的，总会存在一些无法对其封闭的变化。作为程序员我们可以做到以下两点：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;挑选出容易发生变化的地方，然后构造抽象来封闭这些变化。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;在不可避免发生修改的时候，尽量修改那些相对容易修改的地方。拿一个开源库来说，修改它提供的配置文件，总比修改它的源代码来的简单。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在最初编码时，先假设变化永远不会发生，这有利于迅速完成需求。当变化发生并且对我们接下来的工作造成影响的时候，可以再来封装这些变化的地方，确保不会掉进同一个坑里。有点像星矢说的：“圣斗士不会被同样的招数击倒第二次”。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 20 Oct 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/10/20/OCP.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/10/20/OCP.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>最少知识原则</title>
+        <description>&lt;p&gt;最少知识原则也叫迪米特法则（Law of Demeter，LoD），“迪米特”这个名字源自1987年美国东北大学一个名为“Demeter”的研究项目。&lt;/p&gt;
+
+&lt;p&gt;最少知识原则(LKP)说的是一个软件实体应当尽可能少地与其他实体发生相互作用。这里的软件实体是一个广义的概念，不仅包括对象，还包括系统、类、模块、函数、变量等。&lt;/p&gt;
+
+&lt;p&gt;如果两个对象之间不必彼此直接通信，那么这两个对象就不要发生直接的相互联系。常见的做法是引入一个第三者对象，来承担这些对象之间的通信作用。如果一些对象需要向另一些对象发起请求，可以通过第三者对象来转发这些请求。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;设计模式中的最少知识原则&lt;/h3&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;中介者模式&lt;/h4&gt;
+
+&lt;p&gt;中介者模式很好的体现了最少知识原则。通过增加一个中介者对象，让所有的相关对象都通过中介者对象来通信，而不是互相引用。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;外观模式&lt;/h4&gt;
+
+&lt;p&gt;外观模式主要是为子系统中的一组接口提供一个一致的界面，外观模式定义了一个高层接口，这个接口使子系统更加容易使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/lkp/lkp.jpeg&quot; alt=&quot;外观模式&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;外观模式的作用是对客户屏蔽一组子系统的复杂性。外观模式对客户提供一个简单易用的高层接口，高层接口会把客户的请求转发给子系统来完成具体的功能实现。大多数客户都可以通过请求外观接口来达到访问子系统的目的。但在一段使用了外观模式的程序中，请求外观并不是强制的。如果外观不能满足客户的个性化需求，那么客户也可以选择越过外观直接访问子系统。&lt;/p&gt;
+
+&lt;p&gt;外观模式容易跟普通的封装实现混淆。这两者都封装了一些事物，但外观的关键是定义一个高层接口去封装一组“子系统”。“子系统”可以理解为一组函数的集合。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;a1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;a2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;B&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;b1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;b2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;facade&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;facade&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;外观模式和最少知识原则之间的关系&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;为一组子系统提供一个简单便利的访问入口&lt;/li&gt;
+    &lt;li&gt;隔离客户与复杂子系统之间的联系，客户不用去了解子系统的细节&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;封装在最少知识原则中的体现&lt;/h4&gt;
+
+&lt;p&gt;封装在很大程度上表达的是数据的隐藏。一个模块或者对象可以将内部的数据或者实现细节隐藏起来，只暴露必要的接口API 供外界访问。对象之间难免产生联系，当一个对象必须引用另外一个对象的时候，我们可以让对象只暴露必要的接口，让对象之间的联系限制在最小的范围之中。&lt;/p&gt;
+
+&lt;p&gt;封装也用来限制变量的作用域。变量作用域的规定：&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;变量在全局声明，或者在代码的任何位置隐士声明（不用var），则该变量在全局可见；&lt;/li&gt;
+    &lt;li&gt;变量在函数内声明（使用var），则在函数内可见。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果我们要编写一个具有缓存效果的计算乘积的函数function mult(){}，我们需要一个对象var cache={}来保存已经计算过的结果。cache对象显然只对mult有用，把cache对象放在mult形成的闭包中，显然比把它放在全局作用域更加合适&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mult&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;,&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; 
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;mult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 输出：6&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;虽然遵守最小知识原则减少了对象之间的依赖，但也有可能增加一些庞大到难以维护的第三者对象。跟单一职责原则一样，在实际开发中，是否选择让代码符合最少知识原则，要根据具体的环境来定。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 13 Oct 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/10/13/LKP.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/10/13/LKP.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>单一职责原则</title>
+        <description>&lt;p&gt;SRP简介（SRP–Single-Responsibility Principle）：单一职责原则，就一个类而言，应该只专注于做一件事和仅有一个引起它变化的原因。所谓职责，我们可以理解他为功能，就是设计的这个类功能应该只有一个，而不是两个或更多。也可以理解为引用变化的原因，当你发现有两个变化会要求我们修改这个类，那么你就要考虑撤分这个类了。因为职责是变化的一个轴线，当需求变化时，该变化会反映类的职责的变化。&lt;/p&gt;
+
+&lt;h4 id=&quot;srp&quot;&gt;使用SRP注意点：&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt; 一个合理的类，应该仅有一个引起它变化的原因，即单一职责；&lt;/li&gt;
+    &lt;li&gt; 在没有变化征兆的情况下应用SRP或其他原则是不明智的；&lt;/li&gt; 
+    &lt;li&gt; 在需求实际发生变化时就应该应用SRP等原则来重构代码；&lt;/li&gt; 
+    &lt;li&gt; 使用测试驱动开发会迫使我们在设计出现臭味之前分离不合理代码；&lt;/li&gt; 
+    &lt;li&gt; 如果测试不能迫使职责分离，僵化性和脆弱性的臭味会变得很强烈，那就应该用Facade或Proxy模式对代码重构。&lt;/li&gt; 
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;srp-1&quot;&gt;设计模式中的SRP原则&lt;/h3&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;代理模式&lt;/h4&gt;
+
+&lt;p&gt;下面看下图片预加载的例子。通过增加虚拟代理的方式，把预加载图片的职责放在代理对象中，而本体仅仅负责往页面中添加img标签，这也是最原始的职责。&lt;/p&gt;
+
+&lt;p&gt;myImage负责往页面中添加img标签&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;myImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imgNode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;img&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+    &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imgNode&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;imgNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;proxyImage负责预加载图 ，并在预加载完成之后把请求交给本体 myImage&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt; 
+    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+    &lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;myImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;myImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;file:// /C:/Users/svenzeng/Desktop/loading.gif&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;proxyImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;http:// imgcache.qq.com/music/photo/000GGDys0yA0Nk.jpg&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;把添加img标签的功能和预加载图片的职责分开放到两个对象中，这两个对象各自都只有一个被修改的动机。在它们各自发生改变的时候，也不会影响另外的对象。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;迭代器模式&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;appendDiv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;vari&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ 		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;div&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+ 		&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; 
+ 		&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;appendDiv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;这段代码一般用于ajax请求之后，在回调函数中便利ajax请求返回的数据，然后在页面中渲染节点。&lt;/p&gt;
+
+&lt;p&gt;appendDiv函数本来只是负责渲染数据，但是这里它承担了遍历聚合对象data的职责。如果data数据格式从array变成了object，那遍历data的代码就会出现问题，必须改成for(var i in data)的方式,这时候必须去修改appendDiv里的代码了。&lt;/p&gt;
+
+&lt;p&gt;我们有必要把便利data的职责提取出来，这正式迭代器模式的意义，迭代器模式提供了一种方法来访问聚合对象，而不用暴露这个对象的内部表示。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;nx&quot;&gt;isArray&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;isArraylike&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;isArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//迭代类数组       &lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// isArraylike函数未实现，可以翻阅jQuery源代码    &lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt; 
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//迭代object对象  &lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;callback&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;appendDiv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+	&lt;span class=&quot;nx&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;div&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+		&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+		&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;appendDiv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt; 
+&lt;span class=&quot;nx&quot;&gt;appendDiv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;单例模式&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createLoginLayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;div&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+			&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;我是登录浮窗&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+			&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;display&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;none&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+			&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;现在我们把管理单例的职责和创建登录浮窗的职责分别封装在两个方法里，这两个方法可以独立变化而不互相影响，当它它们连接在一起的时候，就完成了创建唯一登录浮窗的功能：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getSingle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//获取单例   &lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createLoginLayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//创建登录浮窗       &lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;div&#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+	&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;我是登录浮窗&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+	&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createSingleLoginLayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getSingle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createLoginLayer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loginLayer1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createSingleLoginLayer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; 
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loginLayer2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createSingleLoginLayer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+&lt;span class=&quot;nx&quot;&gt;alert&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loginLayer1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;loginLayer2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//输出：true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;装饰者模式&lt;/h4&gt;
+
+&lt;p&gt;使用装饰者模式的时候，我们通常让类或者对象一开始只具有一些基础的职责，更多的职责在代码运行时被动态装饰到对象上面。装饰者模式可以为对象动态添加职责，从另一个角度来看， 这也是分离职责的一种方式。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;html&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 
+	&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+		&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;button&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tag&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;login&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;button&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;点击打开登录浮层&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/button&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt; 
+&lt;/span&gt;	&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/body&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;	&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+		&lt;span class=&quot;nb&quot;&gt;Function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;after&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;afterfn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__self&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; 
+				&lt;span class=&quot;nx&quot;&gt;afterfn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; 
+		&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;showLogin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;打开登录浮层&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;上报标签为：&#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getAttribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;tag&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+		&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;button&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onclick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;showLogin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;after&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;c1&quot;&gt;//打开登录浮层之后上报数据&lt;/span&gt;
+	&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/script&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/html&amp;gt; &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;何时应该分离职责&lt;/h3&gt;
+
+&lt;p&gt;SRP原则是所有原则中最简单也是最难运用的原则之一。&lt;/p&gt;
+
+&lt;p&gt;要明确的是并不是所有的职责都应该一一分离。&lt;/p&gt;
+
+&lt;p&gt;一方面，如果随着需求的变化，有两个职责总是同时变化，那就不必分离他们。比如ajax请求的时候，创建xhr对象和发送xhr请求几乎总是在一起的，那么就没必要分开。&lt;/p&gt;
+
+&lt;p&gt;另一方面，职责的变化轴线仅当它们确定会发生变化时才具有意义，即使两个职责已经被耦合在一起，但它们还没有发生改变的征兆，那么也许没有必要主动分离它们，在代码需要重构的时候再分离也不迟。&lt;/p&gt;
+
+&lt;h3 id=&quot;srp-2&quot;&gt;SRP原则的优缺点&lt;/h3&gt;
+
+&lt;p&gt;SRP原则的优点是降低了单个类或者对象的复杂度，按照职责把对象分解成更小的粒度，这有助于代码的复用，也有利于进行单元测试。当一个职责需要变更的时候，不会影响到其他的职责。&lt;/p&gt;
+
+&lt;p&gt;SRP原则的缺点，最明显的是会增加编写代码的复杂度。当我们按照职责把对象分解成更小的粒度后，实际上也增大了这些对象之间相互联系的难度。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 29 Sep 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/09/29/SRP.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/09/29/SRP.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>命令模式</title>
@@ -2143,498 +2778,6 @@ npm start&lt;/p&gt;
         <pubDate>Fri, 04 Aug 2017 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2017/08/04/redux8.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/04/redux8.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>writing-mode</title>
-        <description>&lt;p&gt;这周需求中有一个垂直排版需求,发现writing-mode也有这么多玩法,而且兼容性也基本不成问题了，我们可以试试啦~&lt;/p&gt;
-
-&lt;h3 id=&quot;writing-mode&quot;&gt;一. writing-mode的原本作用&lt;/h3&gt;
-
-&lt;p&gt;和float属性有些类似，writing-mode原本设计的是控制内联元素的显示的（即所谓的文本布局-Text Layout）。因为在亚洲，尤其像中国这样的东亚国家，存在文字的排版不是水平式的，而是垂直的，例如中国的古诗古文, 因此，writing-mode就是用来实现文字可以竖着呈现的。&lt;/p&gt;
-
-&lt;h4 id=&quot;writing-mode-1&quot;&gt;writing-mode语法&lt;/h4&gt;
-&lt;p&gt;writing-mode的语法学习相比其他CSS属性要高一些，因为我们需要记住两套不同的语法。一个是IE私有属性，第二个是CSS3规范属性。&lt;/p&gt;
-
-&lt;p&gt;先看下未来所需的CSS3语法：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/* 关键字值 */&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;horizontal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;    &lt;span class=&quot;cm&quot;&gt;/* 默认值 */&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vertical&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vertical&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;lr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;cm&quot;&gt;/* 全局值-关键字inherit IE8+，initial和unset IE13才支持 */&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;inherit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;initial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;unset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;各个关键字属性值的含义，我们透明名称就能知道其大概的意思，例如，默认值horizontal-tb表示，文本流是水平方向(horizontal)的，元素是从上往下(tb:top-bottom)堆叠的。&lt;/p&gt;
-
-&lt;p&gt;vertical-rl表示文本是垂直方向(vertical)展示，然后阅读的顺序是从右往左(rl:right-left)，跟我们古诗的阅读顺序一致。
-vertical-lr表示文本是垂直方向(vertical)展示，然后阅读的顺序还是默认的从左往右(lr:left-right)，也就是仅仅是水平变垂直。&lt;/p&gt;
-
-&lt;p&gt;这里不详细介绍IE浏览器的语法，感兴趣可以看&lt;a href=&quot;https://msdn.microsoft.com/zh-cn/library/ms531187(v=vs.85).aspx&quot;&gt;IE官方文档&lt;/a&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;一些说明：&lt;/h4&gt;
-&lt;ul&gt;
-	&lt;li&gt; 相同的writing-mode属性值并不会累加，例如父子均设置了writing-mode:tb-rl，只会渲染一次，子元素并不会2次“旋转”。&lt;/li&gt;
-	&lt;li&gt; IE浏览器下，一个自身具有布局的元素（不是纯文本之类元素）如果writing-mode属性值和父元素不同，当子元素的布局流变化的时候，其父元素坐标系统的可用空间会被充分利用。左边文字太过术语，大家可能不懂，我解释下就是，IE浏览器下，当布局元素从水平变成垂直的时候（举个例子），你就想象为元素在垂直方向是100%自适应父元素高度的。所以，IE浏览器下(不包括IE13+)，元素vertical流的时候会发现高度高的吓人，布局和其他现代浏览器不一样，就是这个原因。&lt;/li&gt;
-	&lt;li&gt; Chrome浏览器下目前还需要-webkit-私有前缀，Chrome浏览器从48开始无需私有前缀，虽然Chrome和Opera认识tb-rl等老的IE属性值，但是，仅仅是认识而已，根本不鸟，没有任何效果，聋子的耳朵——摆设！&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;writing-mode-2&quot;&gt;需要关注的writing-mode属性值&lt;/h4&gt;
-
-&lt;p&gt;从着眼于直接开发的角度而言，虽然IE支持多达11个私有的属性值，但是，我们需要关注的，也就那么几个，那究竟是哪几个呢？&lt;/p&gt;
-
-&lt;p&gt;如果你的项目需要兼容IE7，则只有关注这两个值就可以了：初始值lr-tb和tb-rl，对应于CSS3规范中的horizontal-tb和vertical-rl！其他9个属性值就让它们去过家家好了。&lt;/p&gt;
-
-&lt;p&gt;如果你的项目只需要兼容IE8+，恭喜你，你可以和CSS3规范属性完全对应上了，而且IE8下的writing-mode要比IE7强大的多。我们需要关注：初始值lr-tb, tb-rl以及tb-lr，分别对应于CSS3中的horizontal-tb, vertical-rl以及vertical-lr。&lt;/p&gt;
-
-&lt;p&gt;看上去复杂的属性是不是变得很简单了，重新整一个实战版：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;lr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;lr&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;IE8&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;horizontal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vertical&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vertical&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;lr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;对，大家只要记住上面几个就可以了，enough! 因为所谓的垂直排版，实际web开发是很少很少遇到的。&lt;/p&gt;
-
-&lt;p&gt;虽然writing-mode创造的本意是文本布局，但是，其带来的文档流向的改变，不仅改变了我们多年来正常的CSS认知，同时可以巧妙实现很多意想不到的需求和效果。&lt;/p&gt;
-
-&lt;h3 id=&quot;writing-mode-3&quot;&gt;二. writing-mode不经意改变了哪些规则？&lt;/h3&gt;
-
-&lt;p&gt;writing-mode将页面默认的水平流改成了垂直流，颠覆了很多我们以往的认知，基于原本水平方向才适用的规则全部都可以在垂直方向适用！&lt;/p&gt;
-
-&lt;h4 id=&quot;margin&quot;&gt;1. 水平方向也能margin重叠&lt;/h4&gt;
-
-&lt;p&gt;W3C文档margin重叠之一：&lt;/p&gt;
-
-&lt;p&gt;The bottom margin of an in-flow block-level element always collapses with the top margin of its next in-flow block-level sibling, unless that sibling has clearance.&lt;/p&gt;
-
-&lt;p&gt;清清楚楚写的bottom margin和top margin会重叠；然而，这是CSS2文档中的描述，在CSS3的世界中，由于writing-mode的存在，这种说法就不严谨了，应该是对立流方向的margin值会发生重叠。换句话说，如果元素是默认的水平流，则垂直margin会重叠；如果元素是垂直流，则水平margin会重叠。&lt;/p&gt;
-
-&lt;h4 id=&quot;marginauto&quot;&gt;2. 可以使用margin:auto实现垂直居中&lt;/h4&gt;
-
-&lt;p&gt;我们应该都是的，传统的web流中，margin设置auto值的时候，只有水平方向才会居中，因为默认width是100%自适应的，auto才有计算值可依，而垂直方向，height没有任何设置的时候高度绝不会自动和父级高度一致，因此，auto没有计算空间，于是无法实现垂直居中。但是，在writing-mode的世界里，纵横规则已经改变，元素的行为表现发生了翻天覆地的变化。&lt;/p&gt;
-
-&lt;p&gt;图片元素margin:auto实现垂直居中&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;display&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;block&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;top&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;margin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;bottom&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;auto&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;普通块状元素只需要写margin-top: auto; margin-bottom: auto;即可&lt;/p&gt;
-
-&lt;h4 id=&quot;text-aligncenter&quot;&gt;3. 可以使用text-align:center实现图片垂直居中&lt;/h4&gt;
-
-&lt;p&gt;前面提过，auto无法实现IE浏览器下的图片垂直居中，如果我们非要让图片垂直居中，可以使用text-align:center,也是可以的&lt;/p&gt;
-
-&lt;p&gt;由于我们直接使用内联特性进行控制的，因此，IE7浏览器也是可以实现text-align:center下的图片垂直居中，但是，根据我在IE11↘IE7下的测试，writing-mode需要写在最后重置下（原生估计不会这样），因此，完整的writing-mode代码为：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;verticle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;webkit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vertical&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;      
-    &lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;vertical&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;writing&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;text-indent&quot;&gt;4. 可以使用text-indent实现文字下沉效果&lt;/h4&gt;
-
-&lt;p&gt;这是真实项目例子，要增加一个按钮按下文字下沉的效果。如果你来实现，你会这么实现呢？行高控制？但默认文本就不居中（对于高度自适应的按钮，line-height下沉为了避免按钮高度变化，默认是不能完全居中的）。padding+height精确控制，又略烦。然而，在writing-mode垂直流下，我们又有了新思路，例如，直接使用text-indent实现垂直方向的控制，没想到吧，无需关心height高度padding间距大小，任何按钮都可以通用，因为text-indent不会影响元素原本的盒布局。 包括IE7在内的浏览器都是支持的(同上最后要*writing-mode覆盖下)都是支持下沉的。&lt;/p&gt;
-
-&lt;p&gt;为什么有如此的实现呢？这要归功于中文，在垂直流排版的时候，中文是不会旋转的，还是直立的，也就是说，虽然我们肉眼看上去文字没什么变化，但是，布局流已经发生了变化，以前类似text-indent/letter-spacing等水平控制属性都作用在垂直方向了。&lt;/p&gt;
-
-&lt;p&gt;按钮文字只有一个就可以实现了，要是按钮文字有多个，怕是就没这么轻松和绝妙了。&lt;/p&gt;
-
-&lt;h4 id=&quot;icon-fonts&quot;&gt;5. 可以实现全兼容的icon fonts图标的旋转效果&lt;/h4&gt;
-
-&lt;p&gt;在老的IE浏览器下，我们要实现小图标的旋转效果是不是很烦？要使用IE的旋转或翻转滤镜(filter)什么的,现在我们有了writing-mode，我们就不要这么烦心了。&lt;/p&gt;
-
-&lt;p&gt;前面可能也注意到了，当writing-mode把文档变成垂直流的时候，我们的英文和数字符号是会“躺着”显示，也就是天然90°旋转了。此时，我们不妨脑洞大开一下，假如我们使用icon fonts技术让这些字符直接映射某个小图标，那岂不是轻松实现小图标旋转了，关键在于，就算是千年杀的IE6,IE7浏览器也是支持的啊，这要比滤镜什么的简单多了！&lt;/p&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;6. 充分利用高度的高度自适应布局&lt;/h4&gt;
-
-&lt;p&gt;往下的7,8,9,10一起都略了吧~~ 总之，放开自己的大脑，理论上讲，有了writing-mode，我们能够做的事情比以前多了50%，就怕你想不到，不怕做不到。&lt;/p&gt;
-
-&lt;h3 id=&quot;writing-modedirection&quot;&gt;三、writing-mode和direction的关系&lt;/h3&gt;
-
-&lt;p&gt;CSS direction属性，也是个好东西，具体参见“&lt;a href=&quot;http://www.zhangxinxu.com/wordpress/2016/03/css-direction-introduction-apply/&quot;&gt;CSS direction属性简介与实际应用&lt;/a&gt;”，其可以改变文字的走向，那他和writing-mode是个什么关系呢？&lt;/p&gt;
-
-&lt;p&gt;writing-mode, direction, unicode-bidi(MDN文档)是CSS世界中3大可以改变文本布局流向的属性。其中direction, unicode-bidi属于近亲，经常在一起使用，也是唯一两个不受CSS3 all属性影响的CSS属性，基本上就是和内联元素一起使用使用，且据说貌似为阿拉伯文字设计。&lt;/p&gt;
-
-&lt;p&gt;乍一看，writing-mode似乎包含了direction, unicode-bidi某些功能和行为，例如vertical-rl的rl和direction的rtl值有相似之处，都是从右往左。然而，实际上，两者是没有交集的。因为vertical-rl此时的文档流为垂直方向，rl表示水平方向，此时再设置direction:rtl，实际上值rtl改变的是垂直方向的内联元素的文本方向，一横一纵，没有交集。而且writing-mode可以对块状元素产生影响，直接改变了CSS世界的纵横规则，要比direction强大和鬼畜的多。且据说貌似为东亚文字设计。&lt;/p&gt;
-
-&lt;p&gt;然而，CSS的奇妙就在于，某些特性当初可能就是问了某些图文排版设计，但是，我们可以利用其带来的特性，发挥自己的创造力，实现其他很多意想不到的效果。所以，上面出现的三剑客都是非常好的资源。&lt;/p&gt;
-
-&lt;h4 id=&quot;writing-mode-start&quot;&gt;四、writing-mode和*-start属性的流机制&lt;/h4&gt;
-
-&lt;p&gt;CSS3中出现了诸多&lt;em&gt;-start/&lt;/em&gt;-end属性（亦称为CSS逻辑属性），例如：margin-start/margin-end, border-start/border-end, padding-start/padding-end, 以及text-align:start/text-align:end声明。&lt;/p&gt;
-
-&lt;p&gt;下面问题来了，为什么会蹦出这么多&lt;em&gt;-start/&lt;/em&gt;-end鬼？&lt;/p&gt;
-
-&lt;p&gt;那是因为现代浏览器加强了对流的支持，包括老江湖direction，以及最近年月跟进的writing-mode。&lt;/p&gt;
-
-&lt;p&gt;在很久以前，我们的认知里，网页布局就一种流向，就是从左往右，从上往下，因此，我们使用margin-left/margin-right没有任何问题。但是，如果我们流是可以变化的，例如，一张图片距离左边缘20像素，我们希望其文档流是从右往左，同时距离右侧是20像素，怎么办？&lt;/p&gt;
-
-&lt;p&gt;此时，margin-left:20px在图片direction变化后，就无效了；但是，margin-start就不会有此问题，所谓start, 指的是文档流开始的方向，换句话说，如果页面是默认的文档流，则margin-start等同于margin-left，如果是水平从右往左文档流，则margin-start等同于margin-right。margin-end也是类似的。&lt;/p&gt;
-
-&lt;p&gt;webkit内核的浏览器还支持&lt;em&gt;-before和&lt;/em&gt;-end，默认流下的margin-before近似于margin-top，margin-after近似于margin-bottom，然而，规范貌似没提及，FireFox也没支持，&lt;em&gt;-before和&lt;/em&gt;-after出场的机会并不多，为什么呢？因为实际上，配合writing-mode，&lt;em&gt;-start/&lt;/em&gt;-end已经可以满足我们对逻辑位置的需求了，水平和垂直都可以控制，对立方向适用老的&lt;em&gt;-top/&lt;/em&gt;-bottom.&lt;/p&gt;
-
-&lt;p&gt;例如，我们设置writing-mode值为vertical-rl，此时margin-start等同于margin-top，如果此时margin-start，margin-top同时存在，会遵循权重和后来居上原则进行相互的覆盖。&lt;/p&gt;
-
-&lt;p&gt;可以看到，场景不同，margin-start的作用也不能，能上能下，能左能右简直在世百变星君。&lt;/p&gt;
-
-&lt;p&gt;关于&lt;em&gt;-start/&lt;/em&gt;-end以后有机会会具体展开论述，这里就先点到为止，大家估计目前也不会在实际项目中使用。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 14 Jul 2017 08:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/07/14/writing-mode.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/07/14/writing-mode.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>Redux 6 - 入门：生态系统（Ecosystem）&amp;&amp; Redux 7 - 入门：示例（Examples）</title>
-        <description>&lt;p&gt;&lt;a href=&quot;http://testudy.cc/tech/2017/03/03/redux-6-introduction-Ecosystem.html&quot;&gt;Redux 6 - 入门：生态系统（Ecosystem）&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;redux-7---examples&quot;&gt;1. Redux 7 - 入门：示例（Examples）&lt;/h3&gt;
-
-&lt;h4 id=&quot;counter-vanilla&quot;&gt;Counter Vanilla&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/blob/master/examples/counter-vanilla/index.html&quot;&gt;Counter Vanilla&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;counter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;vanilla&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;html&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;该示例运行不依赖编译系统，也不依赖视图框架，使用ES5语法直接演示原生Redux API的使用方法。&lt;/p&gt;
-
-&lt;h4 id=&quot;counter&quot;&gt;Counter&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/counter&quot;&gt;Counter&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;counter&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是一个最简单的Redux和React一起使用的示例。简单起见，当store发生变化时，会手动重新渲染React组件。&lt;/p&gt;
-
-&lt;p&gt;该示例包含相应的完整测试用例。&lt;/p&gt;
-
-&lt;h4 id=&quot;todos&quot;&gt;Todos&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/todos&quot;&gt;Todos&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;todos&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是更好的理解如何在Redux中进行组件状态更新的示例。它演示了Reducer如何集成在一起处理响应，以及如何使用React Redux来生成容器组件。&lt;/p&gt;
-
-&lt;p&gt;该示例包含相应的完整测试用例。&lt;/p&gt;
-
-&lt;h4 id=&quot;todos-with-undo&quot;&gt;Todos with Undo&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/todos-with-undo&quot;&gt;Todos with Undo&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;todos&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;undo&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;该示例是上一个示例的变体，两者基本上相同，但是这个示例演示了如何使用Redux Undo在仅仅添加几行代码的情况下包装Reducer为程序添加Undo/Redo功能。&lt;/p&gt;
-
-&lt;h4 id=&quot;todomvc&quot;&gt;TodoMVC&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/todomvc&quot;&gt;TodoMVC&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;todomvc&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是经典的TodoMVC示例翻版。放在这里仅仅是为了做比较，但是涵盖了和Todos示例完全相同的功能点。&lt;/p&gt;
-
-&lt;p&gt;该示例包含相应的完整测试用例。&lt;/p&gt;
-
-&lt;h4 id=&quot;shopping-cart&quot;&gt;Shopping Cart&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/shopping-cart&quot;&gt;Shopping Cart&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shopping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cart&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这个示例演示了在不断膨胀的应用中通常所使用Redux的模式。特别是，它展示了在标准模式中如何根据ID存储实例，如何在不同的粒度上组织Selector，以及如何定义Selector获取需要的State。并同时演示了Redux Logger中间件记录日志和通过Redux Thunk中间件派发行为。&lt;/p&gt;
-
-&lt;h4 id=&quot;tree-view&quot;&gt;Tree View&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/tree-view&quot;&gt;Tree View&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;tree&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;view&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这个示例演示了如何渲染一个树形视图，以及如何将其状态组织成一个规范化的形式以便于在Reducer中进行更新。最后，通过在容器组件中对树节点的订阅实现了一个较好的渲染性能。&lt;/p&gt;
-
-&lt;p&gt;该示例包含相应的完整测试用例。&lt;/p&gt;
-
-&lt;h4 id=&quot;async&quot;&gt;Async&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/async&quot;&gt;Async&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;async&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;该示例包含异步API读取，获取用户输入，加载指示器，缓存响应，以及清除缓存。通过使用Redux Thunk来封装异步操作。&lt;/p&gt;
-
-&lt;h4 id=&quot;universal&quot;&gt;Universal&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/universal&quot;&gt;Universal&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;universal&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是一个基础的基于Redux和React进行的服务器端渲染示例。展示了如何在服务器端准备初始化数据，以及如何将这个状态传递到客户端以便于客户端从同一个状态启动。&lt;/p&gt;
-
-&lt;h4 id=&quot;real-world&quot;&gt;Real World&lt;/h4&gt;
-
-&lt;p&gt;运行&lt;a href=&quot;https://github.com/reactjs/redux/tree/master/examples/real-world&quot;&gt;Real World&lt;/a&gt;示例：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;git&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;clone&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;https&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//github.com/reactjs/redux.git&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;redux&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;examples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;real&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;world&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;http&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//localhost:3000/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是目前最高级的经过精心设计的示例。其涵盖了响应实体的规范化缓存，实现API调用中间件，部分数据加载渲染，分页，响应缓存，错误信息展示，以及路由的使用。另外，这个示例中使用了Redux DevTools。&lt;/p&gt;
-
-&lt;h4 id=&quot;more-examples&quot;&gt;更多示例（More Examples）&lt;/h4&gt;
-
-&lt;p&gt;在&lt;a href=&quot;https://github.com/xgrommx/awesome-redux&quot;&gt;Awesome Redux&lt;/a&gt;查看更多示例。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 07 Jul 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/07/07/redux6-7.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/07/07/redux6-7.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>Redux 5 - 入门：现有技术（Prior Art）</title>
-        <description>&lt;p&gt;Redux类似于一个混血儿，和一些现有模式和技术比较相似，但也存在一些重要的不同。下面将分析一下Redux和这些技术之间的相同点和不同点。&lt;/p&gt;
-
-&lt;h3 id=&quot;flux&quot;&gt;Flux&lt;/h3&gt;
-
-&lt;p&gt;Redux与Flux相同点：&lt;/p&gt;
-
-&lt;ul&gt;
-    &lt;li&gt; Redux的灵感来源于Flux的一些重要特性。跟Flux一样，Redux规定在一个确定的应用层中更新数据模型（Flux中的“Stores”对应于Redux中的“Reducer”），以避免在代码中直接修改数据，同时两者都会用一个简单的“Action”对象描述每一个修改和变化。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Redux与Flux相同点：&lt;/p&gt;
-
-&lt;ul&gt;
-    &lt;li&gt; 跟Flux不同的是，Redux中不存在Dispatcher的概念。这是因为Redux中使用纯函数代替了事件派发对象，纯函数易于组合，并且不依赖额外的对象管理。从不同的角度理解Flux，既可以看做两者的差异，也可以看做不同的实现方式。Flux通常被描述为(state, action) =&amp;gt; state。从这个意义上说，Redux确实是Flux的一种实现，只是其采用了更简单的纯函数。&lt;/li&gt;
-    &lt;li&gt; 于Flux另一个显著的不同是Redux假设你从不更改数据。你只需使用简单对象或者数据来存储状态就好，但坚决反对在Reducer内部对其进行修改。你应该总是返回一个新的对象，使用对象展开运算符，或者Immutable的库可以简化对象的操作。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;虽然从技术的角度可以编写一个非纯函数型的Reducer以提高数据修改的性能，但确实不鼓励这样做。如时间旅行，记录/重放，或热加载之类的开发功能将被破坏。此外在大多数真实应用中修改数据并不能带来性能上的提升，如Om所示，即使你不进行对象的分配，依然可以通过避免昂贵的重绘和重算来取得性能优势，因为在纯函数型的Reducer中可以清晰的知道什么发生了变化。&lt;/p&gt;
-
-&lt;h3 id=&quot;elm&quot;&gt;Elm&lt;/h3&gt;
-
-&lt;p&gt;Elm是Evan Czaplicki受Haskell启发而创建的一套函数式编程语言。强制“模型、视图、更新”架构，其中的更新部分的函数签名是：(action, state) =&amp;gt; state。Redux中的Reducer和Elm中的“Updater”起相同的作用。&lt;/p&gt;
-
-&lt;p&gt;跟Redux不同的是，Elm是一门语言，所以它可以从强制纯函数，静态类型，开箱不可变，和模式匹配（使用case表达式）等获得很多优势。即使你不打算将Elm用在工作中，学习一下Elm的架构思想总是好的，并将这种思想用在工作中。这里有一个有趣的JavaScript库演示了类似想法的实现。我们将其看做Redux灵感的来源。可以通过使用Flow之类的类型检查器获得接近于Elm中的静态类型。&lt;/p&gt;
-
-&lt;h3 id=&quot;immutable&quot;&gt;Immutable&lt;/h3&gt;
-
-&lt;p&gt;Immutable是一个实现了不可变数据结构的JavaScript库。拥有高性能和一组易于使用的惯用JavaScript API。&lt;/p&gt;
-
-&lt;p&gt;Immutable以及相似的库于Redux不冲突，可以自由的将他们组合在一起！&lt;/p&gt;
-
-&lt;p&gt;Redux不关心状态如何存储，可以用一个简单对象来实现，也可以使用一个不可变对象来实现，或者其他方式实现。。你可能需要为通用App实现一套（反）序列化机制，并将服务器端的数据混合进客户端，但无论无何，你可以使用任意的只要支持不可变数据存储的库。比如，不能使用Backbone作为Redux状态，因为Backbone的Model是可变的。&lt;/p&gt;
-
-&lt;p&gt;需要注意的是，即使所选用的不可变库支持游标，在Redux应用中也禁止使用该特性。整个状态树永远是只读状态，应该使用Redux进行状态的更新，并在其中订阅相关的更新。因此，在Redux中通过游标写入没有任何意义。如果只是通过逐步细化游标在状态树和UI树之间解耦，应该使用选择器代替。选择器是一组Getter方法的组合。reselect是一个强大并且实现简洁的选择器组合库。&lt;/p&gt;
-
-&lt;h3 id=&quot;baobab&quot;&gt;Baobab&lt;/h3&gt;
-
-&lt;p&gt;Baobab是另一个流行的JavaScript不可变数据类型库，拥有一组更新普通JavaScript对象的API。但将其和Redux一起使用，几乎没有任何益处。&lt;/p&gt;
-
-&lt;p&gt;Baobab提供的大多数功能是数据游标相关的数据更新，但是Redux强制只能通过Action来更新数据。所以，这是针对同一个问题的不同解决思路，两者之间没有互补的关系。&lt;/p&gt;
-
-&lt;p&gt;跟Immutable不同，Baobab底层并没有一个特殊高效的数据结构实现，所以将其和Redux一起使用不会获得任何好处。在这种情况下，用一个简单的JavaScript对象更简单一些。&lt;/p&gt;
-
-&lt;h3 id=&quot;rxjs&quot;&gt;RxJS&lt;/h3&gt;
-
-&lt;p&gt;RxJS是一个非常优秀的用来管理App中的复杂异步数据的实现方式。实际上，这是一个致力于创建可观察人机交互模型的库。&lt;/p&gt;
-
-&lt;p&gt;Redux和RxJS一起使用是否会取得良好的效果吗？当然是。这两者在一起工作非常友好。比如，使用RxJS可以很方便的将Redux store封装为一个可观察对象：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;toObservable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;subscribe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;unsubscribe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;subscribe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;unsubscribe&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;类似的，也可以将不同的异步流整合到Action中，在将其store.dispatch()。&lt;/p&gt;
-
-&lt;p&gt;有一个问题是：假如你正在使用Rx，那么你是否还有必要使用Redux？也许不，用Rx重新实现Redux并不是一件难事。有人说用两行Rx代码.scan()即可实现，这完全可能。&lt;/p&gt;
-
-&lt;p&gt;对于Redux，如果你心中还有疑虑，建议通读其源码（这里不会进行更深入的讲解），和其系统内代码（比如Redux开发工具）。如果你不关心这么多，只是想获取灵活的数据，可以看看Cycle，或者将其和Redux一起使用。接下来一起看看怎么用Redux。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 30 Jun 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/06/30/redux5.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/06/30/redux5.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>Redux 4 - 入门：三大原则（Three Principles）</title>
-        <description>&lt;p&gt;Redux可以用3个基本原则来描述：&lt;/p&gt;
-
-&lt;h3 id=&quot;single-source-of-truth&quot;&gt;单一数据源原则（Single source of truth）&lt;/h3&gt;
-
-&lt;p&gt;应用的整个状态存储在单例store的对象树中。&lt;/p&gt;
-
-&lt;p&gt;在此基础上非常便于创建通用应用，不需要经过特殊的处理，直接将服务端的状态序列化后混合到客户端状态中即可。单例的状态树使得程序理解和调试都变得非常简单，可以在开发过程中针对某个时刻的状态反复调试，促进开发的节奏。将一个应用中所有的状态都存储在一个单例树上之后，一些在传统开发模式中难以实现的功能——比如回退/前进——突然变得简单起来。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
-
-&lt;span class=&quot;cm&quot;&gt;/* Prints
-{
-  visibilityFilter: &#39;SHOW_ALL&#39;,
-  todos: [
-    {
-      text: &#39;Consider using Redux&#39;,
-      completed: true,
-    },
-    {
-      text: &#39;Keep all state in a single tree&#39;,
-      completed: false
-    }
-  ]
-}
-*/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;state-is-read-only&quot;&gt;状态只读（State is read-only）&lt;/h3&gt;
-
-&lt;p&gt;改变状态树的唯一方式是通过派发action——一个用来描述发生情况的对象&lt;/p&gt;
-
-&lt;p&gt;这确保了无论是用户输入还是网络响应等交互都不能直接修改应用状态。只能通过明确的传递一个Action来表达状态修改的意图。并且所有状态修改的操作均严格按照发生的顺序集中处理，不存在其他遗漏的情况。Action就是普通对象，可以用来记录日志，序列化，存储，也可以用来重现测试或调试Bug。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;COMPLETE_TODO&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SET_VISIBILITY_FILTER&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_COMPLETED&#39;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;changes-are-made-with-pure-functions&quot;&gt;纯函数更改（Changes are made with pure functions）&lt;/h3&gt;
-
-&lt;p&gt;被称作Reducer的纯函数专门用来响应Action修改状态树。&lt;/p&gt;
-
-&lt;p&gt;Reducer是纯函数，接收当前状态和一个Action，并返回修改后的状态。切记是返回一个全新的状态对象，千万避免修改当前状态。创建应用可以从一个单独的Reducer开始，随着应用规模的增长，将其拆分为更小的Reducer用来分别处理状态树的各个部分。Reducer只是函数而已，可以在代码中根据需求控制其调用，传递额外的数据，也可以针对分页之类的常见任务抽象出可重用的Reducer。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;visibilityFilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_ALL&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SET_VISIBILITY_FILTER&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;filter&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;ADD_TODO&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-          &lt;span class=&quot;na&quot;&gt;completed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;COMPLETE_TODO&#39;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;todo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;assign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({},&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;na&quot;&gt;completed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
-          &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todo&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;state&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;combineReducers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createStore&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;redux&#39;&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reducer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;combineReducers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;visibilityFilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;todos&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;store&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createStore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reducer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;至此，你应该知道Redux是什么了。&lt;/p&gt;
-</description>
-        <pubDate>Thu, 22 Jun 2017 12:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/06/22/redux4.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/06/22/redux4.html</guid>
         
         
         <category>front</category>

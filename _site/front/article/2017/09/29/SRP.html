@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>单一职责原则</title>
+  <meta name="description" content="单一职责原则，就一个类而言，应该只专注于做一件事和仅有一个引起它变化的原因。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/09/29/SRP.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/09/29/SRP.html">单一职责原则</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">单一职责原则</h1>
+    <p class="post-meta"><time datetime="2017-09-29T10:49:42+08:00" itemprop="datePublished">Sep 29, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>SRP简介（SRP–Single-Responsibility Principle）：单一职责原则，就一个类而言，应该只专注于做一件事和仅有一个引起它变化的原因。所谓职责，我们可以理解他为功能，就是设计的这个类功能应该只有一个，而不是两个或更多。也可以理解为引用变化的原因，当你发现有两个变化会要求我们修改这个类，那么你就要考虑撤分这个类了。因为职责是变化的一个轴线，当需求变化时，该变化会反映类的职责的变化。</p>
+
+<h4 id="srp">使用SRP注意点：</h4>
+
+<ul>
+    <li> 一个合理的类，应该仅有一个引起它变化的原因，即单一职责；</li>
+    <li> 在没有变化征兆的情况下应用SRP或其他原则是不明智的；</li> 
+    <li> 在需求实际发生变化时就应该应用SRP等原则来重构代码；</li> 
+    <li> 使用测试驱动开发会迫使我们在设计出现臭味之前分离不合理代码；</li> 
+    <li> 如果测试不能迫使职责分离，僵化性和脆弱性的臭味会变得很强烈，那就应该用Facade或Proxy模式对代码重构。</li> 
+</ul>
+
+<h3 id="srp-1">设计模式中的SRP原则</h3>
+
+<h4 id="section">代理模式</h4>
+
+<p>下面看下图片预加载的例子。通过增加虚拟代理的方式，把预加载图片的职责放在代理对象中，而本体仅仅负责往页面中添加img标签，这也是最原始的职责。</p>
+
+<p>myImage负责往页面中添加img标签</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">myImage</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="kd">var</span> <span class="nx">imgNode</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">'img'</span> <span class="p">);</span> 
+    <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">imgNode</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">setSrc</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">src</span> <span class="p">){</span>
+            <span class="nx">imgNode</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">src</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span> 
+<span class="p">})();</span></code></pre></figure>
+
+<p>proxyImage负责预加载图 ，并在预加载完成之后把请求交给本体 myImage</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">proxyImage</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">(){</span> 
+    <span class="kd">var</span> <span class="nx">img</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">;</span> 
+    <span class="nx">img</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">myImage</span><span class="p">.</span><span class="nx">setSrc</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">src</span><span class="p">);</span> 
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="na">setSrc</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">src</span> <span class="p">){</span>
+            <span class="nx">myImage</span><span class="p">.</span><span class="nx">setSrc</span><span class="p">(</span> <span class="s1">'file:// /C:/Users/svenzeng/Desktop/loading.gif'</span> <span class="p">);</span>
+            <span class="nx">img</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">src</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span> 
+<span class="p">})();</span>
+
+<span class="nx">proxyImage</span><span class="p">.</span><span class="nx">setSrc</span><span class="p">(</span> <span class="s1">'http:// imgcache.qq.com/music/photo/000GGDys0yA0Nk.jpg'</span> <span class="p">);</span></code></pre></figure>
+
+<p>把添加img标签的功能和预加载图片的职责分开放到两个对象中，这两个对象各自都只有一个被修改的动机。在它们各自发生改变的时候，也不会影响另外的对象。</p>
+
+<h4 id="section-1">迭代器模式</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">appendDiv</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> 
+	<span class="k">for</span><span class="p">(</span><span class="nx">vari</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="nx">l</span><span class="o">=</span><span class="nx">data</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+ 		<span class="kd">var</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">'div'</span> <span class="p">);</span> 
+ 		<span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span> <span class="nx">i</span> <span class="p">];</span> 
+ 		<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">div</span> <span class="p">);</span>
+	<span class="p">}</span> 
+<span class="p">};</span>
+<span class="nx">appendDiv</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]);</span></code></pre></figure>
+
+<p>这段代码一般用于ajax请求之后，在回调函数中便利ajax请求返回的数据，然后在页面中渲染节点。</p>
+
+<p>appendDiv函数本来只是负责渲染数据，但是这里它承担了遍历聚合对象data的职责。如果data数据格式从array变成了object，那遍历data的代码就会出现问题，必须改成for(var i in data)的方式,这时候必须去修改appendDiv里的代码了。</p>
+
+<p>我们有必要把便利data的职责提取出来，这正式迭代器模式的意义，迭代器模式提供了一种方法来访问聚合对象，而不用暴露这个对象的内部表示。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">each</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span> 
+	<span class="kd">var</span> <span class="nx">value</span><span class="p">,</span>
+	<span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+	<span class="nx">length</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+	<span class="nx">isArray</span> <span class="o">=</span> <span class="nx">isArraylike</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">isArray</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//迭代类数组       </span>
+		<span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// isArraylike函数未实现，可以翻阅jQuery源代码    </span>
+			<span class="nx">callback</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span> 
+		<span class="p">}</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span> <span class="c1">//迭代object对象  </span>
+			<span class="nx">value</span> <span class="o">=</span> <span class="nx">callback</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">appendDiv</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span> 
+	<span class="nx">each</span><span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">'div'</span> <span class="p">);</span> 
+		<span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">n</span><span class="p">;</span> 
+		<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">div</span> <span class="p">);</span>
+	<span class="p">});</span> 
+<span class="p">};</span>
+
+<span class="nx">appendDiv</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]);</span> 
+<span class="nx">appendDiv</span><span class="p">({</span><span class="na">a</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="na">b</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="na">c</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="na">d</span><span class="p">:</span><span class="mi">4</span><span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<h4 id="section-2">单例模式</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">createLoginLayer</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
+	<span class="kd">var</span> <span class="nx">div</span><span class="p">;</span>
+	<span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> 
+		<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">div</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span> 
+			<span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">'我是登录浮窗'</span><span class="p">;</span> 
+			<span class="nx">div</span><span class="p">.</span><span class="nx">style</span><span class="p">.</span><span class="nx">display</span> <span class="o">=</span> <span class="s1">'none'</span><span class="p">;</span> 
+			<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">div</span> <span class="p">);</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">div</span><span class="p">;</span> 
+	<span class="p">}</span>
+<span class="p">})();</span></code></pre></figure>
+
+<p>现在我们把管理单例的职责和创建登录浮窗的职责分别封装在两个方法里，这两个方法可以独立变化而不互相影响，当它它们连接在一起的时候，就完成了创建唯一登录浮窗的功能：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">getSingle</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">fn</span><span class="p">)</span> <span class="p">{</span> <span class="c1">//获取单例   </span>
+	<span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+	<span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">result</span> <span class="o">||</span> <span class="p">(</span><span class="nx">result</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+	<span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">createLoginLayer</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="c1">//创建登录浮窗       </span>
+	<span class="kd">var</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s1">'div'</span> <span class="p">);</span> 
+	<span class="nx">div</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="s1">'我是登录浮窗'</span><span class="p">;</span> 
+	<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">div</span> <span class="p">);</span>
+	<span class="k">return</span> <span class="nx">div</span><span class="p">;</span> 
+<span class="p">};</span>
+
+<span class="kd">var</span> <span class="nx">createSingleLoginLayer</span> <span class="o">=</span> <span class="nx">getSingle</span><span class="p">(</span><span class="nx">createLoginLayer</span><span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">loginLayer1</span> <span class="o">=</span> <span class="nx">createSingleLoginLayer</span><span class="p">();</span> 
+<span class="kd">var</span> <span class="nx">loginLayer2</span> <span class="o">=</span> <span class="nx">createSingleLoginLayer</span><span class="p">();</span>
+
+<span class="nx">alert</span> <span class="p">(</span> <span class="nx">loginLayer1</span> <span class="o">===</span> <span class="nx">loginLayer2</span> <span class="p">);</span> <span class="c1">//输出：true</span></code></pre></figure>
+
+<h4 id="section-3">装饰者模式</h4>
+
+<p>使用装饰者模式的时候，我们通常让类或者对象一开始只具有一些基础的职责，更多的职责在代码运行时被动态装饰到对象上面。装饰者模式可以为对象动态添加职责，从另一个角度来看， 这也是分离职责的一种方式。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span> 
+	<span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+		<span class="o">&lt;</span><span class="nx">button</span> <span class="nx">tag</span><span class="o">=</span><span class="s2">"login"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"button"</span><span class="o">&gt;</span><span class="err">点击打开登录浮层</span><span class="o">&lt;</span><span class="sr">/button&gt;</span><span class="err"> 
+</span>	<span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
+</span>	<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+		<span class="nb">Function</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">after</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">afterfn</span><span class="p">)</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">__self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+			<span class="k">return</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+				<span class="kd">var</span> <span class="nx">ret</span> <span class="o">=</span> <span class="nx">__self</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span> 
+				<span class="nx">afterfn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+				<span class="k">return</span> <span class="nx">ret</span><span class="p">;</span>
+			<span class="p">}</span> 
+		<span class="p">};</span>
+		<span class="kd">var</span> <span class="nx">showLogin</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'打开登录浮层'</span><span class="p">);</span>
+		<span class="p">};</span>
+
+		<span class="kd">var</span> <span class="nx">log</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'上报标签为：'</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span><span class="s1">'tag'</span><span class="p">));</span>
+		<span class="p">};</span>
+
+		<span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'button'</span><span class="p">).</span><span class="nx">onclick</span> <span class="o">=</span> <span class="nx">showLogin</span><span class="p">.</span><span class="nx">after</span><span class="p">(</span><span class="nx">log</span><span class="p">);</span>
+		<span class="c1">//打开登录浮层之后上报数据</span>
+	<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/html&gt; </span></code></pre></figure>
+
+<h3 id="section-4">何时应该分离职责</h3>
+
+<p>SRP原则是所有原则中最简单也是最难运用的原则之一。</p>
+
+<p>要明确的是并不是所有的职责都应该一一分离。</p>
+
+<p>一方面，如果随着需求的变化，有两个职责总是同时变化，那就不必分离他们。比如ajax请求的时候，创建xhr对象和发送xhr请求几乎总是在一起的，那么就没必要分开。</p>
+
+<p>另一方面，职责的变化轴线仅当它们确定会发生变化时才具有意义，即使两个职责已经被耦合在一起，但它们还没有发生改变的征兆，那么也许没有必要主动分离它们，在代码需要重构的时候再分离也不迟。</p>
+
+<h3 id="srp-2">SRP原则的优缺点</h3>
+
+<p>SRP原则的优点是降低了单个类或者对象的复杂度，按照职责把对象分解成更小的粒度，这有助于代码的复用，也有利于进行单元测试。当一个职责需要变更的时候，不会影响到其他的职责。</p>
+
+<p>SRP原则的缺点，最明显的是会增加编写代码的复杂度。当我们按照职责把对象分解成更小的粒度后，实际上也增大了这些对象之间相互联系的难度。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/09/29/SRP" data-title="单一职责原则" data-url="/front/article/2017/09/29/SRP.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
