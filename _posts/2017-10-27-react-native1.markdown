@@ -2,7 +2,7 @@
 layout: post
 title:  "React Native 搭建开发环境"
 date:   2017-10-27 10:49:42 +0800
-description: " "
+description: "React Native 搭建开发环境"
 categories: front article
 ---
 
