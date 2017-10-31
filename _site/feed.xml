@@ -6,9 +6,157 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 27 Oct 2017 11:35:53 +0800</pubDate>
-    <lastBuildDate>Fri, 27 Oct 2017 11:35:53 +0800</lastBuildDate>
+    <pubDate>Tue, 31 Oct 2017 15:37:14 +0800</pubDate>
+    <lastBuildDate>Tue, 31 Oct 2017 15:37:14 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>React Native Text组件</title>
+        <description>&lt;p&gt;Text元素在布局上不同于其它组件：在Text内部的元素不再使用flexbox布局，而是采用文本布局。这意味着Text内部的元素不再是一个个矩形，而可能会在行末进行折叠。&lt;/p&gt;
+
+&lt;p&gt;基于这个特性，开发者可以只设定Text组件样式的宽度，而不设置它的高度，Text组件的高度将由组件的宽度、需要显示的字符串的长度、字体大小共同动态确定。&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;属性&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-1&quot;&gt;通用样式键设置&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;fontFamily&lt;/li&gt;
+    &lt;li&gt;fontStyle&lt;/li&gt;
+    &lt;li&gt;fontSize&lt;/li&gt;
+    &lt;li&gt;fontWeight&lt;/li&gt;
+    &lt;li&gt;textAlign&lt;/li&gt;
+    &lt;li&gt;textDecorationLine&lt;/li&gt;
+    &lt;li&gt;lineHeight&lt;/li&gt;
+    &lt;li&gt;numberOfLines&lt;/li&gt;
+    &lt;li&gt;onLongPress&lt;/li&gt;
+    &lt;li&gt;Selectable&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;三个与阴影有关的样式&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;textShadowOffset&lt;/li&gt;
+    &lt;li&gt;textShadowRadius&lt;/li&gt;
+    &lt;li&gt;textShadowColor&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;ios-&quot;&gt;ios 平台独有样式键设置&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;fontVariant&lt;/li&gt;
+    &lt;li&gt;letterSpacing&lt;/li&gt;
+    &lt;li&gt;writingDirection&lt;/li&gt;
+    &lt;li&gt;textDecorationStyle&lt;/li&gt;
+    &lt;li&gt;textDecorationColor&lt;/li&gt;
+    &lt;li&gt;adjustsFontSizeToFit&lt;/li&gt;
+    &lt;li&gt;allowFontScaling&lt;/li&gt;
+    &lt;li&gt;minimumFontScale&lt;/li&gt;
+    &lt;li&gt;suppressHighlighting&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;android-&quot;&gt;Android 平台独有样式键设置&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;includeFontPadding&lt;/li&gt;
+    &lt;li&gt;selectionColor&lt;/li&gt;
+    &lt;li&gt;textAlignVertical&lt;/li&gt;
+    &lt;li&gt;textBreakStrategy&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;cllipsizeMode时字符串类型属性。它的取值为：head,middle,tail,clip.它决定了当Text组件无法全部显示需要显示的字符串时，如何用省略号进行修饰。&lt;/p&gt;
+
+&lt;p&gt;需要注意的是，ellipsizeMode属性需要与numberOfLines属性配合使用，numberOfLines属性值被赋予1，但开发者可以视需要赋给它任意正整数。&lt;/p&gt;
+
+&lt;p&gt;依照官方文档，ellipsizeMode是一个跨平台属性。但截止RN0.40,只有ios平台支持了前三种属性。android平台，所有取值效果都与clip属性相同。&lt;/p&gt;
+
+&lt;h4 id=&quot;text&quot;&gt;Text组件的嵌套&lt;/h4&gt;
+
+&lt;p&gt;在嵌套的Text组件中，子Text组件将继承它的父Text组件的样式。子Text组件不能覆盖从父Text组件继承而来的样式，只能增加父Text组件没有指定的样式。&lt;/p&gt;
+
+&lt;h4 id=&quot;text-1&quot;&gt;Text居中显示&lt;/h4&gt;
+
+&lt;p&gt;需要在Text组件外套一层view才能设置Text组件的水平垂直居中&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;viewForTextStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;textStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;happy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;StyleSheet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;viewForTextStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;alignItems&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;center&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;justifyContent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;center&#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;textStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;fontSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;在字符串中插入图像&lt;/h4&gt;
+
+&lt;p&gt;在React Native 0.20.0 版本后，开发者可以在Text组件中更方便的插入图像&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;aImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;./1.jpg&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Welcome&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;aImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;style&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imageInTextStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&amp;gt; React Native&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;.
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;styles&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;StyleSheet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;fontSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;textAlign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;center&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;imageInTextStyle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;resizeMode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;cover&#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;text-2&quot;&gt;Text组件在两个平台上的不同表现&lt;/h4&gt;
+
+&lt;h5 id=&quot;fontsizeheight&quot;&gt;只指定fontSize，不指定height&lt;/h5&gt;
+
+&lt;p&gt;在这种情况下，Text组件在两个平台上显示都正常。&lt;/p&gt;
+
+&lt;p&gt;ios: 两个汉字上、下方富余的空间基本相等；&lt;/p&gt;
+
+&lt;p&gt;android: 上方富余空间的高度大概是下方空间的1.5倍。除非字体比较大，否则用户不容易发现。&lt;/p&gt;
+
+&lt;h5 id=&quot;height-fontsize&quot;&gt;只指定height, 不指定fontSize&lt;/h5&gt;
+
+&lt;p&gt;在这种极端情况下，不论height是何值，fontSize的值都是13。&lt;/p&gt;
+
+&lt;h5 id=&quot;fontsize--height&quot;&gt;fontSize 等于 height&lt;/h5&gt;
+
+&lt;p&gt;ios: 字体偏下，下方部分显示不全&lt;/p&gt;
+
+&lt;p&gt;android：字体比ios还偏下，上方留有空间，下方显示不全。&lt;/p&gt;
+
+&lt;p&gt;这种情况下，在Text组件样式中加入 padding: 0 或者 paddingTop: 0 或者 paddingBottom: 0，也不会有任何变化。&lt;/p&gt;
+
+&lt;h5 id=&quot;height--fontsize&quot;&gt;height 大于 fontSize&lt;/h5&gt;
+
+&lt;p&gt;ios: 当height等于fontSize的1.2倍时，显示效果与只指定fontSize，不指定height类似；如果height继续增大，此时Text组件中显示字符的上方空间保持不变，而下方空间会随着height增大而增大。&lt;/p&gt;
+
+&lt;p&gt;android: 当height等于fontSize的1.35倍时，显示效果与只指定fontSize，不指定height类似；如果height继续增大，此时Text组件中显示字符的上方空间保持不变，而下方空间会随着height增大而增大。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;边框在两个平台上的不同表现&lt;/h5&gt;
+
+&lt;p&gt;给Text组件增加border属性，android不显示边框。兼容两端的话，需要在Text组件外套一层view，然后设置相关border属性。&lt;/p&gt;
+</description>
+        <pubDate>Sun, 29 Oct 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/10/29/react-native2-text.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/10/29/react-native2-text.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>React Native 搭建开发环境</title>
@@ -2644,140 +2792,6 @@ npm start&lt;/p&gt;
         <pubDate>Thu, 24 Aug 2017 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2017/08/24/cropperjs.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/24/cropperjs.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>Redux 8 - 基础：Action</title>
-        <description>&lt;p&gt;Action是应用发送到Store中数据的信息载体，也是Store中数据的唯一来源。使用store.dispatch()方法可以将他们发送到Store中。&lt;/p&gt;
-
-&lt;p&gt;下面这个Action示例表示添加一个新的Todo项：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;ADD_TODO&#39;&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Build my first Redux app&#39;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Action只是一个简单的JavaScript对象，其必须包含一个表示正在发生行为类型的type属性。Type属性通常被定义为一个字符串常量。当程序足够大的时候，可能需要将所有的类型定义迁移到一个单独的文件中。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;REMOVE_TODO&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;../actionTypes&#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;将Action类型常量定义在一个单独的文件中并不是必须的，甚至根本不需要将Action类型定义出来。在一个小项目中，直接使用字符串字面量是更简单的做法。但是在一个复杂的项目中将这些变量显式的定义出来就有优势了。阅读减少模板代码获取更多的实践技巧以保持代码的简洁。&lt;/p&gt;
-
-&lt;p&gt;Action对象结构中type之外部分取决于你。如果有兴趣，可以参考Flux Standard Action来构建Action对象。&lt;/p&gt;
-
-&lt;p&gt;接下来再创建一个表示用户点选完成Todo的Action类型。由于所有Todo存储在一个数组中，可以通过index来指向一个具体的Todo。在真实的应用场景中，我们需要在新条目创建的时候构建适应范围更广的唯一ID。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TOGGLE_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;最好在每个Action中传递尽可能少的数据，例如，传递一个单独的index要优于传递整个Todo对象。&lt;/p&gt;
-
-&lt;p&gt;最后，再添加一个用来更改当前Todo显示状态的Action类型。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SET_VISIBILITY_FILTER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SHOW_COMPLETED&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;action-creators&quot;&gt;Action Creators&lt;/h4&gt;
-
-&lt;p&gt;Action Creator是用来创建Action对象。概念上“Action”和“Action Creator”非常容易混淆，使用这两个术语时要注意区分两者概念上的差别。&lt;/p&gt;
-
-&lt;p&gt;在Redux中，Action Creator仅仅返回一个Action：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;addTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这使得他们易于移植，并且易于测试。&lt;/p&gt;
-
-&lt;p&gt;在正宗的Flux中，Action Creator在调用的时候常常会同时触发一个事件派发，就像下面这样：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;addTodoWithDispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;在Redux中不是这样的。需要将Action Creator的执行结果显式的传入到dispatch()方法中：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;completeTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;或者，创建一个绑定Action Creator以自动派发事件：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;boundAddTodo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;boundCompleteTodo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;dispatch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;completeTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这样就可以直接调用他们了：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;boundAddTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;boundCompleteTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;可以通过store.dispatch()直接访问dispatch()方法，但更方便的是使用帮助方法，如react-redux中的connect()方法。使用bindActionCreators()将多个Action Creator绑定到dispatch()方法。&lt;/p&gt;
-
-&lt;p&gt;Action Creator也可以使用在异步处理中，阅读进阶教程中的async actions学习如何处理Ajax响应，以及如何将Action Creator组合到异步流程中。但是在完全掌握这里的基础部分之前，千万不要直接跳到异步Action章节，这里的基础部分涵盖了很多进阶教程和异步Action中的重要概念。&lt;/p&gt;
-
-&lt;h4 id=&quot;source-code&quot;&gt;源代码（Source Code）&lt;/h4&gt;
-
-&lt;p&gt;actions.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;cm&quot;&gt;/*
- * action types
- */&lt;/span&gt;
-
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;ADD_TODO&#39;&lt;/span&gt;
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TOGGLE_TODO&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;TOGGLE_TODO&#39;&lt;/span&gt;
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SET_VISIBILITY_FILTER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SET_VISIBILITY_FILTER&#39;&lt;/span&gt;
-
-&lt;span class=&quot;cm&quot;&gt;/*
- * other constants
- */&lt;/span&gt;
-
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;VisibilityFilters&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;SHOW_ALL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_ALL&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;SHOW_COMPLETED&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_COMPLETED&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;SHOW_ACTIVE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;SHOW_ACTIVE&#39;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;cm&quot;&gt;/*
- * action creators
- */&lt;/span&gt;
-
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;addTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ADD_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;text&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;toggleTodo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;TOGGLE_TODO&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setVisibilityFilter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SET_VISIBILITY_FILTER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;filter&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;next-steps&quot;&gt;下一步（Next Steps）&lt;/h4&gt;
-
-&lt;p&gt;接下来要定义一些Reducer用来具体说明当派发这些Action的时候如何处理状态更新。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 04 Aug 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/08/04/redux8.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/04/redux8.html</guid>
         
         
         <category>front</category>
