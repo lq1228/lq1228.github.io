@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "React Native Text组件"
-date:   2017-10-29 10:49:42 +0800
-description: ""
+date:   2017-11-03 09:49:42 +0800
+description: "Text内部的元素不再使用flexbox布局，而是采用文本布局"
 categories: front article
 ---
 
