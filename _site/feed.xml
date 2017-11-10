@@ -6,8 +6,8 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 31 Oct 2017 15:37:14 +0800</pubDate>
-    <lastBuildDate>Tue, 31 Oct 2017 15:37:14 +0800</lastBuildDate>
+    <pubDate>Fri, 03 Nov 2017 15:14:59 +0800</pubDate>
+    <lastBuildDate>Fri, 03 Nov 2017 15:14:59 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
     
       <item>
@@ -147,9 +147,9 @@
 
 &lt;p&gt;给Text组件增加border属性，android不显示边框。兼容两端的话，需要在Text组件外套一层view，然后设置相关border属性。&lt;/p&gt;
 </description>
-        <pubDate>Sun, 29 Oct 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/10/29/react-native2-text.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/10/29/react-native2-text.html</guid>
+        <pubDate>Fri, 03 Nov 2017 09:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/11/03/react-native2-text.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/11/03/react-native2-text.html</guid>
         
         
         <category>front</category>
