@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ScrollView</title>
+  <meta name="description" content="ScrollView组件允许用户左、右、或者上、下滑动查看原来显示在屏幕外的内容">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/11/14/react-native4-ScrollView.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/11/14/react-native4-ScrollView.html">ScrollView</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ScrollView</h1>
+    <p class="post-meta"><time datetime="2017-11-14T10:49:42+08:00" itemprop="datePublished">Nov 14, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>ScrollView组件允许用户左、右、或者上、下滑动查看原来显示在屏幕外的内容</p>
+
+<p>ListView组件用来呈现一个列表，也可以通过上、下滑动来展示原来显示在屏幕外的内容</p>
+
+<p>ScrollView组件封装了两大操作系统平台提供的滚动视图功能，并将滚动视图功能与触摸响应系统集成起来。</p>
+
+<p>ScrollView组件支持View组件的所有属性，也就是支持View组件的所有样式设置。ScrollView组件没有自己独有的样式设置。</p>
+
+<h4 id="scrollview">ScrollView组件属性</h4>
+
+<ul>
+    <li>contentContainerStyle</li>
+    <li>horizontal</li>
+    <li>KeyboardDismissMode</li>
+    <li>keyboardShouldPersistTaps</li>
+    <li>onContentSizeChange</li>
+    <li>onScroll</li>
+    <li>pagingEnabled</li>
+    <li>scrollEnabled</li>
+    <li>showHorizontalScrollIndicator</li>
+    <li>showsVerticalScrollIndicator</li>
+</ul>
+
+<h4 id="scrollviewios">ScrollView组件ios平台专有属性</h4>
+
+<ul>
+    <li>alwaysBounceHorizontal</li>
+    <li>alwaysBounceVertical</li>
+    <li>automaticallyAdjustContentInsets</li>
+    <li>bounces</li>
+    <li>bouncesZoom</li>
+    <li>canCancelContentTouches</li>
+    <li>centerContent</li>
+    <li>contentInset</li>
+    <li>contentOffset</li>
+    <li>decelerationRate</li>
+    <li>directionalLockEnabled</li>
+    <li>indicatorStyle</li>
+    <li>maximumZoomScale</li>
+    <li>onScrollAnimationEnd</li>
+    <li>scrollEventThrottle</li>
+    <li>scrollIndicatorInsets</li>
+    <li>scrollsToTop</li>
+    <li>SnapToInterval</li>
+    <li>snapToAlignment</li>
+    <li>stickyHeaderIndices</li>
+</ul>
+
+<h4 id="scrollviewandroid">ScrollView组件Android平台专有属性</h4>
+
+<ul>
+    <li>endFillColor</li>
+</ul>
+
+<h4 id="scrollview-1">ScrollView组件的公开成员函数</h4>
+
+<p>除了大部分组件都有的公开成员函数setNativeProps和measure函数外，ScrollView组件还提供了scrollTo函数，以让当前的ScrollView快速地定位到指定屏幕位置。</p>
+
+<p>scrollTo函数要求提供一个对象作为调用它的参数。这个对象的数据结构是：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+    <span class="nl">x</span><span class="p">:</span> <span class="nx">nNumber</span><span class="p">,</span>  <span class="c1">//欲定位位置的横坐标</span>
+    <span class="nx">y</span><span class="err">:</span> <span class="nx">nNumber</span><span class="p">,</span>  <span class="c1">//欲定位位置的纵坐标</span>
+    <span class="nx">animated</span><span class="err">:</span> <span class="nx">aBool</span><span class="p">,</span>  <span class="c1">//定位到指定位置时需要动画效果还是一下子跳过去</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>假设已经得到一个ScrollView组件的引用为aScrollViewRef, 使用这个成员函数的示例代码如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">    <span class="nx">aScrollViewRef</span><span class="p">.</span><span class="nx">scrollTo</span><span class="p">({</span><span class="na">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="na">animated</span><span class="p">:</span> <span class="kc">true</span><span class="p">});</span></code></pre></figure>
+
+<h4 id="refreshcontrol">RefreshControl组件</h4>
+
+<p>RefreshControl组件是专门为ScrollView组件服务的组件。当ScrollView被拉到顶部（y: 0）时，如果给ScrollView的refreshControl属性赋值一个RefreshControl组件，则会显示这个RefreshControl组件。开发者通常用它从网络侧获取最新数据，并在获取到最新数据后让RefreshControl组件消失。</p>
+
+<p>RefreshControl组件支持View组件的所有属性。</p>
+
+<h5 id="refreshcontrol-1">RefreshControl组件属性</h5>
+
+<ul>
+    <li>onRefresh</li>
+    <li>refreshing</li>
+</ul>
+
+<h5 id="refreshcontrolandroid">RefreshControl组件Android平台特有属性</h5>
+
+<ul>
+    <li>colors</li>
+    <li>enabled</li>
+    <li>progressBackgroundColor</li>
+    <li>size</li>
+</ul>
+
+<h5 id="refreshcontrolios">RefreshControl组件ios平台特有属性</h5>
+
+<ul>
+    <li>tintColor</li>
+    <li>title</li>
+</ul>
+
+<h4 id="scrollview-2">ScrollView组件基本用法</h4>
+
+<p>在使用ScrollView组件时，有一点需要注意：ScrollView组件必须要有明确的高度值限制，如没有设置高度，将会导致应用出错退出。</p>
+
+<ul>
+    <li> 1、在ScrollView组件的样式中设置（不推荐） </li>
+    <li> 2、在它的父组件或者更高层组件设置 </li>
+</ul>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/11/14/react-native4-ScrollView" data-title="ScrollView" data-url="/front/article/2017/11/14/react-native4-ScrollView.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

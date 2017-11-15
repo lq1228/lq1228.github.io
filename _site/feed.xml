@@ -6,9 +6,213 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 03 Nov 2017 15:14:59 +0800</pubDate>
-    <lastBuildDate>Fri, 03 Nov 2017 15:14:59 +0800</lastBuildDate>
+    <pubDate>Wed, 15 Nov 2017 09:45:28 +0800</pubDate>
+    <lastBuildDate>Wed, 15 Nov 2017 09:45:28 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>React Native Image组件</title>
+        <description>&lt;p&gt;RN默认支持JPG 和 PNG格式的图片。IOS平台还支持GIF 和 WebP格式，Android不支持这两种格式, 可以通过修改Android工程配置让Android平台也支持。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;dependencies&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;compile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;com.facebook.fresco:animated-gif:0.11.0&#39;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//需要GIF动画支持请添加本行语句&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;compile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;com.facebook.fresco:webpsupport:0.11.0&#39;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//需要Webp格式支持请添加本行语句&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;compile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;com.facebook.fresco:animated-webp:0.11.0&#39;&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//需要Webp动画支持请添加本行语句&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;React Native 自身不支持SVG图片，变通的办法是在React Native的WebView组件中载入SVG图片，或者使用其他支持SVG图片的RN插件。&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;加载网络图片&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://facebook.github.io/react/img/logo_og.png&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;有些http或者https服务器可能需要一些认证信息才能返回图片。为了满足这个需求，开发者可以在source中放入这些信息.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://facebook.github.io/react/img/logo_og.png&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;header&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;Authorization1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;someAuthToken&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;Authorization2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;someAuthToken&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Header中的健值对可以是任意数量，它们都可以放在获取图片的HTTP或者HTTPS消息头中。&lt;/p&gt;
+
+&lt;p&gt;Image组件的静态函数getSize可以取得指定URI地址图片的宽和高&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;componentDidMount&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://facebook.github.io/react/img/logo_og.png&#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getSize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//正确取到宽和高，进行相应处理&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//取宽，高出错&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;调用getSize函数取图片的宽，高，React Native实际上会去下载图片，并把图放入缓存中，所以getSize函数可以作为预加载图片资源的一个方法。&lt;/p&gt;
+
+&lt;p&gt;开发者可以使用Image 组件的静态函数prefetch来预下载某张网络图片。代码如下：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;componentWillMount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://facebook.github.io/react/img/logo_og.png&#39;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prefetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imageAddress&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;//当预下载成功时，返回值是true，不需要做任何处理&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//取宽，高出错&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;image1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;./girl.jpg&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;加载静态图片资源&lt;/h4&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;./image/redicon.png&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;上述代码中,require等同于使用了var 声明了变量，因为var的变量提升效应，等同于在代码顶部预先加载了图片&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./image/redicon.png&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imageName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;在React Native开发中，不允许使用字符串变量来指定需要预先加载的图片名称。因为React Native在编译代码时处理所有的require声明，还不是在运行时动态的处理，所以不能动态加载图片。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;加载资源文件中的图片&lt;/h4&gt;
+
+&lt;p&gt;React Native可以加载Android项目或者ios项目中的图片资源文件。&lt;/p&gt;
+
+&lt;p&gt;下面代码加载了每个ios工程都会有的资源图片。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nativeImageSource&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;nativeImageSource&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//导入nativeImageSource函数&lt;/span&gt;
+&lt;span class=&quot;kr&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;LearnRN&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Component&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ades&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;ios&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;story-background&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;na&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nativeImageSource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ades&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;使用nativeImageSource函数时导入资源文件中的图片的关键。它的js文件路径是当前项目目录\node_moudles\react-native\Libraries\Image\nativeImageSource.js.&lt;/p&gt;
+
+&lt;p&gt;如果是Android平台，将render函数中的ades变量改为：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ades&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;android&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;android_search_white&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;开发者将代码示例中的图片资源名称改为自己需要的图片资源名称，就可以显示相应的图片。&lt;/p&gt;
+
+&lt;p&gt;React Native在加载资源文件中的图片时，使用的是不检查机制。也就是说，在编译代码时不会检查资源图片是否真的存在，有可能发生在代码运行到需要取资源文件中的图片时，才发现图片不存在的情况，代码容易出错。需要特别注意这点。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;动态加载手机中的图片资源&lt;/h4&gt;
+
+&lt;p&gt;React Native 可以用CameraRoll API读取手机中存储的图片资源，还支持加载以Base64编码格式存储的图片。&lt;/p&gt;
+
+&lt;h4 id=&quot;image-&quot;&gt;Image 组件的样式&lt;/h4&gt;
+
+&lt;p&gt;Image组件必须在样式中声明图片的宽和高。如果没有声明，则图片不会被呈现在界面上。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;样式属性&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;resizeMode, 取值：contain, cover(默认值), stretch, center, repeat(只对ios有效)&lt;/li&gt;
+    &lt;li&gt;backgroundColor&lt;/li&gt;
+    &lt;li&gt;borderWidth&lt;/li&gt;
+    &lt;li&gt;overflow&lt;/li&gt;
+    &lt;li&gt;opacity&lt;/li&gt;
+    &lt;li&gt;borderRadius&lt;/li&gt;
+    &lt;li&gt;tintColor(ios专有属性)&lt;/li&gt;
+    &lt;li&gt;overlayColor(Android专有属性)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;image--1&quot;&gt;Image 组件显示特征&lt;/h4&gt;
+
+&lt;p&gt;Image组件宽高都小于所需宽高，大于所需宽高，或者其中宽或高分别试一下resizeMode, 取值：contain, cover(默认值), stretch, center，这几个值显示的效果。&lt;/p&gt;
+
+&lt;h4 id=&quot;image--2&quot;&gt;Image 组件的其他属性&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;onLoadStart&lt;/li&gt;
+    &lt;li&gt;onLoadEnd&lt;/li&gt;
+    &lt;li&gt;onLoad&lt;/li&gt;
+    &lt;li&gt;onError&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;onLoadStart, onLoadEnd, onLoad这三个回调函数都会有一个event参数，但参数中只有一个event.timeStamp对开发者有用，它记录了事件发生的时间。&lt;/p&gt;
+
+&lt;p&gt;onLayout函数在Image组件也是可以调用的，同View组件。&lt;/p&gt;
+
+&lt;h4 id=&quot;image--3&quot;&gt;Image 组件的缓存&lt;/h4&gt;
+
+&lt;h5 id=&quot;android&quot;&gt;Android平台&lt;/h5&gt;
+
+&lt;p&gt;在Android平台，这意味着移动应用与移动应用服务器采用了以图形文件名为同步标志的图片缓存机制。当图形文件名不变时，移动应用只读取一次图形文件，缓存在本地，以后一直使用这个缓存，不管服务器该文件是否发生改变。&lt;/p&gt;
+
+&lt;h5 id=&quot;ios&quot;&gt;ios平台&lt;/h5&gt;
+
+&lt;p&gt;在ios平台，RN框架要求移动应用服务器在返回图片时，必须在HTTPS响应的HTTP头中，有Cache-Control这个头，对应的值形如：max-age=36000000(以秒为单位，这个值代表一万小时后超时)。RN框架将使用这个最大有效期来进行图片缓存操作。&lt;/p&gt;
+
+&lt;p&gt;如果HTTPS中没有这个HTTP头，则没有缓存机制。&lt;/p&gt;
+
+&lt;p&gt;如果使用HTTP协议获取图片，也没有缓存机制。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;cache键的取值：only-if-cached, default, reload, force-cache, 这4个键值的作用与它们的英文名字相同。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-5&quot;&gt;尽量使用网络图片&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用网络图片，可以使RN的热更新的包的体积大大减小，加快更新速度；&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;RN的图片缓存机制，让使用网络图片与使用本地图片仅在第一次加载时有速度区别。所以应用尽量使用网络图片。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Fri, 10 Nov 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/11/10/react-native3-Image.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/11/10/react-native3-Image.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>React Native Text组件</title>
@@ -148,8 +352,8 @@
 &lt;p&gt;给Text组件增加border属性，android不显示边框。兼容两端的话，需要在Text组件外套一层view，然后设置相关border属性。&lt;/p&gt;
 </description>
         <pubDate>Fri, 03 Nov 2017 09:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/11/03/react-native2-text.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/11/03/react-native2-text.html</guid>
+        <link>http://lq1228.github.io//front/article/2017/11/03/react-native2-Text.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/11/03/react-native2-Text.html</guid>
         
         
         <category>front</category>
@@ -1843,955 +2047,6 @@ npm start&lt;/p&gt;
         <pubDate>Thu, 31 Aug 2017 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2017/08/31/calendar.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/31/calendar.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>cropperjs的翻译和学习</title>
-        <description>&lt;p&gt;原文地址：&lt;a href=&quot;https://github.com/fengyuanchen/cropperjs&quot;&gt;https://github.com/fengyuanchen/cropperjs&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;例子：&lt;a href=&quot;https://fengyuanchen.github.io/cropperjs/&quot;&gt;https://fengyuanchen.github.io/cropperjs/&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;cropperjs&quot;&gt;Cropper.js&lt;/h3&gt;
-
-&lt;p&gt;一个基于javascript的图片裁切功能的库&lt;/p&gt;
-
-&lt;p&gt;通过canvas实现图片裁剪，最后在通过canvas获取裁剪区域的图片base64串.&lt;/p&gt;
-
-&lt;h4 id=&quot;features&quot;&gt;Features特征&lt;/h4&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;支持38个选项&lt;/li&gt;
-    &lt;li&gt;支持的27种方法&lt;/li&gt; 
-    &lt;li&gt;支持6事件&lt;/li&gt; 
-    &lt;li&gt;支持触摸（移动）&lt;/li&gt; 
-    &lt;li&gt;支持缩放&lt;/li&gt; 
-    &lt;li&gt;支持旋转&lt;/li&gt; 
-    &lt;li&gt;支持缩放（翻转）&lt;/li&gt; 
-    &lt;li&gt;支持多个尺寸裁剪&lt;/li&gt; 
-    &lt;li&gt;在canvas上获取裁剪区域图片&lt;/li&gt; 
-    &lt;li&gt;支持在浏览器端通过canvas生成裁剪区域图片&lt;/li&gt; 
-    &lt;li&gt;跨浏览器支持 &lt;/li&gt; 
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;main&quot;&gt;Main主要&lt;/h4&gt;
-
-&lt;p&gt;dist/&lt;/p&gt;
-
-&lt;p&gt;├── cropper.css       ( 5 KB)&lt;/p&gt;
-
-&lt;p&gt;├── cropper.min.css   ( 4 KB)&lt;/p&gt;
-
-&lt;p&gt;├── cropper.js        (90 KB, UMD)&lt;/p&gt;
-
-&lt;p&gt;├── cropper.min.js    (33 KB, UMD, compressed)&lt;/p&gt;
-
-&lt;p&gt;├── cropper.common.js (90 KB, CommonJS)&lt;/p&gt;
-
-&lt;p&gt;└── cropper.esm.js    (90 KB, ES Module)&lt;/p&gt;
-
-&lt;h4 id=&quot;getting-started-&quot;&gt;Getting started 入门&lt;/h4&gt;
-
-&lt;h5 id=&quot;section&quot;&gt;快速启动&lt;/h5&gt;
-
-&lt;p&gt;四快速启动选项：&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;下载最新版本。&lt;/li&gt;
-    &lt;li&gt;克隆库：git clone https://github.com/fengyuanchen/cropperjs.git。&lt;/li&gt;
-    &lt;li&gt;NPM安装: npm install cropperjs。&lt;/li&gt;
-    &lt;li&gt;Bower安装：bower install cropperjs。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-1&quot;&gt;安装后，引入文件&lt;/h5&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;link&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/cropper.css&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;rel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;stylesheet&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/path/to/cropper.js&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/script&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;usage&quot;&gt;Usage使用&lt;/h5&gt;
-
-&lt;p&gt;Cropper的构造函数初始化&lt;/p&gt;
-
-&lt;ul&gt;
-    &lt;li&gt; Browser: window.Cropper &lt;/li&gt;
-    &lt;li&gt; CommonJS: var Cropper = require(&#39;cropperjs&#39;) &lt;/li&gt;
-    &lt;li&gt; ES2015: import Cropper from &#39;cropperjs&#39; &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;	&lt;span class=&quot;c1&quot;&gt;// Wrap the image or canvas element with a block element (container)&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-	  &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;image&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;picture.jpg&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/div&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
-&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;//Limit image width to avoid overflow the container &lt;/span&gt;
-	&lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	  &lt;span class=&quot;nx&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//This rule is very important, please do not ignore this!&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;image&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	  &lt;span class=&quot;na&quot;&gt;aspectRatio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-	  &lt;span class=&quot;na&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scaleX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scaleY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;section-2&quot;&gt;注意事项&lt;/h5&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;cropper的大小会从图像的父元素的大小继承，所以，一定要有一个可见的块元素包装;如果你在一个modal中使用cropper,应该在modal显示完全后，初始化cropper，否则，你不会得到一个正确的裁切区域&lt;/li&gt;
-    &lt;li&gt;输出的裁剪数据基于原始图像大小，所以你可以使用它们来直接裁剪图像&lt;/li&gt;
-    &lt;li&gt;如果你想在跨域图像上开始裁剪，请确保您的浏览器支持HTML5的CORS设置属性，你的图像服务器支持访问允许来源选项[参见HTTP访问控制CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;section-3&quot;&gt;已知问题&lt;/h5&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;已知的IOS资源限制：由于ios设备限制内存，当你在裁剪一个大的图像的时候，浏览器可能会崩溃; 为了避免这种情况，你可以控制图片大小，最好低于1024像素&lt;/li&gt;
-    &lt;li&gt;已知图像尺寸的增加:当使用HTMLCanvasElement.toDataURL方法导出图像时，图像大小可能大于原始图像；建议使用cropper.getCroppedCanvas().toDataURL(&#39;image/jpeg&#39;)来导出图像&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;options&quot;&gt;Options选项&lt;/h4&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/cropper/cropper.png&quot; alt=&quot;cropper&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;viewmode&quot;&gt;viewMode(显示模式)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0&lt;/p&gt;
-
-&lt;p&gt;Options:&lt;/p&gt;
-
-&lt;p&gt;0: 裁剪框只能在1内移动&lt;/p&gt;
-
-&lt;p&gt;1: 裁剪框只能在2内移动&lt;/p&gt;
-
-&lt;p&gt;2: 2图片 不全部铺满1 （即缩小时可以有一边出现空隙）&lt;/p&gt;
-
-&lt;p&gt;3: 2图片 全部铺满1 （即 再怎么缩小也不会出现空隙）&lt;/p&gt;
-
-&lt;h5 id=&quot;dragmode&quot;&gt;dragMode(拖动模式)&lt;/h5&gt;
-
-&lt;p&gt;Type: String&lt;/p&gt;
-
-&lt;p&gt;Default: ‘crop’&lt;/p&gt;
-
-&lt;p&gt;Options:&lt;/p&gt;
-
-&lt;p&gt;‘crop’: 当鼠标点击一处时根据这个点重新生成一个裁剪框&lt;/p&gt;
-
-&lt;p&gt;‘move’: 可以拖动图片&lt;/p&gt;
-
-&lt;p&gt;‘none’: 图片就不能拖动了&lt;/p&gt;
-
-&lt;h5 id=&quot;aspectratio11&quot;&gt;aspectRatio(裁剪框比例,如:1：1)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: NaN&lt;/p&gt;
-
-&lt;h5 id=&quot;data&quot;&gt;data&lt;/h5&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;p&gt;如果你有以前的裁剪数据存储，将传递给SetData方法时自动建立&lt;/p&gt;
-
-&lt;h5 id=&quot;preview-&quot;&gt;preview (裁剪选框内的图像预览)&lt;/h5&gt;
-
-&lt;p&gt;Type: Element or String&lt;/p&gt;
-
-&lt;p&gt;Default: ‘’&lt;/p&gt;
-
-&lt;p&gt;一个元素或一个有效的选择器，如：document.querySelectorAll&lt;/p&gt;
-
-&lt;h5 id=&quot;notes&quot;&gt;Notes&lt;/h5&gt;
-
-&lt;p&gt;最大宽度是预览容器初始宽度。&lt;/p&gt;
-
-&lt;p&gt;最大高度是预览容器的初始高度。&lt;/p&gt;
-
-&lt;p&gt;如果你设置一个分辨率选项，一定要设置相同的纵横比的预览容器。&lt;/p&gt;
-
-&lt;p&gt;如果预览是没有得到正确的显示，设置溢出：隐藏式的预览容器。&lt;/p&gt;
-
-&lt;h5 id=&quot;responsive-cropper&quot;&gt;responsive (是否在窗口尺寸改变的时候重置cropper)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;restore-&quot;&gt;restore (是否调整窗口大小后恢复裁剪区域)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;checkcrossorigin-&quot;&gt;checkCrossOrigin (检查当前图像时否跨域)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;p&gt;如果图像是跨域图像，当克隆这个图像的时候，一个crossorigin属性和时间戳将添加到源图像的src属性中，避免浏览器缓存错误&lt;/p&gt;
-
-&lt;p&gt;通过添加crossorigin属性的图像将停止添加时间戳的图像的URL,并停止加载图像&lt;/p&gt;
-
-&lt;p&gt;如果图像的crossorigin属性的值是“use-credentials”，然后withCredentials属性设置为true时，读取图像数据通过 XMLHttpRequest&lt;/p&gt;
-
-&lt;h5 id=&quot;checkorientation-exif&quot;&gt;checkOrientation (检查当前图像的方向的EXIF信息)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;p&gt;更确切地说，读取旋转或翻转图像的方向值，然后用1（默认值）覆盖定位值，以避免iOS设备上的某些问题（1, 2）。&lt;/p&gt;
-
-&lt;p&gt;需要设置的可旋转和可扩展的选项真的同时。&lt;/p&gt;
-
-&lt;p&gt;注意：不要一直相信这一点，因为一些JPG图像有不正确的（不是标准的）定位值。&lt;/p&gt;
-
-&lt;h5 id=&quot;modal-&quot;&gt;modal (是否在剪裁框上显示黑色的模态窗口)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;guides-&quot;&gt;guides (是否在剪裁框上显示虚线)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;center--&quot;&gt;center (是否显示裁剪框 中间的+)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;highlight-&quot;&gt;highlight (是否在剪裁框上显示白色的模态窗口)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;background--croppercss-cropper-bg&quot;&gt;background (是否在容器上显示网格背景。 想改背景,可以修改cropper.css样式中的 cropper-bg)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;autocrop-&quot;&gt;autoCrop (是否允许在初始化时自动出现裁剪框)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;autocroparea-08800-1&quot;&gt;autoCropArea (默认值0.8（图片的80%）。0-1之间的数值，定义自动剪裁框的大小)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0.8 (80% of the image)&lt;/p&gt;
-
-&lt;h5 id=&quot;movable-&quot;&gt;movable (是否允许移动图片)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;rotatable-&quot;&gt;rotatable (是否允许旋转图片)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;scalable-&quot;&gt;scalable (是否允许扩展图片)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;zoomable-&quot;&gt;zoomable (是否允许缩放图片)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;zoomontouch-&quot;&gt;zoomOnTouch (是否允许触摸缩放图片,触摸屏上两手指操作。)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;zoomonwheel--&quot;&gt;zoomOnWheel (是否允许鼠标滚轴 缩放图片)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;wheelzoomratio-01--01-10&quot;&gt;wheelZoomRatio (默认0.1 表示滚轴缩放图片比例。即滚一下。图片缩放多少。如 0.1 就是图片的10%)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0.1&lt;/p&gt;
-
-&lt;h5 id=&quot;cropboxmovable-&quot;&gt;cropBoxMovable (是否允许拖动裁剪框)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;cropboxresizable--&quot;&gt;cropBoxResizable (是否允许拖动 改变裁剪框大小)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;toggledragmodeondblclick---crop-move-crop-movecrop&quot;&gt;toggleDragModeOnDblclick (是否允许 拖动模式 “crop” 跟“move” 的切换状态。。即当点下为crop 模式，如果未松开拖动这时就是“move”模式。放开后又为“crop”模式)&lt;/h5&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: true&lt;/p&gt;
-
-&lt;h5 id=&quot;mincontainerwidth-&quot;&gt;minContainerWidth (容器的最小宽度)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 200&lt;/p&gt;
-
-&lt;h5 id=&quot;mincontainerheight-&quot;&gt;minContainerHeight (容器的最小高度)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 180&lt;/p&gt;
-
-&lt;h5 id=&quot;mincanvaswidth-canvas-image-wrapper&quot;&gt;minCanvasWidth (canvas 的最小宽度image wrapper)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0&lt;/p&gt;
-
-&lt;h5 id=&quot;mincanvasheight-canvas-image-wrapper&quot;&gt;minCanvasHeight (canvas 的最小高度image wrapper)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0&lt;/p&gt;
-
-&lt;h5 id=&quot;mincropboxwidth-&quot;&gt;minCropBoxWidth (裁剪区域的最小宽度)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0&lt;/p&gt;
-
-&lt;h5 id=&quot;mincropboxheight-&quot;&gt;minCropBoxHeight (裁剪区域的最小高度)&lt;/h5&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 0&lt;/p&gt;
-
-&lt;h5 id=&quot;ready&quot;&gt;ready&lt;/h5&gt;
-
-&lt;p&gt;Type: Function&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;h5 id=&quot;cropstart&quot;&gt;cropstart&lt;/h5&gt;
-
-&lt;p&gt;Type: Function&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;h5 id=&quot;cropmove&quot;&gt;cropmove&lt;/h5&gt;
-
-&lt;p&gt;Type: Function&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;h5 id=&quot;cropend&quot;&gt;cropend&lt;/h5&gt;
-
-&lt;p&gt;Type: Function&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;h5 id=&quot;crop&quot;&gt;crop&lt;/h5&gt;
-
-&lt;p&gt;Type: Function&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;h5 id=&quot;zoom&quot;&gt;zoom&lt;/h5&gt;
-
-&lt;p&gt;Type: Function&lt;/p&gt;
-
-&lt;p&gt;Default: null&lt;/p&gt;
-
-&lt;h4 id=&quot;section-4&quot;&gt;方法&lt;/h4&gt;
-
-&lt;p&gt;如果一个方法不需要返回任何值，它将返回cropper实例&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;ready&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;// this.cropper[method](argument1, , argument2, ..., argumentN);&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;// Allows chain composition&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;45&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;crop-&quot;&gt;crop() (手动显示裁切框)&lt;/h5&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;autoCrop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;ready&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;// Do something here&lt;/span&gt;
-    &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
-
-    &lt;span class=&quot;c1&quot;&gt;// And then&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;crop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;reset-&quot;&gt;reset() (重置图像裁切框的初始状态)&lt;/h5&gt;
-
-&lt;h5 id=&quot;clear-&quot;&gt;clear() ()&lt;/h5&gt;
-
-&lt;h5 id=&quot;replaceurl-onlycolorchanged-srccropper&quot;&gt;replace(url[, onlyColorChanged]) (替换图像的src和重建cropper)&lt;/h5&gt;
-
-&lt;p&gt;url: Type: String&lt;/p&gt;
-
-&lt;p&gt;A new image url.&lt;/p&gt;
-
-&lt;p&gt;onlyColorChanged (optional): Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;如果只改变颜色，没有大小，那么cropper只需要改变所有相关图像的采样率转换器，不需要重建的cropper。这可用于应用过滤器&lt;/p&gt;
-
-&lt;p&gt;如果不存在，其默认值为false&lt;/p&gt;
-
-&lt;h5 id=&quot;enable-cropper&quot;&gt;enable() (解封cropper)&lt;/h5&gt;
-
-&lt;h5 id=&quot;disable-cropper&quot;&gt;disable() (禁用cropper)&lt;/h5&gt;
-
-&lt;h5 id=&quot;destroy-cropper&quot;&gt;destroy() (销毁cropper和从图像中删除实例)&lt;/h5&gt;
-
-&lt;h5 id=&quot;moveoffsetx-offsety&quot;&gt;move(offsetX[, offsetY])&lt;/h5&gt;
-
-&lt;p&gt;offsetX:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Moving size (px) in the horizontal direction.&lt;/p&gt;
-
-&lt;p&gt;offsetY (optional):&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Moving size (px) in the vertical direction.&lt;/p&gt;
-
-&lt;p&gt;If not present, its default value is offsetX.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;//Move the canvas (image wrapper) with relative offsets.&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;move&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;movetox-y&quot;&gt;moveTo(x[, y])&lt;/h5&gt;
-
-&lt;p&gt;x:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;The left value of the canvas&lt;/p&gt;
-
-&lt;p&gt;y (optional):&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;The top value of the canvas&lt;/p&gt;
-
-&lt;p&gt;If not present, its default value is x.&lt;/p&gt;
-
-&lt;p&gt;Move the canvas (image wrapper) to an absolute point.&lt;/p&gt;
-
-&lt;h5 id=&quot;zoomratio-image-wrapper&quot;&gt;zoom(ratio) (缩放画布（image wrapper）与相对比例)&lt;/h5&gt;
-
-&lt;p&gt;ratio:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Zoom in: requires a positive number (ratio &amp;gt; 0)&lt;/p&gt;
-
-&lt;p&gt;Zoom out: requires a negative number (ratio &amp;lt; 0)&lt;/p&gt;
-
-&lt;p&gt;Zoom the canvas (image wrapper) with a relative ratio.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;zoom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;zoom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;zoomtoratio-image-wrapper&quot;&gt;zoomTo(ratio) (缩放画布（image wrapper）到绝对比)&lt;/h5&gt;
-
-&lt;p&gt;ratio:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;zoomTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1:1 (canvasData.width === canvasData.naturalWidth)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;rotatedegree&quot;&gt;rotate(degree)&lt;/h5&gt;
-
-&lt;p&gt;degree:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Rotate right: requires a positive number (degree &amp;gt; 0)&lt;/p&gt;
-
-&lt;p&gt;Rotate left: requires a negative number (degree &amp;lt; 0)&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;90&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;90&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;rotatetodegree-&quot;&gt;rotateTo(degree) (图像旋转到绝对的程度)&lt;/h5&gt;
-
-&lt;p&gt;degree:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;h5 id=&quot;scalescalex-scaley&quot;&gt;scale(scaleX[, scaleY])&lt;/h5&gt;
-
-&lt;p&gt;scaleX:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 1&lt;/p&gt;
-
-&lt;p&gt;当它不等于1的时候，缩放因子来对图像的横坐标的应用&lt;/p&gt;
-
-&lt;p&gt;scaleY (optional):&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;缩放因子为纵坐标的图像应用,如果不存在，其默认值是scaleX&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;//Scale the image.&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;//Requires CSS3 2D Transforms support (IE 9+).&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Flip both horizontal and vertical&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Flip horizontal&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Flip vertical&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;scalexscalex-&quot;&gt;scaleX(scaleX) (尺度图像的横坐标)&lt;/h5&gt;
-
-&lt;p&gt;scaleX:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 1&lt;/p&gt;
-
-&lt;p&gt;当它不等于1的时候，缩放因子来对图像的横坐标的应用&lt;/p&gt;
-
-&lt;h5 id=&quot;scaleyscaley-&quot;&gt;scaleY(scaleY) (尺度图像的纵坐标)&lt;/h5&gt;
-
-&lt;p&gt;scaleY:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Default: 1&lt;/p&gt;
-
-&lt;p&gt;当它不等于1的时候，缩放因子来对图像的纵坐标的应用&lt;/p&gt;
-
-&lt;h5 id=&quot;getdatarounded-&quot;&gt;getData([rounded]) (输出最终的裁剪区域的位置和大小的数据（基于原始图像的自然大小）)&lt;/h5&gt;
-
-&lt;p&gt;rounded (optional):&lt;/p&gt;
-
-&lt;p&gt;Type: Boolean&lt;/p&gt;
-
-&lt;p&gt;Default: false&lt;/p&gt;
-
-&lt;p&gt;Set true to get rounded values.
-(return value):&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;x: the offset left of the cropped area&lt;/p&gt;
-
-&lt;p&gt;y: the offset top of the cropped area&lt;/p&gt;
-
-&lt;p&gt;width: the width of the cropped area&lt;/p&gt;
-
-&lt;p&gt;height: the height of the cropped area&lt;/p&gt;
-
-&lt;p&gt;rotate: the rotated degrees of the image&lt;/p&gt;
-
-&lt;p&gt;scaleX: the scaling factor to apply on the abscissa of the image&lt;/p&gt;
-
-&lt;p&gt;scaleY: the scaling factor to apply on the ordinate of the image&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/cropper/getData.jpg&quot; alt=&quot;cropper&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;setdatadata-&quot;&gt;setData(data) (改变裁剪区域的位置和大小的新数据)&lt;/h5&gt;
-
-&lt;p&gt;data:&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties: See the getData method.&lt;/p&gt;
-
-&lt;p&gt;You may need to round the data properties before pass it in.&lt;/p&gt;
-
-&lt;h5 id=&quot;getcontainerdata-&quot;&gt;getContainerData() (输出尺寸数据)&lt;/h5&gt;
-
-&lt;p&gt;(return value):&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;width: the current width of the container&lt;/p&gt;
-
-&lt;p&gt;height: the current height of the container&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/cropper/getContainerData.jpg&quot; alt=&quot;cropper&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;getimagedata-&quot;&gt;getImageData() (输出图像的位置，大小和其他数据)&lt;/h5&gt;
-
-&lt;p&gt;(return value):&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;left: the offset left of the image&lt;/p&gt;
-
-&lt;p&gt;top: the offset top of the image&lt;/p&gt;
-
-&lt;p&gt;width: the width of the image&lt;/p&gt;
-
-&lt;p&gt;height: the height of the image&lt;/p&gt;
-
-&lt;p&gt;naturalWidth: the natural width of the image&lt;/p&gt;
-
-&lt;p&gt;naturalHeight: the natural height of the image&lt;/p&gt;
-
-&lt;p&gt;aspectRatio: the aspect ratio of the image&lt;/p&gt;
-
-&lt;p&gt;rotate: the rotated degrees of the image if rotated&lt;/p&gt;
-
-&lt;p&gt;scaleX: the scaling factor to apply on the abscissa of the image if scaled&lt;/p&gt;
-
-&lt;p&gt;scaleY: the scaling factor to apply on the ordinate of the image if scaled&lt;/p&gt;
-
-&lt;h5 id=&quot;getcanvasdata--image-wrapper&quot;&gt;getCanvasData() ( 输出画布（image wrapper）的位置和大小的数据)&lt;/h5&gt;
-
-&lt;p&gt;(return value):&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;left: the offset left of the canvas&lt;/p&gt;
-
-&lt;p&gt;top: the offset top of the canvas&lt;/p&gt;
-
-&lt;p&gt;width: the width of the canvas&lt;/p&gt;
-
-&lt;p&gt;height: the height of the canvas&lt;/p&gt;
-
-&lt;p&gt;naturalWidth: the natural width of the canvas (read only)&lt;/p&gt;
-
-&lt;p&gt;naturalHeight: the natural height of the canvas (read only)&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getImageData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;canvasData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCanvasData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imageData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;rotate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;180&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;canvasData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;naturalWidth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imageData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;naturalWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// true&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;setcanvasdatadata-image-wrapper&quot;&gt;setCanvasData(data) (改变画布（image wrapper）的位置和新的数据大小)&lt;/h5&gt;
-
-&lt;p&gt;data:&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;left: the new offset left of the canvas&lt;/p&gt;
-
-&lt;p&gt;top: the new offset top of the canvas&lt;/p&gt;
-
-&lt;p&gt;width: the new width of the canvas&lt;/p&gt;
-
-&lt;p&gt;height: the new height of the canvas&lt;/p&gt;
-
-&lt;h5 id=&quot;getcropboxdata-&quot;&gt;getCropBoxData() (输出裁剪框的位置和大小的数据)&lt;/h5&gt;
-
-&lt;p&gt;(return value):&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;left: the offset left of the crop box&lt;/p&gt;
-
-&lt;p&gt;top: the offset top of the crop box&lt;/p&gt;
-
-&lt;p&gt;width: the width of the crop box&lt;/p&gt;
-
-&lt;p&gt;height: the height of the crop box&lt;/p&gt;
-
-&lt;h5 id=&quot;setcropboxdatadata-&quot;&gt;setCropBoxData(data) (改变裁剪框的位置和新的数据的大小)&lt;/h5&gt;
-
-&lt;p&gt;data:&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;left: the new offset left of the crop box&lt;/p&gt;
-
-&lt;p&gt;top: the new offset top of the crop box&lt;/p&gt;
-
-&lt;p&gt;width: the new width of the crop box&lt;/p&gt;
-
-&lt;p&gt;height: the new height of the crop box&lt;/p&gt;
-
-&lt;h5 id=&quot;getcroppedcanvasoptions-&quot;&gt;getCroppedCanvas([options]) (返回画布上绘制的裁切图像)&lt;/h5&gt;
-
-&lt;p&gt;options (optional):&lt;/p&gt;
-
-&lt;p&gt;Type: Object&lt;/p&gt;
-
-&lt;p&gt;Properties:&lt;/p&gt;
-
-&lt;p&gt;width: the destination width of the output canvas&lt;/p&gt;
-
-&lt;p&gt;height: the destination height of the output canvas&lt;/p&gt;
-
-&lt;p&gt;fillColor: a color to fill any alpha values in the output canvas&lt;/p&gt;
-
-&lt;p&gt;imageSmoothingEnabled: set to change if images are smoothed (true, default) or not (false)&lt;/p&gt;
-
-&lt;p&gt;imageSmoothingQuality: set the quality of image smoothing, one of “low”, “medium”, or “high”&lt;/p&gt;
-
-&lt;p&gt;(return value):&lt;/p&gt;
-
-&lt;p&gt;Type: HTMLCanvasElement&lt;/p&gt;
-
-&lt;p&gt;A canvas drawn the cropped image.&lt;/p&gt;
-
-&lt;p&gt;注意事项：&lt;/p&gt;
-
-&lt;p&gt;输出的canvas的纵横比将安装到裁切框的长宽比自动。&lt;/p&gt;
-
-&lt;p&gt;如果你想得到一个JPEG图像输出的画布，你应该设置的设置选项，如果没有，在JPEG图像的透明部分，默认情况下会变黑。&lt;/p&gt;
-
-&lt;p&gt;浏览器支持情况：&lt;/p&gt;
-
-&lt;p&gt;Basic image: requires Canvas support (IE 9+).&lt;/p&gt;
-
-&lt;p&gt;Rotated image: requires CSS3 2D Transforms support (IE 9+).&lt;/p&gt;
-
-&lt;p&gt;Cross-origin image: requires HTML5 CORS settings attributes support (IE 11+).&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCroppedCanvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCroppedCanvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;160&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;90&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;fillColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;#fff&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;imageSmoothingEnabled&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;imageSmoothingQuality&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;high&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// Upload cropped image to server if the browser supports `HTMLCanvasElement.toBlob`&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getCroppedCanvas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toBlob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;blob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;formData&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;FormData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-  &lt;span class=&quot;nx&quot;&gt;formData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;croppedImage&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;blob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Use `jQuery.ajax` method&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ajax&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;/path/to/upload&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;formData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;processData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;contentType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;success&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Upload success&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Upload error&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;setaspectratioaspectratio-&quot;&gt;setAspectRatio(aspectRatio) (改变裁剪框的纵横比)&lt;/h5&gt;
-
-&lt;p&gt;aspectRatio:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;Requires a positive number.&lt;/p&gt;
-
-&lt;h5 id=&quot;setdragmodemode-&quot;&gt;setDragMode([mode]) (改变拖动模式)&lt;/h5&gt;
-
-&lt;p&gt;mode (optional):&lt;/p&gt;
-
-&lt;p&gt;Type: String&lt;/p&gt;
-
-&lt;p&gt;Default: ‘none’&lt;/p&gt;
-
-&lt;p&gt;Options: ‘none’, ‘crop’, ‘move’&lt;/p&gt;
-
-&lt;p&gt;你可以通过双击cropper切换crop和move模式&lt;/p&gt;
-
-&lt;h4 id=&quot;events&quot;&gt;Events事件&lt;/h4&gt;
-
-&lt;h5 id=&quot;ready-1&quot;&gt;ready&lt;/h5&gt;
-
-&lt;p&gt;这个事件当目标图像已加载并准备生成实例&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;ready&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// -&amp;gt; true&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;cropper&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Cropper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;cropstart-canvasimage-wrapper&quot;&gt;cropstart (这个事件，当canvas（image wrapper）或裁切框开始变化)&lt;/h5&gt;
-
-&lt;p&gt;event.detail.originalEvent:&lt;/p&gt;
-
-&lt;p&gt;Type: Event&lt;/p&gt;
-
-&lt;p&gt;Options: mousedown, touchstart and pointerdown&lt;/p&gt;
-
-&lt;p&gt;event.detail.action:&lt;/p&gt;
-
-&lt;p&gt;Type: String&lt;/p&gt;
-
-&lt;p&gt;Options:&lt;/p&gt;
-
-&lt;p&gt;‘crop’: create a new crop box&lt;/p&gt;
-
-&lt;p&gt;‘move’: move the canvas (image wrapper)&lt;/p&gt;
-
-&lt;p&gt;‘zoom’: zoom in / out the canvas (image wrapper) by touch.&lt;/p&gt;
-
-&lt;p&gt;‘e’: resize the east side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘w’: resize the west side of the crop box&lt;/p&gt;
-
-&lt;p&gt;’s’: resize the south side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘n’: resize the north side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘se’: resize the southeast side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘sw’: resize the southwest side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘ne’: resize the northeast side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘nw’: resize the northwest side of the crop box&lt;/p&gt;
-
-&lt;p&gt;‘all’: move the crop box (all directions)&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;cropstart&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;originalEvent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h5 id=&quot;cropmove-image-wrapper&quot;&gt;cropmove (这个事件当画布（image wrapper）或裁切框的变化)&lt;/h5&gt;
-
-&lt;p&gt;event.detail.originalEvent:&lt;/p&gt;
-
-&lt;p&gt;Type: Event&lt;/p&gt;
-
-&lt;p&gt;Options: mousemove, touchmove and pointermove.&lt;/p&gt;
-
-&lt;p&gt;event.detail.action: the same as “cropstart”.&lt;/p&gt;
-
-&lt;h5 id=&quot;cropend-image-wrapper&quot;&gt;cropend (这个事件当画布（image wrapper）或裁切框停止改变)&lt;/h5&gt;
-
-&lt;p&gt;event.detail.originalEvent:&lt;/p&gt;
-
-&lt;p&gt;Type: Event&lt;/p&gt;
-
-&lt;p&gt;Options: mouseup, touchend, touchcancel, pointerup and pointercancel.&lt;/p&gt;
-
-&lt;p&gt;event.detail.action: the same as “cropstart”.&lt;/p&gt;
-
-&lt;h5 id=&quot;crop--1&quot;&gt;crop (当画布有改变时触发)&lt;/h5&gt;
-
-&lt;p&gt;event.detail.x&lt;/p&gt;
-
-&lt;p&gt;event.detail.y&lt;/p&gt;
-
-&lt;p&gt;event.detail.width&lt;/p&gt;
-
-&lt;p&gt;event.detail.height&lt;/p&gt;
-
-&lt;p&gt;event.detail.rotate&lt;/p&gt;
-
-&lt;p&gt;event.detail.scaleX&lt;/p&gt;
-
-&lt;p&gt;event.detail.scaleY&lt;/p&gt;
-
-&lt;h5 id=&quot;zoom-&quot;&gt;zoom (这一事件触发时，马上启动实例来放大或缩小画布)&lt;/h5&gt;
-
-&lt;p&gt;event.detail.originalEvent:&lt;/p&gt;
-
-&lt;p&gt;Type: Event&lt;/p&gt;
-
-&lt;p&gt;Options: wheel, touchmove.&lt;/p&gt;
-
-&lt;p&gt;event.detail.oldRatio:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;The old (current) ratio of the canvas&lt;/p&gt;
-
-&lt;p&gt;event.detail.ratio:&lt;/p&gt;
-
-&lt;p&gt;Type: Number&lt;/p&gt;
-
-&lt;p&gt;The new (next) ratio of the canvas (canvasData.width / canvasData.naturalWidth)&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;zoom&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Zoom in&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ratio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;detail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;oldRatio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Prevent zoom in&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Zoom out&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// ...&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;section-5&quot;&gt;浏览器支持&lt;/h4&gt;
-&lt;ul&gt;
-	&lt;li&gt;Chrome (latest)&lt;/li&gt;
-	&lt;li&gt;Firefox (latest)&lt;/li&gt; 
-	&lt;li&gt;Safari (latest)&lt;/li&gt; 
-	&lt;li&gt;Opera (latest)&lt;/li&gt; 
-	&lt;li&gt;Edge (latest)&lt;/li&gt; 
-	&lt;li&gt; Internet Explorer 9+&lt;/li&gt; 
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 24 Aug 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/08/24/cropperjs.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/24/cropperjs.html</guid>
         
         
         <category>front</category>
