@@ -6,9 +6,249 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 15 Nov 2017 09:45:28 +0800</pubDate>
-    <lastBuildDate>Wed, 15 Nov 2017 09:45:28 +0800</lastBuildDate>
+    <pubDate>Tue, 21 Nov 2017 09:42:34 +0800</pubDate>
+    <lastBuildDate>Tue, 21 Nov 2017 09:42:34 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>React Native ScrollView组件</title>
+        <description>&lt;p&gt;ScrollView组件允许用户左、右、或者上、下滑动查看原来显示在屏幕外的内容&lt;/p&gt;
+
+&lt;p&gt;ScrollView组件封装了两大操作系统平台提供的滚动视图功能，并将滚动视图功能与触摸响应系统集成起来。&lt;/p&gt;
+
+&lt;p&gt;ScrollView组件支持View组件的所有属性，也就是支持View组件的所有样式设置。ScrollView组件没有自己独有的样式设置。&lt;/p&gt;
+
+&lt;h4 id=&quot;scrollview&quot;&gt;ScrollView组件属性&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;contentContainerStyle&lt;/li&gt;
+    &lt;li&gt;horizontal&lt;/li&gt;
+    &lt;li&gt;KeyboardDismissMode&lt;/li&gt;
+    &lt;li&gt;keyboardShouldPersistTaps&lt;/li&gt;
+    &lt;li&gt;onContentSizeChange&lt;/li&gt;
+    &lt;li&gt;onScroll&lt;/li&gt;
+    &lt;li&gt;pagingEnabled&lt;/li&gt;
+    &lt;li&gt;scrollEnabled&lt;/li&gt;
+    &lt;li&gt;showHorizontalScrollIndicator&lt;/li&gt;
+    &lt;li&gt;showsVerticalScrollIndicator&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;scrollviewios&quot;&gt;ScrollView组件ios平台专有属性&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;alwaysBounceHorizontal&lt;/li&gt;
+    &lt;li&gt;alwaysBounceVertical&lt;/li&gt;
+    &lt;li&gt;automaticallyAdjustContentInsets&lt;/li&gt;
+    &lt;li&gt;bounces&lt;/li&gt;
+    &lt;li&gt;bouncesZoom&lt;/li&gt;
+    &lt;li&gt;canCancelContentTouches&lt;/li&gt;
+    &lt;li&gt;centerContent&lt;/li&gt;
+    &lt;li&gt;contentInset&lt;/li&gt;
+    &lt;li&gt;contentOffset&lt;/li&gt;
+    &lt;li&gt;decelerationRate&lt;/li&gt;
+    &lt;li&gt;directionalLockEnabled&lt;/li&gt;
+    &lt;li&gt;indicatorStyle&lt;/li&gt;
+    &lt;li&gt;maximumZoomScale&lt;/li&gt;
+    &lt;li&gt;onScrollAnimationEnd&lt;/li&gt;
+    &lt;li&gt;scrollEventThrottle&lt;/li&gt;
+    &lt;li&gt;scrollIndicatorInsets&lt;/li&gt;
+    &lt;li&gt;scrollsToTop&lt;/li&gt;
+    &lt;li&gt;SnapToInterval&lt;/li&gt;
+    &lt;li&gt;snapToAlignment&lt;/li&gt;
+    &lt;li&gt;stickyHeaderIndices&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;scrollviewandroid&quot;&gt;ScrollView组件Android平台专有属性&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;endFillColor&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;scrollview-1&quot;&gt;ScrollView组件的公开成员函数&lt;/h4&gt;
+
+&lt;p&gt;除了大部分组件都有的公开成员函数setNativeProps和measure函数外，ScrollView组件还提供了scrollTo函数，以让当前的ScrollView快速地定位到指定屏幕位置。&lt;/p&gt;
+
+&lt;p&gt;scrollTo函数要求提供一个对象作为调用它的参数。这个对象的数据结构是：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nNumber&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//欲定位位置的横坐标&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nNumber&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//欲定位位置的纵坐标&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;animated&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;aBool&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//定位到指定位置时需要动画效果还是一下子跳过去&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;假设已经得到一个ScrollView组件的引用为aScrollViewRef, 使用这个成员函数的示例代码如下：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;aScrollViewRef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;scrollTo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;refreshcontrol&quot;&gt;RefreshControl组件&lt;/h4&gt;
+
+&lt;p&gt;RefreshControl组件是专门为ScrollView组件服务的组件。当ScrollView被拉到顶部（y: 0）时，如果给ScrollView的refreshControl属性赋值一个RefreshControl组件，则会显示这个RefreshControl组件。开发者通常用它从网络侧获取最新数据，并在获取到最新数据后让RefreshControl组件消失。&lt;/p&gt;
+
+&lt;p&gt;RefreshControl组件支持View组件的所有属性。&lt;/p&gt;
+
+&lt;h5 id=&quot;refreshcontrol-1&quot;&gt;RefreshControl组件属性&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;onRefresh&lt;/li&gt;
+    &lt;li&gt;refreshing&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;refreshcontrolandroid&quot;&gt;RefreshControl组件Android平台特有属性&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;colors&lt;/li&gt;
+    &lt;li&gt;enabled&lt;/li&gt;
+    &lt;li&gt;progressBackgroundColor&lt;/li&gt;
+    &lt;li&gt;size&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;refreshcontrolios&quot;&gt;RefreshControl组件ios平台特有属性&lt;/h5&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;tintColor&lt;/li&gt;
+    &lt;li&gt;title&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;scrollview-2&quot;&gt;ScrollView组件基本用法&lt;/h4&gt;
+
+&lt;p&gt;在使用ScrollView组件时，有一点需要注意：ScrollView组件必须要有明确的高度值限制，如没有设置高度，将会导致应用出错退出。&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt; 1、在ScrollView组件的样式中设置（不推荐） &lt;/li&gt;
+    &lt;li&gt; 2、在它的父组件或者更高层组件设置 &lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Fri, 17 Nov 2017 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/11/17/react-native4-ScrollView.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/11/17/react-native4-ScrollView.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>React Native ListView组件</title>
+        <description>&lt;p&gt;ListView组件用来呈现一个列表，也可以通过上、下滑动来展示原来显示在屏幕外的内容&lt;/p&gt;
+
+&lt;p&gt;ListView组件支持列表的一些高级特性，比如给每段／组（section）数据添加一个分段头部，在列表头部和尾部增加单独的内容等。&lt;/p&gt;
+
+&lt;p&gt;ListView组件继承了View和ScrollView组件的所有属性。除此之外，它还有自己特殊的属性。&lt;/p&gt;
+
+&lt;h4 id=&quot;listview&quot;&gt;ListView组件的回调函数&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;onEndReached&lt;/li&gt;
+    &lt;li&gt;renderFooter&lt;/li&gt;
+    &lt;li&gt;renderHeader&lt;/li&gt;
+    &lt;li&gt;renderRow&lt;/li&gt;
+    &lt;li&gt;renderScrollComponent&lt;/li&gt;
+    &lt;li&gt;renderSectionHeader&lt;/li&gt;
+    &lt;li&gt;renderSeparator&lt;/li&gt;
+    &lt;li&gt;onChangeVisibleRows&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;listview-1&quot;&gt;ListView组件的其他属性&lt;/h4&gt;
+
+&lt;ul&gt;
+    &lt;li&gt;dataSource&lt;/li&gt;
+    &lt;li&gt;initialListSize&lt;/li&gt;
+    &lt;li&gt;onEndReachedThreshold&lt;/li&gt;
+    &lt;li&gt;pageSize&lt;/li&gt;
+    &lt;li&gt;removeClippedSubviews&lt;/li&gt;
+    &lt;li&gt;scrollRenderAheadDistance&lt;/li&gt;
+    &lt;li&gt;automaticallyAdjustContentInsets&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;listview-2&quot;&gt;ListView组件的成员函数&lt;/h4&gt;
+
+&lt;p&gt;scrollTo(destY, destX)&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;带分段标志的列表&lt;/h4&gt;
+
+&lt;p&gt;ReactNative的ListView组件可以给列表设置分栏和尾栏。&lt;/p&gt;
+
+&lt;p&gt;ListView组件在ios和android平台上绝大部分的表现是一样的，只是在分栏显示上，ios和android平台上的呈现有些差异。&lt;/p&gt;
+
+&lt;p&gt;当列表开始展示时，第一个分栏区域（由开发者指定的代码绘制）会出现在列表的最顶端。在ios手机上，当用户向上滑动列表时，第一个分栏区域会保持在列表的最顶端不动，而是下方的列表动，直到第一个分栏中所有的行都移出屏幕，第一个分栏区域此时会被第二个分栏区域顶出列表顶端，第二个分栏会保持在列表的最顶端区域不动。&lt;/p&gt;
+
+&lt;p&gt;在Android手机上，当列表开始展示时，第一个分栏区域（由开发者指定的代码绘制）会出现在列表的最顶端。当用户上下滑动列表时，分栏会跟随列表一起移动（而不是像在ios手机上那样保持在列表的顶端不动）。&lt;/p&gt;
+
+&lt;p&gt;尾栏时由开发者指定代码渲染的一块区域。它作为列表的尾部，显示在列表的最下方。在ios和android手机在尾栏显示上没有区别&lt;/p&gt;
+
+&lt;h5 id=&quot;section-1&quot;&gt;定义如何渲染每个分栏&lt;/h5&gt;
+
+&lt;p&gt;既然实现的是带分栏的列表，那么渲染分栏是必不可少的。开发者通过renderSectionHeader回调函数定义如何渲染每个分栏，这个函数返回一个可渲染的JSX结构。&lt;/p&gt;
+
+&lt;p&gt;在函数的两个参数中，sectionData是一个对象，对应着本分栏的所有数据；sectionID是一个字符串，代表着分栏字符串。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;renderSectionHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sectionData&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sectionID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sectionID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;section-2&quot;&gt;定义如何渲染首、尾栏&lt;/h5&gt;
+
+&lt;p&gt;开发者可以给列表加上首栏和尾栏，首栏会固定显示在列表首，而尾栏会固定显示在列表尾。它们都没有任何参数，需要返回一个可渲染的JSX结构。&lt;/p&gt;
+
+&lt;p&gt;不管是简单列表还是复杂列表，都可以有首尾栏。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;renderHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;我是&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Header&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nx&quot;&gt;renderFooter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;我是&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Footer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;列表间隔渲染&lt;/h5&gt;
+
+&lt;p&gt;开发者可以给ListView组件提供renderSeparator回调函数，在这个回调函数中定义如何渲染列表中每个元素的间隔，这个回调函数没有参数。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;    &lt;span class=&quot;nx&quot;&gt;renderSeparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;View&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;我是&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Separator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/Text&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/View&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
+&lt;/span&gt;        &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;实现带分段标志的列表&lt;/h5&gt;
+
+&lt;p&gt;最后在需要呈现ListView的组件中加入ListView结构，这个机构至少需要三个属性。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;    &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ListView&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;datasource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;props&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;diaryListDataSource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;    &lt;span class=&quot;c1&quot;&gt;//必须提供&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;renderRow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderListItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;                &lt;span class=&quot;c1&quot;&gt;//必须提供&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;renderSectionHeader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderSectionHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//必须提供&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;renderSeparator&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderSeparator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;renderHeader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;renderFooter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;renderFooter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Thu, 16 Nov 2017 11:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2017/11/16/react-native5-ListView.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/11/16/react-native5-ListView.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>React Native Image组件</title>
@@ -1241,812 +1481,6 @@ Android Studio包含了运行和测试React Native应用所需的Android SDK和�
         <pubDate>Thu, 14 Sep 2017 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2017/09/14/Design-pattern2.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/09/14/Design-pattern2.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>JavaScript设计模式 - 代理模式</title>
-        <description>&lt;p&gt;代理模式是为一个对象提供一个代用品或占位符，以便控制对它的访问&lt;/p&gt;
-
-&lt;p&gt;代理模式使得代理对象控制具体对象的引用。代理几乎可以是任何对象：文件，资源，内存中的对象等。&lt;/p&gt;
-
-&lt;p&gt;为了说明代理的意义，需要引入一个&lt;a href=&quot;https://lq1228.github.io/front/article/2017/01/13/Basic-principle.html&quot;&gt;面向对象的设计原则&lt;/a&gt; - 单一指责原则。 单一职责原则，就一个类(通常也包括对象和函数等)而言，应该只专注于做一件事和仅有一个引起它变化的原因。所谓职责，我们可以理解他为功能，就是设计的这个类功能应该只有一个，而不是两个或更多。也可以理解为引用变化的原因，当你发现有两个变化会要求我们修改这个类，那么你就要考虑撤分这个类了。因为职责是变化的一个轴线，当需求变化时，该变化会反映类的职责的变化。&lt;/p&gt;
-
-&lt;p&gt;另外，在面向对象的程序设计中，大多数情况下，若违反其他任何原则，同时将违反开放 - 封闭原则。&lt;/p&gt;
-
-&lt;p&gt;代理模式是我们实现高内聚低耦合设计思路的一种实现方式，其中最常用的是虚拟代理和缓存代理:&lt;/p&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;虚拟代理&lt;/h4&gt;
-
-&lt;p&gt;虚拟代理是把一些开销很大的对象，延迟到真正需要它的时候才去创建执行&lt;/p&gt;
-
-&lt;p&gt;示例: 虚拟代理实现图片预加载&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// 图片加载函数&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;myImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;imgNode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;img&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;appendChild&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;imgNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;imgNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 引入代理对象&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyImage&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onload&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-        &lt;span class=&quot;c1&quot;&gt;// 图片加载完成，正式加载图片&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;myImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;// 图片未被载入时，加载一张提示图片&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;myImage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setSrc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;file://c:/loading.png&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;示例: 虚拟代理合并HTTP请求&lt;/p&gt;
-
-&lt;p&gt;假设一个功能需要频繁的进行网络请求，这会造成相当大的开销，解决方案是通过一个代理函数来收集一段时间之内的请求，一次性发给服务器。&lt;/p&gt;
-
-&lt;p&gt;例如：做一个文件同步的功能，当我们选中一个文件时，就同步到另外一台备用服务器上&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// 文件同步函数&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;synchronousFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;开始同步文件，id为：&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 使用代理合并请求&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxySynchronousFile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 保存一段时间内需要同步的ID&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 定时器指针&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;timer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-        &lt;span class=&quot;nx&quot;&gt;timer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;proxySynchronousFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;,&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 2s 后向本体发送需要同步的ID集合&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;clearTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;timer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 清空定时器&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;timer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 晴空id列表&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2000&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;})();&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 绑定点击事件&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;checkbox&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByTagName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;input&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;checkbox&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onclick&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;checked&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-            &lt;span class=&quot;c1&quot;&gt;// 使用代理进行文件同步&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;proxySynchronousFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;缓存代理&lt;/h4&gt;
-
-&lt;p&gt;缓存代理可以为一些开销大的运算结果提供暂时的存储，在下次运算时，如果传递进来的参数跟之前一致，则可以返回前面的运算结果。&lt;/p&gt;
-
-&lt;p&gt;示例: 为乘法、加法等创建缓存代理&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// 计算乘积&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mult&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 计算加和&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;plus&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 创建缓存代理的工厂&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createProxyFactory&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fn&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{};&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 缓存 - 存放参数和计算后的值&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;-&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 判断出入的参数是否被计算过&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;使用缓存代理&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;fn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;apply&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// 创建代理&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyMult&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createProxyFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mult&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;proxyPlus&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;createProxyFactory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;plus&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyMult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 输出： 24&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyMult&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 输出： 缓存代理 24&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyPlus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 输出： 10&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;proxyPlus&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 输出： 缓存代理 10&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;其他代理模式&lt;/h4&gt;
-
-&lt;ul&gt;
-	&lt;li&gt;防火墙代理： 控制网络资源的访问，保护主题不让“坏人”接近&lt;/li&gt;
-	&lt;li&gt;远程代理：为一个对象在不同的地址空间提供局部代表，在Java中，远程代理可以是另一个虚拟机中的对象&lt;/li&gt;
-	&lt;li&gt;保护代理：用于对象应该有不同访问权限的情况&lt;/li&gt;
-	&lt;li&gt;智能引用代理：取代了简单的指针，它在访问对象时执行一些附加操作，比如计算一个对象被引用的次数&lt;/li&gt;
-	&lt;li&gt;写时复制代理：通常用于复制一个庞大对象的情况。写时复制代理延迟了复制的过程，当对象被真正修改时，才对它进行复制操作。写时复制代理是虚拟代理的一种变体，DLL（操作系统中的动态连接库）是其典型运用场景。&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Thu, 07 Sep 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/09/07/Design-pattern1.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/09/07/Design-pattern1.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>calendar的翻译和学习</title>
-        <description>&lt;p&gt;原文地址：&lt;a href=&quot;https://github.com/react-component/calendar&quot;&gt;https://github.com/react-component/calendar&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;例子：&lt;a href=&quot;http://react-component.github.io/calendar/&quot;&gt;http://react-component.github.io/calendar/&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;react-calendar&quot;&gt;React Calendar&lt;/h3&gt;
-
-&lt;p&gt;基于react的日历组件&lt;/p&gt;
-
-&lt;h4 id=&quot;feature&quot;&gt;Feature(特征)&lt;/h4&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;支持IE9及以上浏览器，Firefox，Safari，&lt;/li&gt; 
-    &lt;li&gt;支持日、月、年、十年选择面板&lt;/li&gt; 
-    &lt;li&gt;支持周数&lt;/li&gt; 
-    &lt;li&gt;支持en_US和zh_CN locale（UI），使用moment.utcOffset设置时区&lt;/li&gt; 
-    &lt;li&gt;支持的aria和键盘可访问性&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;keyboard&quot;&gt;Keyboard(键盘)&lt;/h4&gt;
-
-&lt;ul&gt;
-    &lt;li&gt;前一个月（PageUp）&lt;/li&gt;
-    &lt;li&gt;下个月（PageDown）&lt;/li&gt;
-    &lt;li&gt;标签为小时输入：最后一小时（Up），接下来的一个小时（Down）&lt;/li&gt;
-    &lt;li&gt;标签为小时输入：最后一分钟(Up)，一分钟（Down）&lt;/li&gt;
-    &lt;li&gt;标签为小时输入：最后一秒（Up），下一秒（Down）&lt;/li&gt;
-    &lt;li&gt;去年（Control + left）&lt;/li&gt;
-    &lt;li&gt;明年（Control + right）&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;install-&quot;&gt;install (安装)&lt;/h4&gt;
-
-&lt;p&gt;npm install rc-calendar&lt;/p&gt;
-
-&lt;h4 id=&quot;usage-&quot;&gt;Usage (使用)&lt;/h4&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Calendar&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;rc-calendar&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;React&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;react&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kr&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;react-dom&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;ReactDOM&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;render&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Calendar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;container&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;development&quot;&gt;Development&lt;/h4&gt;
-
-&lt;p&gt;npm install
-npm start&lt;/p&gt;
-
-&lt;h4 id=&quot;api&quot;&gt;API&lt;/h4&gt;
-
-&lt;h5 id=&quot;rc-calendar-props&quot;&gt;1. rc-calendar props&lt;/h5&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;name&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;prefixCls&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;className&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;根节点的附加CSS类&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;style&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;根DOM节点的附加样式&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dateRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;(current, value) =&amp;gt; React.Node&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日期&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;renderSidebar&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;侧栏&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;renderFooter&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;额外的页脚&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;value&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;defaultValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;locale&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;import from ‘rc-calendar/lib/locale/en_US’&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历设置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;format&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;depends on whether you set timePicker and your locale&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;用于格式化/解析日期（没有时间）到输入的值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;disabledDate&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否禁用当前日期的选择&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;disabledTime&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;a function which return a object with member of disabledHours/disabledMinutes/disabledSeconds according to rc-time-picker&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showDateInput&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;true&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否在日历面板上方显示输入&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showWeekNumber&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否显示周数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showToday&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;true&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否显示当前按钮&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showOk&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;auto&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;页脚是否有OK按钮&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;timePicker&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;React Element&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;rc-timer-picker/lib/module/panel element&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onSelect&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dateInputPlaceholder&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日期输入框的占位符&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;mode&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;enum(‘time’, ‘date’, ‘month’, ‘year’, ‘decade’)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;‘date’&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;控制应该显示哪种面板&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onPanelChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment, mode)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;面板更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h5 id=&quot;rc-calendarlibrangecalendar-props&quot;&gt;2. rc-calendar/lib/RangeCalendar props&lt;/h5&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;name&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;prefixCls&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;className&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;根节点的附加CSS类&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;style&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;根DOM节点的附加样式&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;renderSidebar&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;侧栏&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;renderFooter&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; React.Node&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;额外的页脚&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;selectedValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment[]&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;2个元素的当前选定值范围&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;defaultSelectedValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment[]&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;默认选定值范围&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;locale&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;import from ‘rc-calendar/lib/locale/en_US’&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历设置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;format&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;depends on whether you set timePicker and your locale&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;用于格式化/解析日期（没有时间）到输入的值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;disabledDate&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否禁用当前日期的选择&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showWeekNumber&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否显示周数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showToday&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;true&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否显示当前按钮&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showOk&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;auto&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;页脚是否有OK按钮&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;showClear&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否有明确的按钮在标题&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;timePicker&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;React Element&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;rc-timer-picker/lib/module/panel element&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onSelect&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dateInputPlaceholder&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日期输入框的占位符&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;type&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;enum(‘both’,’start’, ‘end’)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;both&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否固定开始或结束选定的值。检查开始端范围示例&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;mode&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;enum(‘time’, ‘date’, ‘month’, ‘year’, ‘decade’)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;[‘date’, ‘date’]&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;控制应该显示哪种面板&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onPanelChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment[], mode)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;面板更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;hoverValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment[]&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;控制悬停的值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onHoverChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(hoverValue: moment[])&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;悬停值更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h5 id=&quot;rc-calendarlibmonthcalendar-props&quot;&gt;3. rc-calendar/lib/MonthCalendar props&lt;/h5&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;name&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;prefixCls&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;className&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;根节点的附加CSS类&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;style&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;根DOM节点的附加样式&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;value&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;defaultValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;locale&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;import from ‘rc-calendar/lib/locale/en_US’&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历设置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;disabledDate&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(current:moment):Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;是否禁用当前日期的选择&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onSelect&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;monthCellRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格渲染方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dateCellRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义日期单元格渲染方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;monthCellContentRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格内容呈现方法，内容将追加到单元格中。&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h5 id=&quot;rc-calendarlibpicker-props&quot;&gt;4. rc-calendar/lib/Picker props&lt;/h5&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;name&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
-      &lt;th&gt; &lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;prefixCls&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;calendar&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Calendar React Element&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;disabled&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;选择器是否已禁用&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;placement&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;Object&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td&gt;one of [‘left’,’right’,’top’,’bottom’, ‘topLeft’, ‘topRight’, ‘bottomLeft’, ‘bottomRight’]&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;align&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Object: alignConfig of &lt;a href=&quot;https://github.com/yiminghe/dom-align&quot;&gt;dom-align&lt;/a&gt;&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;值将合并到位置的对齐配置中。&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;animation&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;index.css支持’slide-up’&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;transitionName&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;css class for animation&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;value&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;defaultValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;日历（下一年/下个月/键盘）日期更改时调用&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onOpenChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;(open:boolean) =&amp;gt; void&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;当打开/关闭日历容器时调用&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;open&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Boolean&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;控制容器开启的状态&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;getCalendarContainer&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;() =&amp;gt; HTMLElement&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;将要呈现的日历的DOM节点&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h5 id=&quot;rc-calendarlibfullcalendar-props&quot;&gt;5. rc-calendar/lib/FullCalendar props&lt;/h5&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;name&lt;/th&gt;
-      &lt;th style=&quot;text-align: center&quot;&gt;type&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;default&lt;/th&gt;
-      &lt;th style=&quot;text-align: right&quot;&gt;description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;prefixCls&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;String&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;该组件prefixcls&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Select&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;React Component Class&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;选择组件类&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;value&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;输入值的当前值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;defaultValue&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;moment&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;如输入的默认值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;defaultType&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;string&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;data&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;默认面板类型：日期/月份&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;type&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;strint&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;面板类型：日期/月份&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onTypeChange&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function(type)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;当面板类型更改时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;fullscreen&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;bool&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;false&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;monthCellRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格渲染方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dataCellRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义日期单元格渲染方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;monthCellContentRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义月份单元格内容呈现方法，内容将追加到单元格中&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dateCellContentRender&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;function&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;自定义日期单元格内容呈现方法，内容将追加到单元格中。&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;onSelect&lt;/td&gt;
-      &lt;td style=&quot;text-align: center&quot;&gt;Function(date: moment)&lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt; &lt;/td&gt;
-      &lt;td style=&quot;text-align: right&quot;&gt;从日历中选择日期时调用&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h4 id=&quot;test-case-&quot;&gt;Test Case (测试用例)&lt;/h4&gt;
-
-&lt;p&gt;npm test&lt;/p&gt;
-
-&lt;p&gt;npm run chrome-test&lt;/p&gt;
-</description>
-        <pubDate>Thu, 31 Aug 2017 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2017/08/31/calendar.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2017/08/31/calendar.html</guid>
         
         
         <category>front</category>

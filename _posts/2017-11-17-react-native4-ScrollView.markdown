@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "ScrollView"
+title:  "React Native ScrollView组件"
 date:   2017-11-17 10:49:42 +0800
 description: "ScrollView组件允许用户左、右、或者上、下滑动查看原来显示在屏幕外的内容"
 categories: front article
