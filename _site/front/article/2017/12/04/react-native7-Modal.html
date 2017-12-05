@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>React Native Modal组件</title>
+  <meta name="description" content="React Native Modal组件">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2017/12/04/react-native7-Modal.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2017/12/04/react-native7-Modal.html">React Native Modal组件</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">React Native Modal组件</h1>
+    <p class="post-meta"><time datetime="2017-12-04T10:49:42+08:00" itemprop="datePublished">Dec 4, 2017</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>Modal组件可以在某个View上按开发者的需求呈现任意UI界面，并且处理这个UI界面的交互事件。</p>
+
+<h4 id="modal">Modal组件的属性</h4>
+
+<ul>
+    <li>animationType: 这是一个字符串类型的属性，取值可能是none, slide, fade三者之一。它用来控制Modal组件的呈现方式。none 代表没有动画效果，直接呈现。slide 代表从底部滑上来。fade代表淡入淡出。</li>
+    <li>onShow: 这是回调函数类型的属性。当Modal 组件在屏幕上完成显示后，这个回调函数将被执行。</li>
+    <li>transparent: 这是一个布尔型的属性。它决定Modal组件是否是透明的。当它为true时，用户通过Modal 组件能看到原来的View 的内容（有半透明效果）。就好像Modal 组件浮在原来的View 上一样。</li>
+    <li>visible: 这是一个布尔类型的属性。它决定Modal 组件何时显示，何时隐藏。</li>
+    <li>onRequestClose: 这是安卓平台独有的回调函数类型的属性。当Modal 在显示时，用户按下返回键后，这个函数将被调用。在Android 平台，这个属性必须要有值，或者说开发者必须要写一个函数来处理当Modal 显示在界面时且返回键被按下时的业务逻辑。</li>
+    <li>onOrientationChange: 这是ios平台独有的回调函数类型的属性。当Modal 在显示时，如果手机的放置方向改变，这个回调函数将被调用。</li>
+    <li>supportedOrientations: 这是iOS 平台独有的字符串类型的属性。它的取值只能时portrait,portrait-upside-down,landscape,landscape-left,landscape-right之一。它用来声明Modal 组件支持的手机设置方向。</li>
+</ul>
+
+<h4 id="modalnavigator-">Modal组件与Navigator 组件的配合</h4>
+
+<p>从A界面跳转到B界面一般由Navigator 组件来完成。但是因为RN应用与网络服务器交互数据有延时，如果在交换数据时，用户又进行了一个操作，这个操作要求跳转到C界面，RN会怎么处理呢？</p>
+
+<p>解决的办法之一是不让用户再进行操作。当用户执行一个操作后，将界面锁住，像用户显示等待信息，然后开始与网络服务器交换数据，直到数据交换完成并跳转到新的界面，才解锁界面，允许用户操作。</p>
+
+<p>有很多方法锁住界面。最简介高效的做法是让Navigator 组件与Modal 组件配合实现。</p>
+
+<h4 id="modalalert-">Modal组件与Alert 组件</h4>
+
+<p>RN开发者在开发中需要注意Modal 组件与Alert API冲突的情况。当APP在显示一个Modal 组件时，不要再调用Alert API。因为Modal 组件会屏蔽掉Alert 弹出的询问框（或确认框），让用户看不到弹出询问框，更别说作出选择，而我们的业务在等待用户选择的结果，造成的结果就是应用卡死。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2017/12/04/react-native7-Modal" data-title="React Native Modal组件" data-url="/front/article/2017/12/04/react-native7-Modal.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
