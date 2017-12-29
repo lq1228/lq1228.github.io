@@ -1,0 +1,75 @@
+---
+layout: post
+title:  "node.js"
+date:   2017-12-26 10:49:42 +0800
+description: "Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。 Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。 Node.js 的包管理器 npm，是全球最大的开源库生态系统。"
+categories: front article
+---
+
+### node.js
+
+Node.js是一个Javascript运行环境(runtime)，发布于2009年5月，由Ryan Dahl开发，实质是对Chrome V8引擎进行了封装。 Node.js对一些特殊用例进行优化，提供替代的API，使得V8在非浏览器环境下运行得更好。
+
+V8引擎执行Javascript的速度非常快，性能非常好。Node.js是一个基于Chrome JavaScript运行时建立的平台， 用于方便地搭建响应速度快、易于扩展的网络应用。Node.js 使用事件驱动， 非阻塞I/O 模型而得以轻量和高效，非常适合在分布式设备上运行数据密集型的实时应用。
+
+Node.js 的包管理器 npm，是全球最大的开源库生态系统。
+
+#### 发展史
+
+<ul>
+    <li> 2009年2月，Ryan Dahl在博客上宣布准备基于V8创建一个轻量级的Web服务器并提供一套库。</li> <li> 2009年5月，Ryan Dahl在GitHub上发布了最初版本的部分Node.js包，随后几个月里，有人开始使用Node.js开发应用。</li>
+    <li> 2009年11月和2010年4月，两届JSConf大会都安排了Node.js的讲座。</li>
+    <li> 2010年年底，Node.js获得云计算服务商Joyent资助，创始人Ryan Dahl加入Joyent全职负责Node.js的发展。</li>
+    <li> 2011年7月，Node.js在微软的支持下发布Windows版本。</li>
+</ul>
+
+#### 特性
+
+V8引擎本身使用了一些最新的编译技术。这使得用Javascript这类脚本语言编写出来的代码运行速度获得了极大提升，又节省了开发成本。对性能的苛求是Node的一个关键因素。 Javascript是一个事件驱动语言，Node利用了这个优点，编写出可扩展性高的服务器。Node采用了一个称为“事件循环(event loop）”的架构，使得编写可扩展性高的服务器变得既容易又安全。提高服务器性能的技巧有多种多样。Node选择了一种既能提高性能，又能减低开发复杂度的架构。这是一个非常重要的特性。并发编程通常很复杂且布满地雷。Node绕过了这些，但仍提供很好的性能。
+
+Node采用一系列“非阻塞”库来支持事件循环的方式。本质上就是为文件系统、数据库之类的资源提供接口。向文件系统发送一个请求时，无需等待硬盘（寻址并检索文件），硬盘准备好的时候非阻塞接口会通知Node。该模型以可扩展的方式简化了对慢资源的访问， 直观，易懂。尤其是对于熟悉onmouseover、onclick等DOM事件的用户，更有一种似曾相识的感觉。
+
+虽然让Javascript运行于服务器端不是Node的独特之处，但却是其一强大功能。不得不承认，浏览器环境限制了我们选择编程语言的自由。任何服务器与日益复杂的浏览器客户端应用程序间共享代码的愿望只能通过Javascript来实现。虽然还存在其他一些支持Javascript在服务器端 运行的平台，但因为上述特性，Node发展迅猛，成为事实上的平台。
+
+在Node启动的很短时间内，社区就已经贡献了大量的扩展库（模块）。其中很多是连接数据库或是其他软件的驱动，但还有很多是凭他们的实力制作出来的非常有用的软件。
+
+##### Node.js的优点
+
+nodejs作为一个新兴的前端框架，后台语言，有很多吸引人的地方：
+
+<ul>
+    <li> RESTful API</li>
+    <li> 单线程 (Node.js可以在不新增额外线程的情况下，依然可以对任务进行并发处理 —— Node.js是单线程的。它通过事件轮询（event loop）来实现并发操作，对此，我们应该要充分利用这一点 —— 尽可能的避免阻塞操作，取而代之，多使用非阻塞操作。)</li>
+    <li> 非阻塞IO</li>
+    <li> V8虚拟机</li>
+    <li> 事件驱动</li>
+</ul>
+
+#### 模块
+
+Node.js使用Module模块去划分不同的功能，以简化应用的开发。Modules模块有点像C++语言中的类库。每一个Node.js的类库都包含了十分丰富的各类函数，比如http模块就包含了和http功能相关的很多函数，可以帮助开发者很容易地对比如http,tcp/udp等进行操作，还可以很容易的创建http和tcp/udp的服务器。
+
+要在程序中使用模块是十分方便的，只需要如下：
+
+在这里，引入了http类库，并且对http类库的引用存放在http变量中了。这个时候，node.js会在我们应用中搜索是否存在node_modules的目录，并且搜索这个目录中是否存在http的模块。如果node.js找不到这个目录，则会到全局模块缓存中去寻找，用户可以通过相对或者绝对路径，指定模块的位置，比如：
+
+{% highlight javascript %}
+var myModule = require('./myModule.js');
+{% endhighlight %}
+
+模块中包含了很多功能代码片断，在模块中的代码大部分都是私有的，意思是在模块中定义的函数方法和变量，都只能在同一个模块中被调用。当然，可以将某些方法和变量暴露到模块外，这个时候可以使用exports对象去实现。
+
+#### 示例
+
+在Node中，Http是首要的。Node为创建http服务器作了优化，所以你在网上看到的大部分示例和库都是集中在web上(http框架、模板库等）。以下是nodejs的Hello World 演示
+
+{% highlight javascript %}
+var http = require('http');
+server = http.createServer(function (req, res) {
+    res.writeHeader(200, {"Content-Type": "text/plain"});
+    res.end("Hello World\n");
+});
+server.listen(8000);
+console.log("httpd start @8000");
+{% endhighlight %}
+
