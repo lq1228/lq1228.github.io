@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ES7新特性</title>
+  <meta name="description" content="ES7在ES6的基础上添加了三项内容：求幂运算符（**）、Array.prototype.includes()方法、函数作用域中严格模式的变更。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/01/15/es7.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/01/15/es7.html">ES7新特性</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">ES7新特性</h1>
+    <p class="post-meta"><time datetime="2018-01-15T10:49:42+08:00" itemprop="datePublished">Jan 15, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="es7">ES7新特性</h4>
+
+<p>ES7在ES6的基础上添加了三项内容：</p>
+
+<ul>
+    <li> 求幂运算符（**） </li>
+    <li> Array.prototype.includes()方法 </li>
+    <li> 函数作用域中严格模式的变更。 </li>
+</ul>
+
+<h5 id="section">求幂运算符（**）</h5>
+
+<p>基本用法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">3</span> <span class="o">**</span> <span class="mi">2</span>           <span class="c1">// 9</span>
+<span class="c1">//效果同：</span>
+<span class="nb">Math</span><span class="p">.</span><span class="nx">pow</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>   <span class="c1">// 9</span></code></pre></figure>
+
+<p>** 是一个用于求幂的中缀算子，比较可知，中缀符号比函数符号更简洁，这也使得它更为可取。 下面让我们扩展下思路，既然说**是一个运算符，那么它就应该能满足类似加等的操作，我们姑且称之为幂等，例如下面的例子，a的值依然是9：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="nx">a</span> <span class="o">**=</span> <span class="mi">2</span>
+<span class="c1">// 9</span></code></pre></figure>
+
+<p>对比下其他语言的指数运算符：</p>
+
+<ul>
+    <li> Python: x ** y </li>
+    <li> CoffeeScript: x ** y </li>
+    <li> F#: x ** y </li>
+    <li> Ruby: x ** y </li>
+    <li> Perl: x ** y </li>
+    <li> Lua, Basic, MATLAB: x ^ y </li>
+</ul>
+
+<p>不难发现，ES的这个新特性是从（Python，Ruby等）模仿而来的。</p>
+
+<h5 id="arrayprototypeincludes">Array.prototype.includes()方法</h5>
+
+<p>includes()的作用，是查找一个值在不在数组里，若在，则返回true，反之返回false。 基本用法：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span>     <span class="c1">// true</span>
+<span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'d'</span><span class="p">)</span>     <span class="c1">// false</span></code></pre></figure>
+
+<p>Array.prototype.includes()方法接收两个参数：要搜索的值和搜索的开始索引。当第二个参数被传入时，该方法会从索引处开始往后搜索（默认索引值为0）。若搜索值在数组中存在则返回true，否则返回false。 且看下面示例：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'b'</span><span class="p">)</span>         <span class="c1">// true</span>
+<span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>      <span class="c1">// true</span>
+<span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">,</span> <span class="s1">'d'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'b'</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>      <span class="c1">// false</span></code></pre></figure>
+
+<p>那么，我们会联想到ES6里数组的另一个方法indexOf，下面的示例代码是等效的：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span>          <span class="c1">//true</span>
+<span class="p">[</span><span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">].</span><span class="nx">indexOf</span><span class="p">(</span><span class="s1">'a'</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span>      <span class="c1">//true</span></code></pre></figure>
+
+<p>此时，就有必要来比较下两者的优缺点和使用场景了。</p>
+
+<blockquote>
+  <p>简便性</p>
+</blockquote>
+
+<p>从这一点上来说，includes略胜一筹。熟悉indexOf的同学都知道，indexOf返回的是某个元素在数组中的下标值，若想判断某个元素是否在数组里，我们还需要做额外的处理，即判断该返回值是否&gt;-1。而includes则不用，它直接返回的便是Boolean型的结果。</p>
+
+<blockquote>
+  <p>精确性</p>
+</blockquote>
+
+<p>两者使用的都是 === 操作符来做值的比较。但是includes()方法有一点不同，两个NaN被认为是相等的，即使在NaN === NaN结果是false的情况下。这一点和indexOf()的行为不同，indexOf()严格使用===判断。请看下面示例代码：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">demo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="kc">NaN</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="nx">demo</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span>        <span class="c1">//-1</span>
+<span class="nx">demo</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="kc">NaN</span><span class="p">)</span>       <span class="c1">//true</span></code></pre></figure>
+
+<p>上述代码中，indexOf()方法返回-1，即使NaN存在于数组中，而includes()则返回了true。</p>
+
+<p>提示：由于它对NaN的处理方式与indexOf不同，假如你只想知道某个值是否在数组中而并不关心它的索引位置，建议使用includes()。如果你想获取一个值在数组中的位置，那么你只能使用indexOf方法。</p>
+
+<p>includes()还有一个怪异的点需要指出，在判断 +0 与 -0 时，被认为是相同的。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">].</span><span class="nx">includes</span><span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span>    <span class="c1">//true</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">+</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">].</span><span class="nx">indexOf</span><span class="p">(</span><span class="o">-</span><span class="mi">0</span><span class="p">)</span>     <span class="c1">//1</span></code></pre></figure>
+
+<p>在这一点上，indexOf()与includes()的处理结果是一样的，前者同样会返回 +0 的索引值。</p>
+
+<p>注意：在这里，需要注意一点，includes()只能判断简单类型的数据，对于复杂类型的数据，比如对象类型的数组，二维数组，这些，是无法判断的。</p>
+
+<h5 id="section-1">函数作用域中严格模式的变更</h5>
+
+<p>在ES6中仍然可以使用“use strict”指令来指定严格模式</p>
+
+<p>ES7中指出只有参数不包含解构或默认值的简单参数列表时才可以在函数中使用“use strict”</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">okay</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span><span class="p">)</span> <span class="p">{</span>
+    <span class="s2">"use strict"</span>
+    <span class="k">return</span> <span class="nx">first</span>
+<span class="p">}</span>
+<span class="c1">//这里抛出语法错误</span>
+<span class="kd">function</span> <span class="nx">notOkay1</span><span class="p">(</span><span class="nx">first</span><span class="p">,</span> <span class="nx">second</span> <span class="o">=</span> <span class="nx">first</span><span class="p">)</span> <span class="p">{</span>
+    <span class="s2">"use strict"</span>
+    <span class="k">return</span> <span class="nx">first</span>
+<span class="p">}</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/01/15/es7" data-title="ES7新特性" data-url="/front/article/2018/01/15/es7.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

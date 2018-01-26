@@ -1,0 +1,122 @@
+---
+layout: post
+title: "ES7新特性"
+date: 2018-01-15 10:49:42 +0800
+description: "ES7在ES6的基础上添加了三项内容：求幂运算符（**）、Array.prototype.includes()方法、函数作用域中严格模式的变更。"
+categories: front article
+---
+
+#### ES7新特性
+
+ES7在ES6的基础上添加了三项内容：
+
+<ul>
+    <li> 求幂运算符（**） </li>
+    <li> Array.prototype.includes()方法 </li>
+    <li> 函数作用域中严格模式的变更。 </li>
+</ul>
+
+##### 求幂运算符（**）
+
+基本用法
+
+{% highlight javascript %}
+3 ** 2           // 9
+//效果同：
+Math.pow(3, 2)   // 9
+{% endhighlight %}
+
+** 是一个用于求幂的中缀算子，比较可知，中缀符号比函数符号更简洁，这也使得它更为可取。 下面让我们扩展下思路，既然说**是一个运算符，那么它就应该能满足类似加等的操作，我们姑且称之为幂等，例如下面的例子，a的值依然是9：
+
+{% highlight javascript %}
+let a = 3
+a **= 2
+// 9
+{% endhighlight %}
+
+对比下其他语言的指数运算符：
+
+<ul>
+    <li> Python: x ** y </li>
+    <li> CoffeeScript: x ** y </li>
+    <li> F#: x ** y </li>
+    <li> Ruby: x ** y </li>
+    <li> Perl: x ** y </li>
+    <li> Lua, Basic, MATLAB: x ^ y </li>
+</ul>
+
+不难发现，ES的这个新特性是从（Python，Ruby等）模仿而来的。
+
+##### Array.prototype.includes()方法
+
+includes()的作用，是查找一个值在不在数组里，若在，则返回true，反之返回false。 基本用法：
+
+{% highlight javascript %}
+['a', 'b', 'c'].includes('a')     // true
+['a', 'b', 'c'].includes('d')     // false
+{% endhighlight %}
+
+Array.prototype.includes()方法接收两个参数：要搜索的值和搜索的开始索引。当第二个参数被传入时，该方法会从索引处开始往后搜索（默认索引值为0）。若搜索值在数组中存在则返回true，否则返回false。 且看下面示例：
+
+{% highlight javascript %}
+['a', 'b', 'c', 'd'].includes('b')         // true
+['a', 'b', 'c', 'd'].includes('b', 1)      // true
+['a', 'b', 'c', 'd'].includes('b', 2)      // false
+{% endhighlight %}
+
+那么，我们会联想到ES6里数组的另一个方法indexOf，下面的示例代码是等效的：
+
+{% highlight javascript %}
+['a', 'b', 'c'].includes('a')          //true
+['a', 'b', 'c'].indexOf('a') > -1      //true
+{% endhighlight %}
+
+此时，就有必要来比较下两者的优缺点和使用场景了。
+
+> 简便性
+
+从这一点上来说，includes略胜一筹。熟悉indexOf的同学都知道，indexOf返回的是某个元素在数组中的下标值，若想判断某个元素是否在数组里，我们还需要做额外的处理，即判断该返回值是否>-1。而includes则不用，它直接返回的便是Boolean型的结果。
+
+> 精确性
+
+两者使用的都是 === 操作符来做值的比较。但是includes()方法有一点不同，两个NaN被认为是相等的，即使在NaN === NaN结果是false的情况下。这一点和indexOf()的行为不同，indexOf()严格使用===判断。请看下面示例代码：
+
+{% highlight javascript %}
+let demo = [1, NaN, 2, 3]
+
+demo.indexOf(NaN)        //-1
+demo.includes(NaN)       //true
+{% endhighlight %}
+
+上述代码中，indexOf()方法返回-1，即使NaN存在于数组中，而includes()则返回了true。
+
+提示：由于它对NaN的处理方式与indexOf不同，假如你只想知道某个值是否在数组中而并不关心它的索引位置，建议使用includes()。如果你想获取一个值在数组中的位置，那么你只能使用indexOf方法。
+
+includes()还有一个怪异的点需要指出，在判断 +0 与 -0 时，被认为是相同的。
+
+{% highlight javascript %}
+[1, +0, 3, 4].includes(-0)    //true
+[1, +0, 3, 4].indexOf(-0)     //1
+{% endhighlight %}
+
+在这一点上，indexOf()与includes()的处理结果是一样的，前者同样会返回 +0 的索引值。
+
+注意：在这里，需要注意一点，includes()只能判断简单类型的数据，对于复杂类型的数据，比如对象类型的数组，二维数组，这些，是无法判断的。
+
+##### 函数作用域中严格模式的变更
+
+在ES6中仍然可以使用“use strict”指令来指定严格模式
+
+ES7中指出只有参数不包含解构或默认值的简单参数列表时才可以在函数中使用“use strict”
+
+{% highlight javascript %}
+function okay(first, second) {
+    "use strict"
+    return first
+}
+//这里抛出语法错误
+function notOkay1(first, second = first) {
+    "use strict"
+    return first
+}
+{% endhighlight %}
