@@ -1,0 +1,345 @@
+---
+layout: post
+title:  "EcmaScript 2017（ES8）的一些新特征"
+date:   2018-02-02 10:49:42 +0800
+description: "EcmaScript 8 或称 EcmaScript 2017 在六月底的时候由TC39委员会正式发布，现在每一年都会有一个ES版本规范发布"
+categories: front article
+---
+
+![es8](/images/es8/es8.png)
+
+EcmaScript 8 或称 EcmaScript 2017 在六月底的时候由TC39委员会正式发布，现在每一年都会有一个ES版本规范发布。2015年发布了ES6，2016年发布了ES7，但是有谁知道ES5是何时发布的？它于2009年发布，并且之后JavaScript开始了神奇的崛起之路。
+
+我们一直在学习JavaScript作为一个稳定语言的发展和改变，现在我们需要了解一下ES8的新语法。
+
+#### String padding
+
+这一方法在String object中加入了两个函数：padStart 和 padEnd 
+
+正如它们的命名一样，这些函数的作用是对字符串的开发或结尾进行填充，从而使字符串获得给定的长度。你可以用特定的字符、字符串或者是空格（默认）来填充
+
+##### 定义：
+
+{% highlight javascript %}
+str.padStart(targetLength [, padString])
+str.padEnd(targetLength [, padString])
+{% endhighlight %}
+
+正如你所看到的，第一个参数是 targetLength ，它表示生成字符串总长度。第二个参数是 padString ，它表示填充目标的字符串，默认值为空。
+
+##### 例子：
+
+{% highlight javascript %}
+'es8'.padStart(2);          // 'es8'
+'es8'.padStart(5);          // '  es8'
+'es8'.padStart(6, 'woof');  // 'wooes8'
+'es8'.padStart(14, 'wow');  // 'wowwowwowwoes8'
+'es8'.padStart(7, '0');     // '0000es8'
+'es8'.padEnd(2);          // 'es8'
+'es8'.padEnd(5);          // 'es8  '
+'es8'.padEnd(6, 'woof');  // 'es8woo'
+'es8'.padEnd(14, 'wow');  // 'es8wowwowwowwo'
+'es8'.padEnd(7, '6');     // 'es86666'
+{% endhighlight %}
+
+##### 浏览器支持：
+
+|Feature        | Chrome | Firefox | Edge | Internet | Explorer  | Opera | Safari |
+|Basic Support  | 57     | 48      | 15   | 15       |           | 44    | 10  |
+
+#### Object.values and Object.entries
+
+Object.values方法返回一个指定对象可枚举属性值的数组，和它类似的语法是 for in
+
+##### 定义
+
+{% highlight javascript %}
+Object.values(obj)
+{% endhighlight %}
+
+obj 参数是对目标对象的操作，它可以是一个对象或者数组。
+
+##### 例子
+
+{% highlight javascript %}
+const obj = { x: 'xxx', y: 1 };
+Object.values(obj); // ['xxx', 1]
+
+const obj = ['e', 's', '8']; // same as { 0: 'e', 1: 's', 2: '8' };
+Object.values(obj); // ['e', 's', '8']
+
+// when we use numeric keys, the values returned in a numerical 
+// order according to the keys
+const obj = { 10: 'xxx', 1: 'yyy', 3: 'zzz' };
+Object.values(obj); // ['yyy', 'zzz', 'xxx']
+Object.values('es8'); // ['e', 's', '8']
+{% endhighlight %}
+
+##### 浏览器支持：
+
+|Feature        | Chrome | Firefox | Edge | Internet Explorer | Opera | Safari |
+|Basic Support  | 54     | 47      | (Yes)| No support        | No support | No support |
+
+Object.entries 方法返回一个给定对象可枚举属性值的数组[key, value]，它和Object.values类似
+
+##### 例子
+
+{% highlight javascript %}
+const obj = { x: 'xxx', y: 1 };
+Object.entries(obj); // [[’x’, 'xxx'], ['y', 1]]
+
+const obj = ['e', 's', '8'];
+Object.entries(obj); // [[’0’, 'e’], [’1’, 's’], [’2’, '8’]]
+
+const obj = { 10: 'xxx’, 1: 'yyy', 3: 'zzz' };
+Object.entries(obj); // [['1', 'yyy'], ['3’, 'zzz'], ['10', 'xxx']]
+Object.entries('es8'); // [['0', 'e'], ['1', 's'], ['2', '8']]
+{% endhighlight %}
+
+##### 浏览器支持：
+
+|Feature        | Chrome | Firefox | Edge | Internet Explorer | Opera | Safari |
+|Basic Support  | 54     | 47      | (Yes)| No support        | No support | 10.1 |
+
+#### Object.getOwnPropertyDescriptors
+
+getOwnPropertyDescriptors 方法返回一指定对象自己所有的属性内容，并且属性内容只是自身直接定义的，而不是从object的原型继承而来的。
+
+#### 定义
+
+{% highlight javascript %}
+Object.getOwnPropertyDescriptors(obj)
+{% endhighlight %}
+
+obj 是指目标对象，这个方法返回的值可能是 configurable、enumerable、writable、get、set 和 value。
+
+#### 例子
+
+{% highlight javascript %}
+const obj = { 
+  get es7() { return 777; },
+  get es8() { return 888; }
+};
+Object.getOwnPropertyDescriptors(obj);
+// {
+//   es7: {
+//     configurable: true,
+//     enumerable: true,
+//     get: function es7(){}, //the getter function
+//     set: undefined
+//   },
+//   es8: {
+//     configurable: true,
+//     enumerable: true,
+//     get: function es8(){}, //the getter function
+//     set: undefined
+//   }
+// }
+{% endhighlight %}
+
+##### 浏览器支持：
+
+|Feature        | Chrome | Firefox | Edge | Internet Explorer | Opera | Safari |
+|Basic Support  | 54     | 50      | (Yes)| No support        | 41 | 10 |
+
+#### 函数参数列表和调用中尾部的逗号
+
+在函数参数尾部使用逗号时不会再触发错误警告（SyntaxError）
+
+##### 例子
+
+{% highlight javascript %}
+function es8(var1, var2, var3,) {
+  // ...
+}
+{% endhighlight %}
+
+或者在函数调用中使用:
+
+{% highlight javascript %}
+es8(10, 20, 30,);
+{% endhighlight %}
+
+这个特征的灵感来自 literals 对象和数组（[10, 20, 30,] 和 {x: 1,}）。
+
+#### Async functions
+
+async function 定义一个能够返回 AsyncFunction 对象的异步函数，从内部看来，异步函数更像是一个 generators，但是却不能被转换成generator Function
+
+##### 例子
+
+{% highlight javascript %}
+function fetchTextByPromise() {
+  return new Promise(resolve => { 
+    setTimeout(() => { 
+      resolve("es8");
+    }, 2000);
+  });
+}
+async function sayHello() { 
+  const externalFetchedText = await fetchTextByPromise();
+  console.log(`Hello, ${externalFetchedText}`); // Hello, es8
+}
+sayHello();
+{% endhighlight %}
+
+sayHello 函数将在两秒后打印出：Hello, es8
+
+{% highlight javascript %}
+console.log(1);
+sayHello();
+console.log(2);
+{% endhighlight %}
+
+现在打印结果是：
+
+{% highlight javascript %}
+1 // immediately
+2 // immediately
+Hello, es8 // after 2 seconds
+{% endhighlight %}
+
+这是因为 sayHello 函数不会阻止console方法
+
+另外要注意的是只有在使用 async 关键字的函数中， async function 返回的 promise 和 await 关键字才能被使用。
+
+##### 浏览器支持：
+
+|Feature        | Chrome | Firefox | Edge | Internet Explorer | Opera | Safari |
+|Basic Support  | 55     | 52      | (Yes)| ?        | 42 | 10.1 |
+
+#### 共享内存和原子
+
+当共享内存时，多个进程可以在内存中读写数据。原子操作保证了可预测的数据被读写，在下一个操作开始之前，之前所有操作都结束了 及操作不会被打断。这部分介绍一个新的构造函数 SharedArrayBuffer 和一个有静态方法的命名空间对象 Atomics。
+
+Atomic 是一个和 math 一样有静态方法的对象，因此我们用它作为一个构造器。 这个对象里的静态方法如下：
+
+<ul>
+    <li> add / sub— add / subtract a value for the value at a specific position </li>
+    <li> and / or / xor — bitwise and / bitwise or / bitwise xor </li>
+    <li> load — 得到指定位置的值 </li>
+</ul>
+
+##### 浏览器支持：
+
+|Feature        | Chrome | Firefox | Internet Explorer | Opera | Safari |
+|Basic Support  | No support[2] | 55 | No support | No support | No support |
+
+##### SharedArrayBuffer
+
+在了解SharedArrayBuffer 之前我们需要了解下需要share的这个ArrayBuffer:
+
+ArrayBuffer对象代表储存二进制数据的一段内存，它不能直接读写，只能通过视图（TypedArray视图和DataView视图)来读写，视图的作用是以指定格式解读二进制数据。这个接口的原始设计目的，与 WebGL 项目有关。所谓WebGL，就是指浏览器与显卡之间的通信接口，为了满足 JavaScript 与显卡之间大量的、实时的数据交换，它们之间的数据通信必须是二进制的，而不能是传统的文本格式。文本格式传递一个32位整数，两端的 JavaScript 脚本与显卡都要进行格式转化，将非常耗时。这时要是存在一种机制，可以像 C 语言那样，直接操作字节，将4个字节的32位整数，以二进制形式原封不动地送入显卡，脚本的性能就会大幅提升。
+
+那么我们为什么需要SharedArrayBuffer这个function呢？
+任何能够从主线程负载减少工作的方法都对代码运行效率有帮助，某些情况下，ArrayBuffers 可以减少大量应该由主线程做的工作（免去了格式转换的耗时和压力直接操作字符），但是也有些时候减少主线程负载是远远不够的，有时你需要增援，你需要分割你的任务，那么我们这个时候就需要传说中的多线程。
+在 JavaScript 里，你可以借助 web worker 做这种事，但是web worker是不能共享内存的，那么这意味着如果你想分配你的任务给别的线程，你需要完整把任务复制过去，这可以通过 postMessage 实现，postMessage 把你传给它的任何对象都序列化，发送到其它 web worker，然后那边接收后反序列化并放进内存。可见这个过程也是相当慢的。我们下面来看下这个过程的code [from MDN]：
+
+{% highlight javascript %}
+//main.js
+
+var first = document.querySelector('#number1');
+var second = document.querySelector('#number2');
+
+var result = document.querySelector('.result');
+
+if (window.Worker) { // Check if Browser supports the Worker api.
+    // Requires script name as input
+    var myWorker = new Worker("worker.js");
+
+// onkeyup could be used instead of onchange if you wanted to update the answer every time
+// an entered value is changed, and you don't want to have to unfocus the field to update its .value
+
+    first.onchange = function() {
+      myWorker.postMessage([first.value,second.value]); // Sending message as an array to the worker
+      console.log('Message posted to worker');
+    };
+
+    second.onchange = function() {
+      myWorker.postMessage([first.value,second.value]);
+      console.log('Message posted to worker');
+    };
+
+    myWorker.onmessage = function(e) {
+        result.textContent = e.data;
+        console.log('Message received from worker');
+    };
+}
+//worker.js
+
+onmessage = function(e) {
+  console.log('Message received from main script');
+  var workerResult = 'Result: ' + (e.data[0] * e.data[1]);
+  console.log('Posting message back to main script');
+  postMessage(workerResult);
+}
+{% endhighlight %}
+
+从上面的code可以看出这样传来传去是非常慢的。
+那么我们想多个 web worker 就可以同时读写同一块内存，这样我们就不用传来传去的了，这就是SharedArrayBuffers 为我们提供的。
+我们来看下使用使用shareArrayBuffers是怎样实现这个乘法的
+
+{% highlight javascript %}
+//main.js
+
+"use strict";
+var first = document.querySelector('#number1');
+var second = document.querySelector('#number2');
+
+var result = document.querySelector('.result');
+
+if (window.Worker) { // Check if Browser supports the Worker api.
+    // Requires script name as input
+    var myWorker = new Worker("worker.js");
+
+// onkeyup could be used instead of onchange if you wanted to update the answer every time
+// an entered value is changed, and you don't want to have to unfocus the field to update its .value
+    var sharedBuffer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
+    first.onchange = function() {
+        addNumber();
+    }
+      
+    second.onchange = function() {
+       addNumber();
+    };
+    const addNumber = () => {
+        myWorker.postMessage({
+            aTopic: [first.value, second.value],
+            aBuf: sharedBuffer // The array buffer that we passed to the transferrable section 3 lines below
+        });
+      console.log('Message posted to worker');
+      result.textContent = new Int32Array(sharedBuffer)[0];
+      console.log('Message received from worker');
+    }
+}
+//worker.js
+
+onmessage = function(e) {
+  console.log('Message received from main script');
+  var workerResult = e.data.aTopic[0] * e.data.aTopic[1];
+  new Int32Array(e.data.aBuf)[0] = workerResult;
+}
+{% endhighlight %}
+
+我们这个时候也不用担心postMessage 伴有时延的通信。但是多个worker同时访问一块内存这个时候会出现竞争的问题的。
+从 CPU 层面看，增加一个变量值需要三条指令，这是因为计算机同时有长期存储器（内存）和短期存储器（寄存器所有的线程共享同一个长期存储器（内存），但是短期存储器（寄存器）并不是共享的。每个线程需要把值先从内存搬到寄存器，之后就可以在寄存器上进行计算了，再然后会把计算后的值写回内存）。
+
+这个因为竞争的关系会产生错误的结果，那么我们应该怎样让SharedArrayBuffers 发挥他应有的价值呢？
+这个时候伴随它诞生的还有：
+
+##### Atomics
+
+原子操作做的一件事就是在多线程中让计算机按照人所想的单操作方式工作。
+这就是为什么被叫做原子操作，因为它可以让一个包含多条指令（指令可以暂停和恢复）的操作执行起来像是一下子就完了，就好像一条指令，类似一个不可分割的原子。
+
+{% highlight javascript %}
+var sab = new SharedArrayBuffer(1024);
+var ta = new Uint8Array(sab);
+//The static Atomics.add() method adds a given value at a given //position in the array and returns the old value at that position.
+Atomics.add(ta, 0, 1); // returns 0, the old value
+Atomics.load(ta, 0); // 1
+{% endhighlight %}
+
+#### 总结
+
+JavaScript 一直在不断的更新和进步，而这些新增的功能是经过深思熟虑的结果。在最后阶段，这些功能由TC39委员会确定并且由核心开发人员完成。大多数功能现在都能够使用 TypeScript、browsers 或者其他的 polyfills 实现，现在就开始使用吧！
