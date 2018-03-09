@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>10 种最常见的 Javascript 错误</title>
+  <meta name="description" content="我们希望可以避免将来的错误，或者解决一些头痛的问题">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/03/09/error.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/03/09/error.html">10 种最常见的 Javascript 错误</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">10 种最常见的 Javascript 错误</h1>
+    <p class="post-meta"><time datetime="2018-03-09T10:49:42+08:00" itemprop="datePublished">Mar 9, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>以下是-JavaScript-错误-Top-10：</p>
+
+<p><img src="/images/error/top10.jpeg" alt="top10" /></p>
+
+<p>接下来，让我们深入到每一个错误，来确定什么会导致它，以及如何避免创建它。</p>
+
+<h4 id="uncaught-typeerror-cannot-read-property">1. Uncaught TypeError: Cannot read property</h4>
+
+<p>如果你是一个 JavaScript 开发人员，可能你看到这个错误的次数比你敢承认的要多…。当你读取一个未定义的对象的属性或调用其方法时，这个错误会在 Chrome 中出现。 您可以很容易的在 Chrome 开发者控制台中进行测试（尝试）。</p>
+
+<p><img src="/images/error/error1-1.jpeg" alt="error1-1" /></p>
+
+<p>发生这种情况的原因很多，但常见的一种是在渲染 UI 组件时对于状态的初始化操作不当。</p>
+
+<p>我们来看一个在真实应用程序中发生的例子：我们选择 React，但该情况也同样适用于 Angular、Vue 或任何其他框架。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">Quiz</span> <span class="kr">extends</span> <span class="nx">Component</span><span class="p">{</span>
+  <span class="nx">componentWillMount</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/thedata'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">items</span><span class="p">:</span> <span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+            <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+                <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span>
+                    <span class="o">&lt;</span><span class="nx">likey</span><span class="o">=</span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>                <span class="p">)}</span>
+            <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span>        <span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>这里有两件重要的事情要实现：</p>
+
+<p>组件的状态（例如 this.state）从 undefined 开始。</p>
+
+<p>当异步获取数据时，不管它是在构造函数componentWillMount还是componentDidMount中获取的，组件在数据加载之前至少会呈现一次，当 Quiz 第一次呈现时，this.state.items 是未定义的。 这又意味着 ItemList将 items 定义为 undefined，并且在控制台中出现错误 - “Uncaught TypeError: Cannot read property ‘map’ of undefined”。</p>
+
+<p>这很容易解决。最简单的方法：在构造函数中用合理的默认值来初始化 state。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">Quiz</span> <span class="kr">extends</span> <span class="nx">Component</span><span class="p">{</span>
+    <span class="c1">// Added this:</span>
+    <span class="nx">constructor</span><span class="p">(</span><span class="nx">props</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kr">super</span><span class="p">(</span><span class="nx">props</span><span class="p">);</span>
+        <span class="c1">// Assign state itself, and a default value for items</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="na">items</span><span class="p">:</span> <span class="p">[]</span>
+         <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="nx">componentWillMount</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">axios</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/thedata'</span><span class="p">).</span><span class="nx">then</span><span class="p">(</span><span class="nx">res</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">setState</span><span class="p">({</span><span class="na">items</span><span class="p">:</span> <span class="nx">res</span><span class="p">.</span><span class="nx">data</span><span class="p">});</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+  <span class="nx">render</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="nx">ul</span><span class="o">&gt;</span>
+            <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">items</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">item</span> <span class="o">=&gt;</span>
+                <span class="o">&lt;</span><span class="nx">likey</span><span class="o">=</span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}</span><span class="o">&gt;</span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="o">&lt;</span><span class="sr">/li</span><span class="err">&gt;
+</span>            <span class="p">)}</span>
+        <span class="o">&lt;</span><span class="sr">/ul</span><span class="err">&gt;
+</span>    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>在你的应用程序中的具体代码可能是不同的，如果还没能避免或解决你的问题，请继续阅读，因为将在下面覆盖更多相关错误的示例。</p>
+
+<h4 id="typeerror-undefined-is-not-an-object">2. TypeError: ‘undefined’ is not an object</h4>
+
+<p>这是在 Safari 中读取属性或调用未定义对象上的方法时发生的错误。您可以在 Safari Developer Console 中轻松测试。这与 1 中提到的 Chrome 的错误基本相同，但 Safari 使用了不同的错误消息提示语。</p>
+
+<p><img src="/images/error/error2.jpeg" alt="error2" /></p>
+
+<h4 id="typeerror-null-is-not-an-object">3. TypeError: null is not an object</h4>
+
+<p>这是在 Safari 中读取属性或调用空对象上的方法时发生的错误。 您可以在 Safari Developer Console 中轻松测试。</p>
+
+<p><img src="/images/error/error3-1.jpeg" alt="error3-1" /></p>
+
+<p>有趣的是，在 JavaScript 中，null 和 undefined 是不一样的，这就是为什么我们看到两个不同的错误信息。undefined 通常是一个尚未分配的变量，而 null 表示该值为空。 要验证它们不相等，请尝试使用严格的相等运算符 ===：</p>
+
+<p><img src="/images/error/error3-2.jpeg" alt="error3-2" /></p>
+
+<p>在现实世界的例子中，这种错误可能发生的一种场景是：如果在加载元素之前尝试在 JavaScript 中使用元素。 因为 DOM API 对于空白的对象引用返回值为 null。</p>
+
+<p>任何执行和处理 DOM 元素的 JS 代码都应该在创建 DOM 元素之后执行。 JS 代码按照 HTML 中的规定从上到下进行解释。 所以，如果 DOM 元素之前有一个标签，脚本标签内的 JS 代码将在浏览器解析 HTML 页面时执行。 如果在加载脚本之前尚未创建 DOM 元素，则会出现此错误。</p>
+
+<p>在这个例子中，我们可以通过添加一个事件监听器来解决这个问题，这个监听器会在页面准备好的时候通知我们。 一旦 addEventListener被触发，init() 方法就可以使用 DOM 元素。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+<span class="kd">function</span> <span class="nx">init</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">myButton</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myButton"</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">myTextfield</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myTextfield"</span><span class="p">);</span>
+    <span class="nx">myButton</span><span class="p">.</span><span class="nx">onclick</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">userName</span> <span class="o">=</span> <span class="nx">myTextfield</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'readystatechange'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="s2">"complete"</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">init</span><span class="p">();</span>
+    <span class="p">}</span>
+  <span class="p">});</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">form</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"myTextfield"</span> <span class="nx">placeholder</span><span class="o">=</span><span class="s2">"Type your name"</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="nx">input</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"button"</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"myButton"</span> <span class="nx">value</span><span class="o">=</span><span class="s2">"Go"</span> <span class="o">/&gt;</span> 
+<span class="o">&lt;</span><span class="sr">/form&gt;</span></code></pre></figure>
+
+<h4 id="unknown-script-error">4. (unknown): Script error</h4>
+
+<p>当未捕获的 JavaScript 错误（通过window.onerror处理程序引发的错误，而不是捕获在try-catch中）被浏览器的跨域策略限制时，会产生这类的脚本错误。 例如，如果您将您的 JavaScript 代码托管在 CDN 上，则任何未被捕获的错误将被报告为“脚本错误” 而不是包含有用的堆栈信息。这是一种浏览器安全措施，旨在防止跨域传递数据，否则将不允许进行通信。</p>
+
+<p>要获得真正的错误消息，请执行以下操作：</p>
+
+<p>发送 ‘Access-Control-Allow-Origin’ 头部</p>
+
+<p>将 Access-Control-Allow-Origin 标头设置为 * 表示可以从任何域正确访问资源。 如有必要，您可以将域替换为您的域：例如，Access-Control-Allow-Origin：www.example.com。 但是，处理多个域会变得棘手，如果你使用 CDN，可能由此产生更多的缓存问题会让你感觉到这种努力并不值得。 在这里看到更多。</p>
+
+<p>这里有一些关于如何在各种环境中设置这个头文件的例子：</p>
+
+<p>Apache</p>
+
+<p>在 JavaScript 文件所在的文件夹中，使用以下内容创建一个 .htaccess 文件：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Header</span> <span class="nx">add</span> <span class="nx">Access</span><span class="o">-</span><span class="nx">Control</span><span class="o">-</span><span class="nx">Allow</span><span class="o">-</span><span class="nx">Origin</span> <span class="s2">"*"</span></code></pre></figure>
+
+<p>Nginx</p>
+
+<p>将 add_header 指令添加到提供 JavaScript 文件的位置块中：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">location</span> <span class="o">~</span> <span class="o">^</span><span class="sr">/assets/</span> <span class="p">{</span>
+    <span class="nx">add_header</span> <span class="nx">Access</span><span class="o">-</span><span class="nx">Control</span><span class="o">-</span><span class="nx">Allow</span><span class="o">-</span><span class="nx">Origin</span> <span class="o">*</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>HAProxy</p>
+
+<p>将以下内容添加到您为 JavaScript 文件提供资源服务的后端：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">rspadd</span> <span class="nx">Access</span><span class="o">-</span><span class="nx">Control</span><span class="o">-</span><span class="nx">Allow</span><span class="o">-</span><span class="nx">Origin</span><span class="err">:\</span> <span class="o">*</span></code></pre></figure>
+
+<p>在 script 中设置 crossorigin=”anonymous”</p>
+
+<p>在您的 HTML 代码中，对于您设置了Access-Control-Allow-Origin header 的每个脚本，在 script 标签上设置crossorigin =“anonymous”。在脚本标记中添加 crossorigin 属性之前，请确保验证上述 header 正确发送。 在 Firefox 中，如果存在crossorigin属性，但Access-Control-Allow-Origin头不存在，则脚本将不会执行。</p>
+
+<h4 id="typeerror-object-doesnt-support-property">5. TypeError: Object doesn’t support property</h4>
+
+<p>这是您在调用未定义的方法时发生在 IE 中的错误。 您可以在 IE 开发者控制台中进行测试。</p>
+
+<p><img src="/images/error/error5.jpeg" alt="error5" /></p>
+
+<p>这相当于 Chrome 中的 “TypeError：”undefined“ is not a function” 错误。 是的，对于相同的逻辑错误，不同的浏览器可能具有不同的错误消息。</p>
+
+<p>对于使用 JavaScript 命名空间的 Web 应用程序，这是一个 IE l浏览器的常见的问题。 在这种情况下，99.9％ 的原因是 IE 无法将当前名称空间内的方法绑定到 this 关键字。 例如：如果你 JS 中有一个命名空间 Rollbar 以及方法 isAwesome 。 通常，如果您在 Rollbar 命名空间内，则可以使用以下语法调用isAwesome方法：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">this</span><span class="p">.</span><span class="nx">isAwesome</span><span class="p">();</span></code></pre></figure>
+
+<p>Chrome，Firefox 和 Opera 会欣然接受这个语法。 另一方面 IE，不会。 因此，使用 JS 命名空间时最安全的选择是始终以实际名称空间作为前缀。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Rollbar</span><span class="p">.</span><span class="nx">isAwesome</span><span class="p">();</span></code></pre></figure>
+
+<h4 id="typeerror-undefined-is-not-a-function">6. TypeError: ‘undefined’ is not a function</h4>
+
+<p>当您调用未定义的函数时，这是 Chrome 中产生的错误。 您可以在 Chrome 开发人员控制台和 Mozilla Firefox 开发人员控制台中进行测试。</p>
+
+<p><img src="/images/error/error6.jpeg" alt="error6" /></p>
+
+<p>随着 JavaScript 编码技术和设计模式在过去几年中变得越来越复杂，回调和关闭中的自引用范围也相应增加，这是这种/那种混淆的相当常见的来源。</p>
+
+<p>考虑这个代码片段：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">functiontestFunction</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clearLocalStorage</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+         <span class="k">this</span><span class="p">.</span><span class="nx">clearBoard</span><span class="p">();</span>    <span class="c1">// what is "this"?</span>
+    <span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>执行上面的代码会导致以下错误：“Uncaught TypeError：undefined is not a function”。 你得到上述错误的原因是，当你调用setTimeout()时，实际上是调用window.setTimeout()。 因此，在窗口对象的上下文中定义了一个传递给setTimeout()的匿名函数，该函数没有clearBoard()方法。</p>
+
+<p>一个传统的，旧浏览器兼容的解决方案是简单地将您的 this 保存在一个变量，然后可以由闭包继承。 例如：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">testFunction</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clearLocalStorage</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>   <span class="c1">// save reference to 'this', while it's still this!</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">clearBoard</span><span class="p">();</span>  
+    <span class="p">},</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>或者，在较新的浏览器中，可以使用bind()方法传递适当的引用：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">testFunction</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clearLocalStorage</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">timer</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="k">this</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>  <span class="c1">// bind to 'this'</span>
+<span class="p">};</span>
+<span class="kd">function</span> <span class="nx">testFunction</span><span class="p">(){</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clearBoard</span><span class="p">();</span>    <span class="c1">//back in the context of the right 'this'!</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="uncaught-rangeerror-maximum-call-stack">7. Uncaught RangeError: Maximum call stack</h4>
+
+<p>这是 Chrome 在一些情况下会发生的错误。 一个是当你调用一个不终止的递归函数。您可以在 Chrome 开发者控制台中进行测试。</p>
+
+<p><img src="/images/error/error7.jpeg" alt="error7" /></p>
+
+<p>此外，如果您将值传递给超出范围的函数，也可能会发生这种情况。 许多函数只接受其输入值的特定范围的数字。 例如：Number.toExponential(digits) 和 Number.toFixed(digits) 接受 0 到 20 的数字，Number.toPrecision(digits)接受 1 到 21 的数字。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">newArray</span><span class="p">(</span><span class="mi">4294967295</span><span class="p">);</span>  <span class="c1">//OK</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">newArray</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//range error</span>
+<span class="kd">var</span> <span class="nx">num</span> <span class="o">=</span> <span class="mf">2.555555</span><span class="p">;</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">toExponential</span><span class="p">(</span><span class="mi">4</span><span class="p">));</span>  <span class="c1">//OK</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">toExponential</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">));</span> <span class="c1">//range error!</span>
+<span class="nx">num</span> <span class="o">=</span> <span class="mf">2.9999</span><span class="p">;</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>   <span class="c1">//OK</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span><span class="mi">25</span><span class="p">));</span>  <span class="c1">//range error!</span>
+<span class="nx">num</span> <span class="o">=</span> <span class="mf">2.3456</span><span class="p">;</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">toPrecision</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>   <span class="c1">//OK</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">writeln</span><span class="p">(</span><span class="nx">num</span><span class="p">.</span><span class="nx">toPrecision</span><span class="p">(</span><span class="mi">22</span><span class="p">));</span>  <span class="c1">//range error!</span></code></pre></figure>
+
+<h4 id="typeerror-cannot-read-property-length">8. TypeError: Cannot read property ‘length’</h4>
+
+<p>这是 Chrome 中发生的错误，因为读取未定义变量的长度属性。 您可以在 Chrome 开发者控制台中进行测试。</p>
+
+<p><img src="/images/error/error8.jpeg" alt="error8" /></p>
+
+<p>您通常会在数组中找到定义的长度，但是如果数组未初始化或者变量名称在另一个上下文中隐藏，则可能会遇到此错误。让我们用下面的例子来理解这个错误。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">testArray</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Test"</span><span class="p">];</span>
+<span class="kd">function</span> <span class="nx">testFunction</span><span class="p">(</span><span class="nx">testArray</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">testArray</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">testArray</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">testFunction</span><span class="p">();</span></code></pre></figure>
+
+<p>当你用参数声明一个函数时，这些参数变成了函数作用域内的本地参数。这意味着即使你函数外有名为 testArray 的变量，在一个函数中具有相同名字的参数也会被视为本地参数。</p>
+
+<p>您有两种方法可以解决您的问题：</p>
+
+<p>删除函数声明语句中的参数（事实上你想访问那些声明在函数之外的变量，所以你不需要函数的参数）：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">testArray</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Test"</span><span class="p">];</span>
+<span class="c1">//Precondition: defined testArray outside of a function</span>
+<span class="kd">function</span> <span class="nx">testFunction</span><span class="p">()</span> <span class="p">{</span> <span class="c1">//No params</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">testArray</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">testArray</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">testFunction</span><span class="p">();</span></code></pre></figure>
+
+<p>用声明的数组调用该函数：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">testArray</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Test"</span><span class="p">];</span>
+<span class="kd">function</span> <span class="nx">testFunction</span><span class="p">(</span><span class="nx">testArray</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">testArray</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">testArray</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="nx">testFunction</span><span class="p">(</span><span class="nx">testArray</span><span class="p">);</span></code></pre></figure>
+
+<h4 id="uncaught-typeerror-cannot-set-property">9. Uncaught TypeError: Cannot set property</h4>
+
+<p>当我们尝试访问一个未定义的变量时，它总是返回 undefined，我们不能获取或设置任何未定义的属性。 在这种情况下，应用程序将抛出 “Uncaught TypeError: Cannot set property”。</p>
+
+<p>例如，在 Chrome 浏览器中：</p>
+
+<p><img src="/images/error/error9.jpeg" alt="error9" /></p>
+
+<p>如果测试对象不存在，错误将会抛出 “Uncaught TypeErrorUncaught TypeError: Cannot set property”。</p>
+
+<h4 id="referenceerror-event-is-not-defined">10. ReferenceError: event is not defined</h4>
+
+<p>当您尝试访问未定义的变量或超出当前范围的变量时，会引发此错误。 您可以在 Chrome 浏览器中轻松测试。</p>
+
+<p><img src="/images/error/error10.jpeg" alt="error10" /></p>
+
+<p>如果在使用事件处理系统时遇到此错误，请确保使用传入的事件对象作为参数。像 IE 这样的旧浏览器提供了一个全局变量事件，但并不是所有浏览器都支持。像 jQuery 这样的库试图规范化这种行为。尽管如此，最好使用传入事件处理函数的函数。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">myFunction</span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">event</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">which</span> <span class="o">||</span> <span class="nx">event</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">keyCode</span><span class="o">===</span><span class="mi">13</span><span class="p">){</span>
+        <span class="nx">alert</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">keyCode</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h4 id="section">结论</h4>
+
+<p>我们希望可以避免将来的错误，或者解决一些头痛的问题。</p>
+
+<p>尽管如此，即使有最佳实践，生产中也会出现意想不到的错误。能够查看影响用户的错误，并拥有快速解决问题的好工具，这一点非常重要。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/03/09/error" data-title="10 种最常见的 Javascript 错误" data-url="/front/article/2018/03/09/error.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
