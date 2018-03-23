@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>递归和尾递归的区别和实现</title>
+  <meta name="description" content="递归非常消耗内存，因为需要同时保存很多的调用帧，这样，就很容易发生栈溢出，尾递归函数的特点是在回归过程中不用做任何操作">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/03/13/recursion2.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/03/13/recursion2.html">递归和尾递归的区别和实现</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">递归和尾递归的区别和实现</h1>
+    <p class="post-meta"><time datetime="2018-03-13T10:49:42+08:00" itemprop="datePublished">Mar 13, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="section">递归</h4>
+
+<p>程序调用自身的编程技巧称为递归（ recursion）。递归做为一种算法在程序设计语言中广泛应用。一个过程或函数在其定义或说明中有直接或间接调用自身的一种方法，它通常把一个大型复杂的问题层层转化为一个与原问题相似的规模较小的问题来求解，递归策略只需少量的程序就可描述出解题过程所需要的多次重复计算，大大地减少了程序的代码量。递归的能力在于用有限的语句来定义对象的无限集合。一般来说，递归需要有边界条件、递归前进段和递归返回段。当边界条件不满足时，递归前进；当边界条件满足时，递归返回。</p>
+
+<p>定义如下：</p>
+
+<p>递归，就是在运行的过程中调用自己。</p>
+
+<p>构成递归需具备的条件：</p>
+
+<ol>
+  <li>
+    <p>子问题须与原始问题为同样的事，且更为简单；</p>
+  </li>
+  <li>
+    <p>不能无限制地调用本身，须有个出口，化简为非递归状况处理。</p>
+  </li>
+</ol>
+
+<p>实现阶乘的函数:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span> <span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">n</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">n</span> <span class="o">*</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>递归的思想是解决一些可以迭代的问题，代码比较简洁，但使用起来要慎重，有一些弊端。</p>
+
+<p>递归解题相对常用的算法如普通循环等，运行效率较低。因此，应该尽量避免使用递归，除非没有更好的算法或者某种特定情况，递归更为适合的时候。在递归调用的过程当中系统为每一层的返回点、局部量等开辟了栈来存储，因此递归次数过多容易造成栈溢出。</p>
+
+<p>幸好可以采用一种称为尾递归的特殊递归方式来避免前面提到的这些缺点。</p>
+
+<h4 id="section-1">尾递归</h4>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> 如果一个函数中所有递归形式的调用都出现在函数的末尾，我们称这个递归函数是尾递归的。当递归调用是整个函数体中最后执行的语句且它的返回值不属于表达式的一部分时，这个递归调用就是尾递归。尾递归函数的特点是在回归过程中不用做任何操作，这个特性很重要，因为大多数现代的编译器会利用这种特点自动生成优化的代码。
+</code></pre>
+</div>
+
+<p>尾递归的原理：</p>
+
+<p>当编译器检测到一个函数调用是尾递归的时候，它就覆盖当前的活动记录而不是在栈中去创建一个新的。编译器可以做到这点，因为递归调用是当前活跃期内最后一条待执行的语句，于是当这个调用返回时栈帧中并没有其他事情可做，因此也就没有保存栈帧的必要了。通过覆盖当前的栈帧而不是在其之上重新添加一个，这样所使用的栈空间就大大缩减了，这使得实际的运行效率会变得更高。</p>
+
+<p>以尾递归方式实现阶乘函数的实现：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span><span class="p">(</span> <span class="nx">n</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">total</span><span class="p">;</span>
+	<span class="p">}</span>
+    <span class="k">return</span> <span class="nx">factorial</span><span class="p">(</span><span class="nx">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="nx">n</span><span class="o">*</span><span class="nx">total</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//输出120</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/03/13/recursion2" data-title="递归和尾递归的区别和实现" data-url="/front/article/2018/03/13/recursion2.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

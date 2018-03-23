@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>js实现快排及稳定性分析</title>
+  <meta name="description" content="对于一个数组，从中随机选择一个数字（一般选取第一个），然后把整个数组中小于它的元素放在左侧，大于它的元素放在右侧，然后递归执行。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/03/13/sort.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/03/13/sort.html">js实现快排及稳定性分析</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">js实现快排及稳定性分析</h1>
+    <p class="post-meta"><time datetime="2018-03-13T10:49:42+08:00" itemprop="datePublished">Mar 13, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="section">快速排序的原理</h4>
+
+<p>对于一个数组，从中随机选择一个数字（一般选取第一个），然后把整个数组中小于它的元素放在左侧，大于它的元素放在右侧，然后递归执行。</p>
+
+<h5 id="js1">快速排序-js实现方法1</h5>
+
+<p>按照上面的原理，快速排序也没有那么难嘛，我每次新建2个数组，left，和right，然后遍历原数组，从而将小于它的push进left，大于它的push进right，然后再进行递归即可。代码如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">quick</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">arr</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">left</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">var</span> <span class="nx">right</span> <span class="o">=</span> <span class="p">[];</span>
+  <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">&lt;</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+   <span class="c1">// 判决条件</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nx">base</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">right</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">left</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">arr</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">quick</span><span class="p">(</span><span class="nx">left</span><span class="p">).</span><span class="nx">concat</span><span class="p">(</span><span class="nx">base</span><span class="p">,</span><span class="nx">quick</span><span class="p">(</span><span class="nx">right</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="c1">// console.log(quick([3,2,0,1]));</span></code></pre></figure>
+
+<p>照着上面的写法实现的排序，是有可能发生相同元素的改变的，比如[1,2,1,0]，第一次遍历之后，left = [1,0]，right = [2],base = 1.从而新组成的数组就是1,0,1,2.原本处于第一个位置的1跑到了第三个1的右侧，顺序发生了改变，从而是不稳定的。事实上，如果我将上述代码的判决条件换成&gt;=，这样，第一次排序之后，left = [0] base = 1,right = [2,1]，从而就变成稳定的了。</p>
+
+<p>所以，快速排序到底是稳定还是不稳定的？我也不是很确定，看了教课书之后，我认为上述的算法严格来讲算是快速排序的一个变种，在快速排序的过程中新建了一些辅助数组，对空间的占用率更高。下面介绍实现手段2，这个是严格按照快排的定义来的。</p>
+
+<h5 id="js2">快速排序-js实现方法2</h5>
+
+<p>快速排序的实现，其实不用新建一些辅助数组，只需要在原数组中进行操作就可以实现，当然，js中可以先复制一份出来，以免改变原数组。关于真正的快排的实现，在这里我就不赘述了，相关的文章解释的很清楚，核心的思想就是在原数组上进行交换，在不新建数组的情况下实现左小右大的排序。代码如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">quick_sort2</span><span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">_arr</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span><span class="c1">//复制一份，以免影响之前的arr</span>
+  <span class="k">return</span> <span class="nx">quick_sort</span><span class="p">(</span><span class="nx">_arr</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nx">_arr</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="c1">//进行排序</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">quick_sort</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//如果数组长度小于1，不用排序</span>
+  <span class="k">if</span> <span class="p">((</span><span class="nx">j</span><span class="o">-</span><span class="nx">i</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">arr</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="kd">var</span> <span class="nx">left</span> <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">right</span> <span class="o">=</span> <span class="nx">j</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">base</span> <span class="o">=</span> <span class="nx">left</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">center</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">left</span><span class="p">];</span>
+  <span class="k">while</span> <span class="p">(</span><span class="nx">left</span> <span class="o">&lt;</span> <span class="nx">right</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//从右向左扫描是否存在比基数小的数字</span>
+    <span class="k">while</span> <span class="p">(</span><span class="nx">left</span> <span class="o">&lt;</span> <span class="nx">right</span> <span class="o">&amp;&amp;</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nx">center</span><span class="p">){</span>
+      <span class="nx">right</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">left</span> <span class="o">&lt;</span> <span class="nx">right</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//将小于基数的数字放置到左侧</span>
+      <span class="nx">arr</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">right</span><span class="p">];</span>
+      <span class="nx">left</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//从左向右扫描是否存在比基数大的数字</span>
+    <span class="k">while</span><span class="p">(</span><span class="nx">left</span> <span class="o">&lt;</span> <span class="nx">right</span> <span class="o">&amp;&amp;</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nx">center</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">left</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">left</span> <span class="o">&lt;</span> <span class="nx">right</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">//将大于基数的数字放置到右侧</span>
+      <span class="nx">arr</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">[</span><span class="nx">left</span><span class="p">];</span>
+      <span class="nx">right</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="c1">//更新基数</span>
+  <span class="nx">base</span> <span class="o">=</span> <span class="nx">left</span><span class="p">;</span>
+  <span class="nx">arr</span><span class="p">[</span><span class="nx">base</span><span class="p">]</span> <span class="o">=</span> <span class="nx">center</span><span class="p">;</span>
+  <span class="nx">quick_sort</span><span class="p">(</span><span class="nx">arr</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">base</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="c1">//递归对左侧进行排序</span>
+  <span class="nx">quick_sort</span><span class="p">(</span><span class="nx">arr</span><span class="p">,(</span><span class="nx">base</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span><span class="nx">j</span><span class="p">);</span><span class="c1">//递归对右侧进行排序</span>
+  <span class="k">return</span> <span class="nx">arr</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<h5 id="section-1">小结</h5>
+
+<p>相比之下，第一种算法更加清晰易懂，但是其实第一种算法新建了很多辅助数组，消耗的内存比较多，而第二种算法，没有新建数组（除了最开始的复制一份），没有新建新的数组，消耗的内存少，但是在操作的过程中，因为左右的交替扫描，虽然基数和相同元素的位置不会发生改变（主要保证&gt;=即可），但是别的非基数的相同元素很有可能发生位置颠倒的情况，所以说这种方式的快速排序是不稳定的。</p>
+
+<h5 id="section-2">稳定性的好处</h5>
+
+<p>关于这一点，如果数组的元素是纯数字，那么顺序真心没有什么意义，但是如果是一个对象，假设是学生，如果希望先按照学号排个序，然后再按照成绩排个序，如果第二次的排序是稳定排序算法，那么对于相同成绩的学生，其学号必定是按照之前的次序，而如果采用非稳定的排序算法，相同成绩的学生的学号有可能发生改变，这个时候就需要对相同成绩的学生进行重新按照学号排序。也就是说：
+排序算法如果是稳定的，那么从一个键(学号)上排序，然后再从另一个键上(成绩)排序，第一个键排序的结果可以为第二个键排序所用。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/03/13/sort" data-title="js实现快排及稳定性分析" data-url="/front/article/2018/03/13/sort.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
