@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>递归算法，JavaScript实现</title>
+  <meta name="description" content="递归算法，是将问题转化为规模缩小的同类问题的子问题，每一个子问题都用一个同样的算法去解决。一般来说，一个递归算法就是函数调用自身去解决它的子问题。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/03/16/recursion.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/03/16/recursion.html">递归算法，JavaScript实现</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">递归算法，JavaScript实现</h1>
+    <p class="post-meta"><time datetime="2018-03-16T10:49:42+08:00" itemprop="datePublished">Mar 16, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>递归算法，是将问题转化为规模缩小的同类问题的子问题，每一个子问题都用一个同样的算法去解决。一般来说，一个递归算法就是函数调用自身去解决它的子问题。</p>
+
+<p>递归算法的特点：</p>
+
+<ul>
+    <li> 在函数过程中调用自身。 </li>
+    <li> 在递归过程中，必须有一个明确的条件判断递归的结束，既递归出口。 </li>
+    <li> 递归算法简洁但效率低，通常不作为推荐算法。 </li>
+</ul>
+
+<p>下面看几个实例，学习一下</p>
+
+<h4 id="httpsbaikebaiducomitem4437932fraladdin"><a href="https://baike.baidu.com/item/阶乘/4437932?fr=aladdin">阶乘</a></h4>
+
+<p>问题描述： n! = n<em>(n-1)</em>…2*1</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">factorial</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">n</span><span class="o">*</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">factorial</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span> <span class="c1">//120</span></code></pre></figure>
+
+<p>我们按照定义的说明，可以先将规模缩小到同类的子问题。比如，n! 是等于 n* (n-1)!，然后(n-1)! = (n-1)*(n-2)!。这样依次往下推，直到if的出口。这里用了arguments.callee，是为了防止函数名的紧密耦合，在这里它等同于factorial(n-1)。函数实现起来是不是简洁明了呢。当然因为问题规模简单，其实用循环也是可以实现的，大家可以尝试一下。</p>
+
+<h4 id="httpsbaikebaiducomitem99145fraladdin"><a href="https://baike.baidu.com/item/斐波那契数列/99145?fr=aladdin">斐波那契数列</a></h4>
+
+<p>问题描述：1, 1, 2, 3, 5, 8, 13, 21, 34, ……. 求第n个数是多少。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">fibonacci</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">fibonacci</span><span class="p">(</span><span class="mi">8</span><span class="p">));</span></code></pre></figure>
+
+<p>其实用刚才的想法实现，也是非常的简单的。通过分析可以得到第n个数，是前两个数的和，通过这个我们就可以通过递归，不断获得所需要的前两个数，直到n&lt;= 2这个条件返回1。</p>
+
+<h4 id="section">走楼梯问题</h4>
+
+<p>问题描述：楼梯有n阶台阶，上楼可以一步上1阶，也可以一步上2阶或者3阶，计算共有多少种不同的走法。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">getMethods</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">2</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getMethods</span><span class="p">(</span><span class="mi">5</span><span class="p">));</span></code></pre></figure>
+
+<p>这其实就是一个斐波那契数列的一种实现。我们分析的时候，可以转化成小规模的子类问题。当到达指定阶梯的最后一步的时候，可以有三种情况，一是上一步，二是上两步，三是上三步。所以总的方法是F(n) = F(n-1) + F(n-2) + F(n-3)。然后自然就成了各自的小计算，不断循环下去，直到判断条件的发生。</p>
+
+<h4 id="httpsbaikebaiducomitem869308fraladdin"><a href="https://baike.baidu.com/item/最大公约数/869308?fr=aladdin">最大公约数</a></h4>
+
+<p>问题描述：给两个数，如果两个数相等，最大公约数是其本身。如果不等，取两个数相减的绝对值和两个数中最小的数比较，相等则为最大公约，不等则继续上面的算法，直到相等。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">getNum</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">a</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span><span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">),</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">main</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">);</span></code></pre></figure>
+
+<p>没什么好说的，照问题描述所要求的实现就可以了。递归的出口便在于a等于b。</p>
+
+<h4 id="httpsbaikebaiducomitem3468295fraladdin"><a href="https://baike.baidu.com/item/汉诺塔/3468295?fr=aladdin">汉诺塔</a></h4>
+
+<p>问题描述：大家都或多或少的玩过，这里就不再赘述了。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">haoni</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">n</span><span class="p">,</span> <span class="nx">src</span><span class="p">,</span> <span class="nx">aux</span><span class="p">,</span> <span class="nx">dest</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">haoni</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">src</span><span class="p">,</span> <span class="nx">dest</span><span class="p">,</span> <span class="nx">aux</span><span class="p">);</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'移动第'</span> <span class="o">+</span> <span class="nx">n</span> <span class="o">+</span> <span class="s1">'个圆盘从'</span> <span class="o">+</span> <span class="nx">src</span> <span class="o">+</span> <span class="s1">'到'</span> <span class="o">+</span> <span class="nx">dest</span><span class="p">);</span>
+        <span class="nx">haoni</span><span class="p">(</span><span class="nx">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">aux</span><span class="p">,</span> <span class="nx">src</span><span class="p">,</span> <span class="nx">dest</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">haoni</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'a'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">,</span> <span class="s1">'c'</span><span class="p">);</span></code></pre></figure>
+
+<p>在我没有体会到递归的精粹前，我对这个问题简直百思不得其解。我一直问自己，我怎么知道下一个该去哪里？后来，我就知道，我其实更关心的是，最后那一个该怎么走。这个怎么说呢？我们可以从头想起，我们如果只有1个盘，我们可以让它到C柱，也可以到B柱。自然两个盘，也可以实现。3个盘，也是可以的吧。那我们就讲4个盘的情况。4个盘要完成就要将A上的圆盘，完全转移到C上。我们把前3个盘当作一个整体放到B上，然后第4个盘就可以到C上了，然后我们再将前三个放到C上，就成功了。那前三个盘，又可以重新当作一个新游戏，让前两个盘，当一个整体，依次类推。这样我们只需要关心大的整体的事，其它的就转成小规模问题解决就好了。</p>
+
+<h4 id="httpsbaikebaiducomitem1364267fraladdin"><a href="https://baike.baidu.com/item/二分法/1364267?fr=aladdin">二分法快排</a></h4>
+
+<p>问题描述：使用二分法，对一个数组进行由小到大的排序。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">quickSork</span> <span class="p">(</span><span class="nx">arr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">arr</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="kd">var</span> <span class="nx">leftArr</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">var</span> <span class="nx">rightArr</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="kd">var</span> <span class="nx">pivot</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">(</span><span class="nx">arr</span><span class="p">.</span><span class="nx">length</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">baseNum</span> <span class="o">=</span> <span class="nx">arr</span><span class="p">.</span><span class="nx">splice</span><span class="p">(</span><span class="nx">pivot</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+
+    <span class="nx">arr</span><span class="p">.</span><span class="nx">forEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">num</span> <span class="o">&lt;</span> <span class="nx">baseNum</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">leftArr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nx">rightArr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">num</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="k">return</span> <span class="nx">quickSork</span><span class="p">(</span><span class="nx">leftArr</span><span class="p">).</span><span class="nx">concat</span><span class="p">(</span><span class="nx">baseNum</span><span class="p">,</span> <span class="nx">quickSork</span><span class="p">(</span><span class="nx">rightArr</span><span class="p">));</span>
+<span class="p">}</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">quickSork</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]));</span></code></pre></figure>
+
+<p>将大规模化为小规模，关心一个大整体，让其不断化为小规模进行计算。</p>
+
+<h4 id="dom">DOM树的递归</h4>
+
+<p>问题描述：获取一个节点的所有父节点的tagName</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">arr</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="kd">var</span> <span class="nx">getParent</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">node</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">tagName</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arr</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">tagName</span><span class="p">);</span>
+        <span class="nx">getParent</span><span class="p">(</span><span class="nx">node</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">getParent</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'node'</span><span class="p">));</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arr</span><span class="p">);</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/03/16/recursion" data-title="递归算法，JavaScript实现" data-url="/front/article/2018/03/16/recursion.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
