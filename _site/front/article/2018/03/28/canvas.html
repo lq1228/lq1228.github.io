@@ -182,6 +182,30 @@
 <span class="p">}</span>
 <span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
 
+<h5 id="canvas">canvas保存图片</h5>
+
+<p>canvas在浏览器端，不能实现保存图片功能，要实现该功能，需要将canvas转成图片的形式呈现，这里就需要调用toDataURL()方法，并赋给image的src的属性，然后保存图片</p>
+
+<p>调用toDataURL()方法时，如果canas中应用了图片或者背景图片,这里有2点需要注意：</p>
+
+<ul>
+    <li>需要在图片的onload事件中调用toDataURL()方法</li>
+    <li>图片和访问链接需要允许跨域请求</li>
+</ul>
+
+<p>受限于 CORS 策略，会存在跨域问题，虽然可以使用图像（比如append到页面上）但是绘制到画布上会污染画布，一旦一个画布被污染,就无法提取画布的数据，比如无法使用使用画布toBlob(),toDataURL(),或getImageData()方法;当使用这些方法的时候 会抛出如下安全错误</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Uncaught</span> <span class="nx">DOMException</span><span class="err">:</span> <span class="nx">Failed</span> <span class="nx">to</span> <span class="nx">execute</span> <span class="s1">'toDataURL'</span> <span class="nx">on</span> <span class="s1">'HTMLCanvasElement'</span><span class="err">:</span> <span class="nx">Tainted</span> <span class="nx">canvases</span> <span class="nx">may</span> <span class="nx">not</span> <span class="nx">be</span> <span class="nx">exported</span><span class="p">.</span></code></pre></figure>
+
+<p>解决这个问题，需要2步</p>
+
+<p>1.图片设置 ：crossOrigin属性</p>
+
+<p>代码片段：img.setAttribute(“crossOrigin”,’Anonymous’)</p>
+
+<p>注：该代码需要写在img.src的前面，才能生效</p>
+
+<p>2.需要服务器端代码允许，资源跨域使用，也就是设置CORS跨域配置，Access-Control-Allow-Origin</p>
 
   </div>
 
