@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "HTML 5 canvas"
-date:   2018-04-04 10:49:42 +0800
+date:   2018-04-13 10:49:42 +0800
 description: "Canvas 对象表示一个 HTML 画布元素 - canvas。它没有自己的行为，但是定义了一个 API 支持脚本化客户端绘图操作。"
 categories: front article
 ---
@@ -187,3 +187,8 @@ Uncaught DOMException: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tai
 注：该代码需要写在img.src的前面，才能生效
 
 2.需要服务器端代码允许，资源跨域使用，也就是设置CORS跨域配置，Access-Control-Allow-Origin
+
+2个小例子
+
+* [两个小球碰撞例子](/page/canvas/JS (canvas) 两个小球碰撞.html)
+<!--* [重力弹球例子](/page/canvas/重力弹球.html)-->

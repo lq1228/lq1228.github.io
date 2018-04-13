@@ -1,0 +1,69 @@
+<html>  
+  
+    <head>  
+        <meta charset="utf-8">  
+        <title></title>  
+        <script type="text/javascript">  
+            var step = 10;  
+  
+            function createBall() {  
+                //添加到DIV  
+                var div = document.getElementById("showDiv");  
+                //创建球对象  
+                var img = document.createElement("img");  
+                img.src = "./c.png";  
+                img.style.height = "10px";  
+                img.style.position = "absolute";  
+                img.style.left = parseInt(Math.random() * 59) * 10 + "px";  
+                img.style.top = parseInt(Math.random() * 39) * 10 + "px";  
+                img.xflag = true;  
+                img.yflag = true;  
+                //将球添加到DIV  
+                div.appendChild(img);  
+            }  
+  
+            function moveBall() {  
+                window.setInterval(function() {  
+                    //获取所有的球  
+                    var balls = document.getElementsByTagName("img");  
+                    //遍历小球  
+                    for (var i = 0; i < balls.length; i++) {  
+                        var ball = balls[i];  
+                        var x = parseInt(ball.style.left);  
+                        var y = parseInt(ball.style.top);  
+                        //判断X的大小  
+                        if (ball.xflag) {  
+                            ball.style.left = x + step + "px";  
+                            if (x >= 590) {  
+                                ball.xflag = false;  
+                            }  
+                        } else {  
+                            ball.style.left = x - step + "px";  
+                            if (x <= 20) {  
+                                ball.xflag = true;  
+                            }  
+                        }  
+                        //判断Y的大小  
+                        if (ball.yflag) {  
+                            ball.style.top = y + step + "px";  
+                            if (y >= 390) {  
+                                ball.yflag = false;  
+                            }  
+                        } else {  
+                            ball.style.top = y - step + "px";  
+                            if (y <= 20) {  
+                                ball.yflag = true;  
+                            }  
+                        }  
+                    }  
+                }, 40);  
+            }  
+        </script>  
+    </head>  
+  
+    <body onload="moveBall();">  
+        <div id="showDiv" style="border: solid 2px;height: 400px;width: 600px;"></div>  
+        <input type="button" value="新增一个小球" onclick="createBall();" />  
+    </body>  
+  
+</html> 

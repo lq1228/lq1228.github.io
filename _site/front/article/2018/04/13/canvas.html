@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>HTML 5 canvas</title>
+  <meta name="description" content="Canvas 对象表示一个 HTML 画布元素 - canvas。它没有自己的行为，但是定义了一个 API 支持脚本化客户端绘图操作。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/04/13/canvas.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/04/13/canvas.html">HTML 5 canvas</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">HTML 5 canvas</h1>
+    <p class="post-meta"><time datetime="2018-04-13T10:49:42+08:00" itemprop="datePublished">Apr 13, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="canvas-">Canvas 对象</h4>
+
+<p>Canvas 对象表示一个 HTML 画布元素 - canvas。它没有自己的行为，但是定义了一个 API 支持脚本化客户端绘图操作。</p>
+
+<p>你可以直接在该对象上指定宽度和高度，但是，其大多数功能都可以通过 CanvasRenderingContext2D 对象获得。 这是通过 Canvas 对象的 getContext() 方法并且把直接量字符串 “2d” 作为唯一的参数传递给它而获得的。</p>
+
+<p>canvas 标记在 Safari 1.3 中引入，在制作此参考页时，它在 Firefox 1.5 和 Opera 9 中也得到了支持。在 IE 中，canvas 标记及其 API 可以使用位于 excanvas.sourceforge.net 的 ExplorerCanvas 开源项目来模拟。</p>
+
+<h4 id="canvas--1">Canvas 对象的属性</h4>
+
+<h5 id="height-">height 属性</h5>
+
+<p>画布的高度。和一幅图像一样，这个属性可以指定为一个整数像素值或者是窗口高度的百分比。当这个值改变的时候，在该画布上已经完成的任何绘图都会擦除掉。默认值是 300。</p>
+
+<h5 id="width-">width 属性</h5>
+
+<p>画布的宽度。和一幅图像一样，这个属性可以指定为一个整数像素值或者是窗口宽度的百分比。当这个值改变的时候，在该画布上已经完成的任何绘图都会擦除掉。默认值是 300。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">canvas</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"myCanvas"</span> <span class="nx">width</span><span class="o">=</span><span class="s2">"200"</span> <span class="nx">height</span><span class="o">=</span><span class="s2">"100"</span><span class="o">&gt;&lt;</span><span class="sr">/canvas&gt;</span></code></pre></figure>
+
+<h4 id="canvas--2">Canvas 对象的方法</h4>
+
+<h5 id="getcontext">getContext()</h5>
+
+<p>返回一个用于在画布上绘图的环境。</p>
+
+<p>大多数 Canvas 绘图 API 都没有定义在 canvas 元素本身上，而是定义在通过画布的 getContext() 方法获得的一个“绘图环境”对象上。</p>
+
+<p>getContext(“2d”) 对象是内建的 HTML5 对象，拥有多种绘制路径、矩形、圆形、字符以及添加图像的方法</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myCanvas"</span><span class="p">);</span> <span class="c1">//JavaScript 使用 id 来寻找 canvas 元素</span>
+<span class="kd">var</span> <span class="nx">cxt</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>  <span class="c1">//创建 context 对象</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillStyle</span><span class="o">=</span><span class="s2">"#FF0000"</span><span class="p">;</span>  <span class="c1">//fillStyle 方法将其染成红色</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mi">75</span><span class="p">);</span>  <span class="c1">//fillRect 方法规定了形状、位置和尺寸 (x, y, width, height)</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<p>Canvas API 也使用了路径的表示法。但是，路径由一系列的方法调用来定义，而不是描述为字母和数字的字符串，比如调用 beginPath() 和 arc() 方法。</p>
+
+<p>一旦定义了路径，其他的方法，如 fill()，都是对此路径操作。绘图环境的各种属性，比如 fillStyle，说明了这些操作如何使用。</p>
+
+<p>注释：Canvas API 非常紧凑的一个原因上它没有对绘制文本提供任何支持。要把文本加入到一个 canvas 图形，必须要么自己绘制它再用位图图像合并它，或者在 canvas 上方使用 CSS 定位来覆盖 HTML 文本。</p>
+
+<h4 id="canvas--3">Canvas 实例</h4>
+
+<p>下面实例都要用到的canvas 元素：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">canvas</span> <span class="nx">id</span><span class="o">=</span><span class="s2">"myCanvas"</span> <span class="nx">width</span><span class="o">=</span><span class="s2">"200"</span> <span class="nx">height</span><span class="o">=</span><span class="s2">"100"</span> <span class="nx">style</span><span class="o">=</span><span class="s2">"border:1px solid #c3c3c3;"</span><span class="o">&gt;</span>
+<span class="nx">Your</span> <span class="nx">browser</span> <span class="nx">does</span> <span class="nx">not</span> <span class="nx">support</span> <span class="nx">the</span> <span class="nx">canvas</span> <span class="nx">element</span><span class="p">.</span>
+<span class="o">&lt;</span><span class="sr">/canvas&gt;</span></code></pre></figure>
+
+<h5 id="section">线条</h5>
+
+<p>通过指定从何处开始，在何处结束，来绘制一条线：</p>
+
+<p><img src="/images/canvas/line.gif" alt="线条" /></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myCanvas"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">cxt</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">moveTo</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span><span class="mi">50</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">lineTo</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">50</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">stroke</span><span class="p">();</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h5 id="section-1">圆形</h5>
+
+<p>通过规定尺寸、颜色和位置，来绘制一个圆：</p>
+
+<p><img src="/images/canvas/circle.gif" alt="圆形" /></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myCanvas"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">cxt</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillStyle</span><span class="o">=</span><span class="s2">"#FF0000"</span><span class="p">;</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">beginPath</span><span class="p">();</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">arc</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span><span class="mi">18</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nb">Math</span><span class="p">.</span><span class="nx">PI</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="kc">true</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">closePath</span><span class="p">();</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">fill</span><span class="p">();</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h5 id="section-2">渐变</h5>
+
+<p>使用指定的颜色来绘制渐变背景：</p>
+
+<p><img src="/images/canvas/gradient.gif" alt="渐变" /></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myCanvas"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">cxt</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">grd</span><span class="o">=</span><span class="nx">cxt</span><span class="p">.</span><span class="nx">createLinearGradient</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">175</span><span class="p">,</span><span class="mi">50</span><span class="p">);</span>
+<span class="nx">grd</span><span class="p">.</span><span class="nx">addColorStop</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s2">"#FF0000"</span><span class="p">);</span>
+<span class="nx">grd</span><span class="p">.</span><span class="nx">addColorStop</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="s2">"#00FF00"</span><span class="p">);</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillStyle</span><span class="o">=</span><span class="nx">grd</span><span class="p">;</span>
+<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">175</span><span class="p">,</span><span class="mi">50</span><span class="p">);</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h5 id="section-3">图片</h5>
+
+<p>把一幅图像放置到画布上：</p>
+
+<p><img src="/images/canvas/image.gif" alt="图片" /></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="cm">/*  
+绘制图片  
+	图片预加载，获取图片文件  
+	onload中调用  
+	drawImage(img,x,y,w,h);绘制图片(图片,坐标x,坐标y,宽度,高度)  
+*/</span>  
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myCanvas"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">cxt</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">img</span><span class="o">=</span><span class="k">new</span> <span class="nx">Image</span><span class="p">()</span>
+<span class="nx">img</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="s2">"flower.png"</span>
+<span class="nx">img</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">cxt</span><span class="p">.</span><span class="nx">drawImage</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h5 id="section-4">绘制背景</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="cm">/*  
+设置背景  
+	createPattern(img,平铺方式)  
+	平铺方式:repeat,repeat-x,repeat-y,no-repeat  
+*/</span> 
+<span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s2">"myCanvas"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">cxt</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">getContext</span><span class="p">(</span><span class="s2">"2d"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">img</span><span class="o">=</span><span class="k">new</span> <span class="nx">Image</span><span class="p">()</span>
+<span class="nx">img</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="s2">"flower.png"</span>
+<span class="nx">img</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">bg</span> <span class="o">=</span> <span class="nx">cxt</span><span class="p">.</span><span class="nx">createPattern</span><span class="p">(</span><span class="nx">img</span><span class="p">,</span><span class="s2">"no-repeat"</span><span class="p">);</span>  
+	<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillStyle</span> <span class="o">=</span> <span class="nx">bg</span><span class="p">;</span>  
+	<span class="nx">cxt</span><span class="p">.</span><span class="nx">fillRect</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="nx">c</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span><span class="nx">c</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>  <span class="c1">//.fillRect(x,y,width,height);</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span></code></pre></figure>
+
+<h5 id="canvas">canvas保存图片</h5>
+
+<p>canvas在浏览器端，不能实现保存图片功能，要实现该功能，需要将canvas转成图片的形式呈现，这里就需要调用toDataURL()方法，并赋给image的src的属性，然后保存图片</p>
+
+<p>调用toDataURL()方法时，如果canas中应用了图片或者背景图片,这里有2点需要注意：</p>
+
+<ul>
+    <li>需要在图片的onload事件中调用toDataURL()方法</li>
+    <li>图片和访问链接需要允许跨域请求</li>
+</ul>
+
+<p>受限于 CORS 策略，会存在跨域问题，虽然可以使用图像（比如append到页面上）但是绘制到画布上会污染画布，一旦一个画布被污染,就无法提取画布的数据，比如无法使用使用画布toBlob(),toDataURL(),或getImageData()方法;当使用这些方法的时候 会抛出如下安全错误</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Uncaught</span> <span class="nx">DOMException</span><span class="err">:</span> <span class="nx">Failed</span> <span class="nx">to</span> <span class="nx">execute</span> <span class="s1">'toDataURL'</span> <span class="nx">on</span> <span class="s1">'HTMLCanvasElement'</span><span class="err">:</span> <span class="nx">Tainted</span> <span class="nx">canvases</span> <span class="nx">may</span> <span class="nx">not</span> <span class="nx">be</span> <span class="nx">exported</span><span class="p">.</span></code></pre></figure>
+
+<p>解决这个问题，需要2步</p>
+
+<p>1.图片设置 ：crossOrigin属性</p>
+
+<p>代码片段：img.setAttribute(“crossOrigin”,’Anonymous’)</p>
+
+<p>注：该代码需要写在img.src的前面，才能生效</p>
+
+<p>2.需要服务器端代码允许，资源跨域使用，也就是设置CORS跨域配置，Access-Control-Allow-Origin</p>
+
+<p>2个小例子</p>
+
+<ul>
+  <li><a href="/page/canvas/JS (canvas) 两个小球碰撞.html">两个小球碰撞例子</a>
+<!--* [重力弹球例子](/page/canvas/重力弹球.html)--></li>
+</ul>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/04/13/canvas" data-title="HTML 5 canvas" data-url="/front/article/2018/04/13/canvas.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

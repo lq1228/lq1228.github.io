@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>无标题文档</title>
+<style>
+div{width:100px;
+    height:100px;
+}
+#box{background:red; position:absolute; }
+#box1{background:green;position:absolute;top:300px; left:300px;}
+</style>
+<script>
+//两个碰撞的盒子。是建立在一个不动的基础上。所以可以根据不动的盒子求出四个方向的left和top值。然后再判断其是否碰撞，且碰撞的过程随时改变其层级，（原需 var 8个变量，现在只需4个变量）
+function collText(obj,left,top,obj1){
+            var l1=obj.offsetLeft-obj.offsetWidth;
+            var t1=obj.offsetTop-obj.offsetHeight;
+            var r1=obj.offsetLeft+obj.offsetWidth;
+            var b1=obj.offsetTop+obj.offsetHeight;
+            if(left<l1||top<t1||left>r1||top>b1){
+                obj.style.zIndex=3;
+                obj1.style.zIndex=1;
+                return true;    
+            }else{
+                obj.style.zIndex=1;
+                obj1.style.zIndex=3;
+                return false;
+            }
+};
+window.onload=function(){
+    var oBox=document.getElementById('box');    
+    var oBox1=document.getElementById('box1');
+    oBox.onmousedown=function(ev){
+        var oEvent= ev   ||    event;
+        var disX=oEvent.clientX-oBox.offsetLeft;
+        var disY=oEvent.clientY-oBox.offsetTop;
+        document.onmousemove=function(ev){
+            var oEvent= ev  ||    event;
+            var l=oEvent.clientX-disX;
+            var t=oEvent.clientY-disY;
+            oBox.style.left=l+'px'    ;
+            oBox.style.top=t+'px'    ;
+            if(collText(oBox1,l,t,oBox)){
+                oBox1.style.background='green';
+            }else{
+                oBox1.style.background='yellow';        
+            }
+            
+        };
+        document.onmouseup=function(){
+            document.onmousemove=null;    
+            document.onmouseup=null;
+            oBox.reseaseCapture&&oBox.reseaseCapture();
+        };
+        oBox.setCapture&&oBox.setCapture();
+        return false;
+    }
+    oBox1.onmousedown=function(ev){
+        var oEvent= ev ||    event;
+        
+        var disX1=oEvent.clientX-oBox1.offsetLeft;
+        var disY1=oEvent.clientY-oBox1.offsetTop;
+        document.onmousemove=function(ev){
+            var oEvent= ev ||    event;
+            var le=oEvent.clientX-disX1;
+            var to=oEvent.clientY-disY1;
+            oBox1.style.left=le+'px'    ;
+            oBox1.style.top=to+'px'    ;
+            if(collText(oBox,le,to,oBox1)){
+                oBox.style.background='red';
+            }else{
+                oBox.style.background='#000';        
+            }
+        };
+        document.onmouseup=function(){
+            document.onmousemove=null;    
+            document.onmouseup=null;
+            oBox1.reseaseCapture&&oBox1.reseaseCapture();
+        }
+        
+        oBox1.setCapture&&oBox1.setCapture();
+        return false;
+    }
+}
+</script>
+</head>
+
+<body>
+<div id="box"></div>
+<div id="box1"></div>
+</body>
+</html>
