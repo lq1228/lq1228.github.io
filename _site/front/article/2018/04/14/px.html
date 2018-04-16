@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>画一条0.5px的边</title>
+  <meta name="description" content=" ">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/04/14/px.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/04/14/px.html">画一条0.5px的边</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">画一条0.5px的边</h1>
+    <p class="post-meta"><time datetime="2018-04-14T10:49:42+08:00" itemprop="datePublished">Apr 14, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="section">什么是像素？</h4>
+
+<p>像素是屏幕显示最小的单位，在一个1080p的屏幕上，它的像素数量是1920 1080，即横边有1920个像素，而竖边为1080个。一个像素就是一个单位色块，是由rgba四个通道混合而成。对于一个1200万像素的相机镜头来说，它有1200万个感光单元，它能输出的最大图片分辨率大约为3000 4000。</p>
+
+<p>那么像素本身有大小吗，一个像素有多大？</p>
+
+<p>有的，如果一个像素越小，那么在同样大小的屏幕上，需要的像素点就越多，像素就越密集，如果一英寸有435个像素，那么它的dpi/ppi就达到了435。Macbook Pro 15寸的分辨率为2880 x 1800，15寸是指屏幕的对角线为15寸（具体为15.4），根据长宽比换算一下得到横边为13寸，所以ppi为2880 / 13 = 220 ppi. 像素越密集即ppi(pixel per inch)越高，那么屏幕看起来就越细腻越高清。</p>
+
+<p>在Mac/Windows上可以设置屏幕显示的分辨率，Mac默认为设备分辨率的一半，它的dpr = 2，即长和宽用2个像素表示1个像素，所以2880个物理像素点实际上只表示1440个逻辑像素：</p>
+
+<p><img src="/images/px/1.jpg" alt="px" /></p>
+
+<p>那么我们的问题来了，怎么在高清屏上画一条0.5px的边呢？0.5px相当于高清屏物理像素的1px。这样的目的是在高清屏上看起来会更细一点，效果会更好一点，例如更细的分隔线。</p>
+
+<p>理论上px的最小单位是1，但是会有几个特例，高清屏的显示就是一个特例。高清屏确实可以画0.5px，对比效果如下：</p>
+
+<p><img src="/images/px/2.jpg" alt="px" /></p>
+
+<p>如果我们直接设置0.5px，在不同的浏览器会有不同的表现，使用如下代码：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;!</span><span class="nx">DOCTYPE</span> <span class="nx">html</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nx">meta</span> <span class="nx">charset</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+            <span class="p">.</span><span class="nx">hr</span> <span class="p">{</span>
+                <span class="nl">width</span><span class="p">:</span> <span class="mi">300</span><span class="nx">px</span><span class="p">;</span>
+                <span class="nx">background</span><span class="o">-</span><span class="nx">color</span><span class="err">:</span> <span class="err">#</span><span class="mi">000</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">half</span><span class="o">-</span><span class="nx">px</span> <span class="p">{</span>
+                <span class="nl">height</span><span class="p">:</span> <span class="mf">0.5</span><span class="nx">px</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">one</span><span class="o">-</span><span class="nx">px</span> <span class="p">{</span>
+            <span class="nl">height</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/head</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="mf">0.5</span><span class="nx">px</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"hr half-px"</span><span class="o">&gt;&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="mi">1</span><span class="nx">px</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span>        <span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"hr one-px"</span><span class="o">&gt;&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/html&gt;</span></code></pre></figure>
+
+<p>在PC上的不同浏览器上测试测试结果如下所示：</p>
+
+<p><img src="/images/px/3.jpg" alt="px" /></p>
+
+<p>其中Chrome把0.5px四舍五入变成了1px，而firefox/safari能够画出半个像素的边，并且Chrome会把小于0.5px的当成0，而Firefox会把不小于0.55px当成1px，Safari是把不小于0.75px当成1px，进一步在手机上观察IOS的Chrome会画出0.5px的边，而安卓(5.0)原生浏览器是不行的。所以直接设置0.5px不同浏览器的差异比较大，并且我们看到不同系统的不同浏览器对小数点的px有不同的处理。所以如果我们把单位设置成小数的px包括宽高等，其实不太可靠，因为不同浏览器表现不一样。</p>
+
+<h4 id="section-1">方法一：缩放</h4>
+
+<p>能否设置1px，然后scale 0.5呢，我们可以尝试一下，如下代码所示：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+    <span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">scale</span><span class="o">-</span><span class="nx">half</span> <span class="p">{</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span><span class="p">;</span>
+    <span class="nl">transform</span><span class="p">:</span> <span class="nx">scaleY</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+    <span class="mi">1</span><span class="nx">px</span> <span class="o">+</span> <span class="nx">scaleY</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"hr scale-half"</span><span class="o">&gt;&lt;</span><span class="sr">/div&gt;</span></code></pre></figure>
+
+<p><img src="/images/px/4.jpg" alt="px" /></p>
+
+<p>我们发现Chrome/Safari都变虚了，只有Firefox比较完美看起来是实的而且还很细，效果和直接设置0.5px一样。所以通过transform: scale会导致Chrome变虚了，而粗细几乎没有变化。但是如果加上transform-origin: 50% 100%：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">scale</span><span class="o">-</span><span class="nx">half</span> <span class="p">{</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span><span class="p">;</span>
+    <span class="nl">transform</span><span class="p">:</span> <span class="nx">scaleY</span><span class="p">(</span><span class="mf">0.5</span><span class="p">);</span>
+    <span class="nx">transform</span><span class="o">-</span><span class="nx">origin</span><span class="err">:</span> <span class="mi">50</span><span class="o">%</span><span class="mi">100</span><span class="o">%</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>大家就都变实了，很完美，Chrome的效果如下</p>
+
+<p><img src="/images/px/5.jpg" alt="px" /></p>
+
+<h4 id="linear-gradient">方法二： 线性渐变linear-gradient</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">gradient</span> <span class="p">{</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span><span class="p">;</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nx">linear</span><span class="o">-</span><span class="nx">gradient</span><span class="p">(</span><span class="mi">0</span><span class="nx">deg</span><span class="p">,</span> <span class="err">#</span><span class="nx">fff</span><span class="p">,</span> <span class="err">#</span><span class="mi">000</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">linear</span><span class="o">-</span><span class="nx">gradient</span><span class="p">(</span><span class="mi">0</span><span class="nx">deg</span><span class="p">,</span> <span class="err">#</span><span class="nx">fff</span><span class="p">,</span> <span class="err">#</span><span class="mi">000</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">divclass</span><span class="o">=</span><span class="s2">"hr gradient"</span><span class="o">&gt;&lt;</span><span class="sr">/div&gt;</span></code></pre></figure>
+
+<p>linear-gradient(0deg, #fff, #000)的意思是：渐变的角度从下往上，从白色#fff渐变到黑色#000，而且是线性的，在高清屏上，1px的逻辑像素代表的物理（设备）像素有2px，由于是线性渐变，所以第1个px只能是#fff，而剩下的那个像素只能是#000，这样就达到了画一半的目的。逻辑分析很完美，实际的效果又怎么样呢，如下图所示：</p>
+
+<p><img src="/images/px/6.jpg" alt="px" /></p>
+
+<p>我们发现这种方法在各个流览器上面都不完美，效果都是虚的，和完美的0.5px还是有差距。这个效果和scale 0.5的差不多，都是通过虚化线，让人觉得变细了。</p>
+
+<h4 id="boxshadow">方法三：使用boxshadow</h4>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">boxshadow</span> <span class="p">{</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span><span class="p">;</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nx">none</span><span class="p">;</span>
+    <span class="nx">box</span><span class="o">-</span><span class="nx">shadow</span><span class="err">:</span> <span class="mf">00.5</span><span class="nx">px0</span><span class="err">#</span><span class="mi">000</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">box</span><span class="o">-</span><span class="nx">shadow</span><span class="err">:</span> <span class="mi">0</span> <span class="mf">0.5</span><span class="nx">px</span> <span class="mi">0</span> <span class="err">#</span><span class="mi">000</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"hr boxshadow"</span><span class="o">&gt;&lt;</span><span class="sr">/div&gt;</span></code></pre></figure>
+
+<p>设置box-shadow的第二个参数为0.5px，表示阴影垂直方向的偏移为0.5px，效果如下：</p>
+
+<p><img src="/images/px/7.jpg" alt="px" /></p>
+
+<p>这个方法在Chrome和Firefox都非常完美，但是Safari不支持小于1px的boxshadow，所以完全没显示出来了。</p>
+
+<h4 id="svg">方法四： 使用SVG</h4>
+
+<p>利用SVG的描边等属性的1px还是物理像素的1px，而不是高清屏的1px。如下代码所示：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">style</span><span class="o">&gt;</span>
+<span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">svg</span> <span class="p">{</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nx">none</span><span class="p">;</span>
+    <span class="nl">height</span><span class="p">:</span> <span class="mi">1</span><span class="nx">px</span><span class="p">;</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nx">url</span><span class="p">(</span><span class="s2">"data:image/svg+xml;utf-8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='1px'&gt;&lt;line x1='0' y1='0' x2='100%' y2='0' stroke='#000'&gt;&lt;/line&gt;&lt;/svg&gt;"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="o">&lt;</span><span class="sr">/style</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">svg</span><span class="o">&lt;</span><span class="sr">/p</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">div</span> <span class="kr">class</span><span class="o">=</span><span class="s2">"hr svg"</span><span class="o">&gt;&lt;</span><span class="sr">/div&gt;</span></code></pre></figure>
+
+<p>设置background为一个svg文件，这个svg单独拷出来是这样的：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">svg</span> <span class="nx">xmlns</span><span class="o">=</span><span class="s1">'http://www.w3.org/2000/svg'</span> <span class="nx">width</span><span class="o">=</span><span class="s1">'100%'</span> <span class="nx">height</span><span class="o">=</span><span class="s1">'1px'</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">line</span> <span class="nx">x1</span><span class="o">=</span><span class="s1">'0'</span> <span class="nx">y1</span><span class="o">=</span><span class="s1">'0'</span> <span class="nx">x2</span><span class="o">=</span><span class="s1">'100%'</span> <span class="nx">y2</span><span class="o">=</span><span class="s1">'0'</span> <span class="nx">stroke</span><span class="o">=</span><span class="s1">'#000'</span><span class="o">&gt;&lt;</span><span class="sr">/line</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/svg&gt;</span></code></pre></figure>
+
+<p>使用svg的line元素画线，stroke表示描边颜色，默认描边宽度stroke-width=”1”，由于svg的描边等属性的1px是物理像素的1px，相当于高清屏的0.5px，另外还可以使用svg的rect等元素进行绘制。在Chrome和Safari的效果如下：</p>
+
+<p><img src="/images/px/8.jpg" alt="px" /></p>
+
+<p>这个方案也是很完美，但是在firefox挂了，究其原因是因为firefox的background-image如果是svg的话只支持命名的颜色，如”black”、”red”等，如果把上面代码的svg里面的#000改成black的话就可以显示出来，但是这样就很不灵活了。否则只能把svg转成base64的形式，我们把svg的内容转成base64（可以找一些在线的工具），对比如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">.</span><span class="nx">hr</span><span class="p">.</span><span class="nx">svg</span> <span class="p">{</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nx">url</span><span class="p">(</span><span class="s2">"data:image/svg+xml;utf-8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='100%' height='1px'&gt;&lt;line x1='0' y1='0' x2='100%' y2='0' stroke='#000'&gt;&lt;/line&gt;&lt;/svg&gt;"</span><span class="p">);</span>
+    <span class="nl">background</span><span class="p">:</span> <span class="nx">url</span><span class="p">(</span><span class="s2">"data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAlJyBoZWlnaHQ9JzFweCc+PGxpbmUgeDE9JzAnIHkxPScwJyB4Mj0nMTAwJScgeTI9JzAnIHN0cm9rZT0nIzAwMCc+PC9saW5lPjwvc3ZnPg=="</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>这样在firefox也能完美展示了。</p>
+
+<p>其实0.5px的需求在移动端应该会更常见，比较一下以上五种方法在IOS和安卓的表现，如下图所示：</p>
+
+<p><img src="/images/px/9.jpg" alt="px" /></p>
+
+<p>IOS下的Safari和Chrome表现一致，都是以直接设置0.5px的效果最好，而安卓浏览器则是以box-shadow的效果最好（试了5和7），而svg/transform的方案在IOS和安卓的设备上都能完美支持。读者可以打开这个网页，看一下在你的设备是哪种效果最好。</p>
+
+<p>结合以上，我们初步得到以下结论：</p>
+
+<p><img src="/images/px/10.jpg" alt="px" /></p>
+
+<p>使用SVG相对于box-shadow等方法，还有一个好处是可以借助svg的元素画出任意图形，如四边形，圆角等。</p>
+
+<p>最后还有一个万能的方法，那就是通过控制viewport，在移端开发里面一般会把viewport的scale设置成1：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">meta</span> <span class="nx">name</span><span class="o">=</span><span class="s2">"viewport"</span> <span class="nx">content</span><span class="o">=</span><span class="s2">"width=device-width,initial-sacle=1"</span><span class="o">&gt;</span></code></pre></figure>
+
+<p>其中width=device-width表示将viewport视窗的宽度调整为设备的宽度，这个宽度通常是指物理上宽度。默认的缩放比例为1，如iphone 6竖屏的宽度为750px，它的dpr=2，用2px表示1px，这样设置之后viewport的宽度就变成375px。这时候0.5px的边就使用我们上面讨论的方法。</p>
+
+<p>但是你可以把scale改成0.5：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">&lt;</span><span class="nx">meta</span> <span class="nx">name</span><span class="o">=</span><span class="s2">"viewport"</span> <span class="nx">content</span><span class="o">=</span><span class="s2">"width=device-width,initial-sacle=0.5"</span><span class="o">&gt;</span></code></pre></figure>
+
+<p>这样的话，viewport的宽度就是原本的750px，所以1个px还是1px，正常画就行，但这样也意味着UI需要按2倍图的出，整体面面的单位都会放大一倍。</p>
+
+<p>在iPone X和一些安卓手机等dpr = 3的设备上，需要设置scale为0.333333，这个时候就是3倍地画了。</p>
+
+<p>综上讨论了像素和viewport的一些概念，并介绍和比较了在高清屏上画0.5px的几种方法——可以通过直接设置宽高border为0.5px、设置box-shadow的垂直方向的偏移量为0.5px、借助线性渐变linear-gradient、使用transform: scaleY(0.5)的方法，使用SVG的方法。最后发现transfrom scale/svg的方法兼容性和效果都是最好的，svg可以支持复杂的图形，所以在viewport是1的情况下，可以使用transform/SVG画0.5px，而如果viewport的缩放比例不是1的话，那么直接画1px即可。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/04/14/px" data-title="画一条0.5px的边" data-url="/front/article/2018/04/14/px.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
