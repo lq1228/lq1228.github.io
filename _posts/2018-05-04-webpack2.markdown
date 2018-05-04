@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "webpack-入口起点(Entry Points)"
+title:  "webpack-2入口起点(Entry Points)"
 date:   2018-05-04 10:49:42 +0800
 description: "还将向你展示如何去配置 entry 属性"
 categories: front article
@@ -32,7 +32,7 @@ const config = {
 };
 {% endhighlight %}
 
-	当你向 entry 传入一个数组时会发生什么？向 entry 属性传入「文件路径(file path)数组」将创建“多个主入口(multi-main entry)”。在你想要多个依赖文件一起注入，并且将它们的依赖导向(graph)到一个“chunk”时，传入数组的方式就很有用。
+  当你向 entry 传入一个数组时会发生什么？向 entry 属性传入「文件路径(file path)数组」将创建“多个主入口(multi-main entry)”。在你想要多个依赖文件一起注入，并且将它们的依赖导向(graph)到一个“chunk”时，传入数组的方式就很有用。
 
 当你正在寻找为「只有一个入口起点的应用程序或工具（即 library）」快速设置 webpack 配置的时候，这会是个很不错的选择。然而，使用此语法在扩展配置时有失灵活性。
 
@@ -53,7 +53,7 @@ const config = {
 
 对象语法会比较繁琐。然而，这是应用程序中定义入口的最可扩展的方式。
 
-	“可扩展的 webpack 配置”是指，可重用并且可以与其他配置组合使用。这是一种流行的技术，用于将关注点(concern)从环境(environment)、构建目标(build target)、运行时(runtime)中分离。然后使用专门的工具（如 webpack-merge）将它们合并。
+  “可扩展的 webpack 配置”是指，可重用并且可以与其他配置组合使用。这是一种流行的技术，用于将关注点(concern)从环境(environment)、构建目标(build target)、运行时(runtime)中分离。然后使用专门的工具（如 webpack-merge）将它们合并。
 
 #### 常见场景
 
@@ -96,4 +96,4 @@ const config = {
 	<li> 使用 CommonsChunkPlugin 为每个页面间的应用程序共享代码创建 bundle。由于入口起点增多，多页应用能够复用入口起点之间的大量代码/模块，从而可以极大地从这些技术中受益。 </li>
 </ul>
 
-	根据经验：每个 HTML 文档只使用一个入口起点。
+  根据经验：每个 HTML 文档只使用一个入口起点。
