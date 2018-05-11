@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>webpack-3输出(Output)</title>
+  <meta name="description" content=" 配置 output 选项可以控制 webpack 如何向硬盘写入编译文件。注意，即使可以存在多个入口起点，但只指定一个输出配置">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/05/11/webpack3.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/05/11/webpack3.html">webpack-3输出(Output)</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">webpack-3输出(Output)</h1>
+    <p class="post-meta"><time datetime="2018-05-11T10:49:42+08:00" itemprop="datePublished">May 11, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>配置 output 选项可以控制 webpack 如何向硬盘写入编译文件。注意，即使可以存在多个入口起点，但只指定一个输出配置。</p>
+
+<h4 id="section">用法</h4>
+
+<p>在 webpack 中配置 output 属性的最低要求是，将它的值设置为一个对象，包括以下两点：</p>
+
+<ul>
+    <li> filename 用于输出文件的文件名。 </li>
+    <li> 目标输出目录 path 的绝对路径。 </li>
+</ul>
+
+<p>webpack.config.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">config</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">output</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'bundle.js'</span><span class="p">,</span>
+    <span class="na">path</span><span class="p">:</span> <span class="s1">'/home/proj/public/assets'</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">config</span><span class="p">;</span></code></pre></figure>
+
+<p>此配置将一个单独的 bundle.js 文件输出到 /home/proj/public/assets 目录中。</p>
+
+<h4 id="section-1">多个入口起点</h4>
+
+<p>如果配置创建了多个单独的 “chunk”（例如，使用多个入口起点或使用像 CommonsChunkPlugin 这样的插件），则应该使用占位符(substitutions)来确保每个文件具有唯一的名称。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="nl">entry</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">app</span><span class="p">:</span> <span class="s1">'./src/app.js'</span><span class="p">,</span>
+    <span class="nx">search</span><span class="err">:</span> <span class="s1">'./src/search.js'</span>
+  <span class="p">},</span>
+  <span class="nx">output</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nl">filename</span><span class="p">:</span> <span class="s1">'[name].js'</span><span class="p">,</span>
+    <span class="nx">path</span><span class="err">:</span> <span class="nx">__dirname</span> <span class="o">+</span> <span class="s1">'/dist'</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// 写入到硬盘：./dist/app.js, ./dist/search.js</span></code></pre></figure>
+
+<h4 id="section-2">高级进阶</h4>
+
+<p>以下是使用 CDN 和资源 hash 的复杂示例：</p>
+
+<p>config.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">output</span><span class="err">:</span> <span class="p">{</span>
+  <span class="nl">path</span><span class="p">:</span> <span class="s2">"/home/proj/cdn/assets/[hash]"</span><span class="p">,</span>
+  <span class="nx">publicPath</span><span class="err">:</span> <span class="s2">"http://cdn.example.com/assets/[hash]/"</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>在编译时不知道最终输出文件的 publicPath 的情况下，publicPath 可以留空，并且在入口起点文件运行时动态设置。如果你在编译时不知道 publicPath，你可以先忽略它，并且在入口起点设置 <strong>webpack_public_path</strong>。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">__webpack_public_path__</span> <span class="o">=</span> <span class="nx">myRuntimePublicPath</span>
+
+<span class="c1">// 剩余的应用程序入口</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/05/11/webpack3" data-title="webpack-3输出(Output)" data-url="/front/article/2018/05/11/webpack3.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
