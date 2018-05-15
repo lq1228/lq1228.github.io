@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "webpack-3输出(Output)"
+title:  "webpack-3-输出(Output)"
 date:   2018-05-11 10:49:42 +0800
 description: " 配置 output 选项可以控制 webpack 如何向硬盘写入编译文件。注意，即使可以存在多个入口起点，但只指定一个输出配置"
 categories: front article

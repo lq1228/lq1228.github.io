@@ -6,12 +6,89 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 11 May 2018 21:06:58 +0800</pubDate>
-    <lastBuildDate>Fri, 11 May 2018 21:06:58 +0800</lastBuildDate>
+    <pubDate>Tue, 15 May 2018 15:56:58 +0800</pubDate>
+    <lastBuildDate>Tue, 15 May 2018 15:56:58 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
     
       <item>
-        <title>webpack-3输出(Output)</title>
+        <title>webpack-4-模式(mode)</title>
+        <description>&lt;p&gt;提供 mode 配置选项，告知 webpack 使用相应模式的内置优化。&lt;/p&gt;
+
+&lt;p&gt;string&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;用法&lt;/h4&gt;
+
+&lt;p&gt;只在配置中提供 mode 选项：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;production&#39;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;或者从 CLI 参数中传递：&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;webpack&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;production&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;支持以下字符串值：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;选项&lt;/td&gt;
+      &lt;td&gt;描述&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;development&lt;/td&gt;
+      &lt;td&gt;会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;production&lt;/td&gt;
+      &lt;td&gt;会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;记住，只设置 NODE_ENV，则不会自动设置 mode。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h5 id=&quot;mode-development&quot;&gt;mode: development&lt;/h5&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// webpack.development.config.js&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;development&#39;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;plugins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NamedModulesPlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;DefinePlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;process.env.NODE_ENV&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;development&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h5 id=&quot;mode-production&quot;&gt;mode: production&lt;/h5&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c1&quot;&gt;// webpack.production.config.js&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;  &lt;span class=&quot;na&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;production&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;  &lt;span class=&quot;na&quot;&gt;plugins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;UglifyJsPlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* ... */&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;DefinePlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;process.env.NODE_ENV&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;production&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}),&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;optimize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ModuleConcatenationPlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;webpack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;NoEmitOnErrorsPlugin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Tue, 15 May 2018 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2018/05/15/webpack4.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/05/15/webpack4.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>webpack-3-输出(Output)</title>
         <description>&lt;p&gt;配置 output 选项可以控制 webpack 如何向硬盘写入编译文件。注意，即使可以存在多个入口起点，但只指定一个输出配置。&lt;/p&gt;
 
 &lt;h4 id=&quot;section&quot;&gt;用法&lt;/h4&gt;
@@ -83,7 +160,7 @@
       </item>
     
       <item>
-        <title>webpack-2入口起点(Entry Points)</title>
+        <title>webpack-2-入口起点(Entry Points)</title>
         <description>&lt;p&gt;正如我们在起步中提到的，在 webpack 配置中有多种方式定义 entry 属性。除了解释为什么它可能非常有用，我们还将向你展示如何去配置 entry 属性。&lt;/p&gt;
 
 &lt;h4 id=&quot;section&quot;&gt;单个入口（简写）语法&lt;/h4&gt;
@@ -1323,106 +1400,6 @@
         <pubDate>Fri, 09 Mar 2018 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2018/03/09/error.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/03/09/error.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>前端架构设计-读书笔记</title>
-        <description>&lt;h4 id=&quot;section&quot;&gt;一、前端架构的原则&lt;/h4&gt;
-
-&lt;p&gt;前端架构是一系列工具和流程的集合，旨在提升前端代码的质量，并实现高效、可持续的工作流&lt;/p&gt;
-
-&lt;p&gt;前端架构师的工作职责：&lt;/p&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 1、体系设计 (建立具备完善检验机制的代码规范) &lt;/li&gt;
-	&lt;li&gt; 2、工作规划 (制定开发工作流：版本控制器、任务调度器、CSS处理器、文档工具、测试组件和服务器自动化工具等)&lt;/li&gt;
-	&lt;li&gt; 3、监督跟进 (持续优化工作流程) &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;二、前端架构的核心&lt;/h4&gt;
-
-&lt;p&gt;工具和流程是构建网站的要素&lt;/p&gt;
-
-&lt;p&gt;四个核心的含义：&lt;/p&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 1、代码 &lt;/li&gt;
-	&lt;li&gt; 2、流程 &lt;/li&gt;
-	&lt;li&gt; 3、测试 &lt;/li&gt;
-	&lt;li&gt; 4、文档 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;html&quot;&gt;三、HTML&lt;/h4&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 1、HTML标签语义化 &lt;/li&gt;
-	&lt;li&gt; 2、拆分，最小单元重组 &lt;/li&gt;
-	&lt;li&gt; 3、模块化CSS理论的多面性，选择合适自己团队的方案即可 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;OOCSS方法&lt;/p&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 分离结构和外观 - 将视觉特性定义为可复用的单元 &lt;/li&gt;
-	&lt;li&gt; 分离容器和内容 - 不再将元素位置座位样式的限定词 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;SMACSS方法&lt;/p&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 基础 - 如果不添加CSS类名，标记会以什么外观呈现 &lt;/li&gt;
-	&lt;li&gt; 布局 - 把页面分成一些区域 &lt;/li&gt;
-	&lt;li&gt; 模块 - 设计中的模块化、可复用的单元 &lt;/li&gt;
-	&lt;li&gt; 状态 - 描述在特定的状态和情况下，模块和布局的显示方式 &lt;/li&gt;
-	&lt;li&gt; 主题 - 一个可选的视觉外观层，可以让你更换不同的主题 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;BEM方法&lt;/p&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 块名 - 所属组件的名称 &lt;/li&gt;
-	&lt;li&gt; 元素 - 元素在块里面的名称 &lt;/li&gt;
-	&lt;li&gt; 修饰符 - 任何与元素相关联的修饰符 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;css&quot;&gt;四、CSS&lt;/h4&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 1、分离内容和容器 &lt;/li&gt;
-	&lt;li&gt; 2、区分布局与组件的角色和职责 &lt;/li&gt;
-	&lt;li&gt; 3、在标记上使用单一、扁平的选择器 &lt;/li&gt;
-	&lt;li&gt; 4、使用其它原则，比如单一职责原则、单一样式来源、内容修饰符 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;javascript&quot;&gt;五、JAVASCRIPT&lt;/h4&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 1、保持代码整洁（JSLint） &lt;/li&gt;
-	&lt;li&gt; 2、创造可复用的函数 &lt;/li&gt;
-	&lt;li&gt; 3、围绕单一职责原则，设计结构 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;六、工作流&lt;/h4&gt;
-
-&lt;p&gt;工作流：需求 - 原型设计 - 程序开发&lt;/p&gt;
-
-&lt;p&gt;前端工作流：&lt;/p&gt;
-
-&lt;p&gt;必要的工具 - 本地部署 - 编写用户故事 - 开发 - 发布 - 提交编译后的资源 - 持续集成服务器 - 发布渠道&lt;/p&gt;
-
-&lt;h4 id=&quot;section-3&quot;&gt;总结&lt;/h4&gt;
-
-&lt;p&gt;不要把所有的希望寄托在一个单独的解决方案，框架或者平台，除非它一次又一次被证明是有效的。我们仍然需要不断的迭代和尝试新的事物。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 02 Mar 2018 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2018/03/02/Framework.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/03/02/Framework.html</guid>
         
         
         <category>front</category>

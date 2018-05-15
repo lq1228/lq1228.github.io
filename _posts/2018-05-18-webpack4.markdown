@@ -1,0 +1,63 @@
+---
+layout: post
+title:  "webpack-4-模式(mode)"
+date:   2018-05-15 10:49:42 +0800
+description: "提供 mode 配置选项，告知 webpack 使用相应模式的内置优化。"
+categories: front article
+---
+
+提供 mode 配置选项，告知 webpack 使用相应模式的内置优化。
+
+string
+
+#### 用法
+
+只在配置中提供 mode 选项：
+
+{% highlight javascript %}
+module.exports = {
+  mode: 'production'
+};
+{% endhighlight %}
+
+或者从 CLI 参数中传递：
+
+{% highlight javascript %}
+webpack --mode=production
+{% endhighlight %}
+
+支持以下字符串值：
+
+| 选项 | 描述 | 
+| development | 会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。|
+| production | 会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin. | 
+
+	记住，只设置 NODE_ENV，则不会自动设置 mode。
+
+##### mode: development
+
+{% highlight javascript %}
+// webpack.development.config.js
+module.exports = {
++ mode: 'development'
+- plugins: [
+-   new webpack.NamedModulesPlugin(),
+-   new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("development") }),
+- ]
+}
+{% endhighlight %}
+
+##### mode: production
+
+{% highlight javascript %}
+// webpack.production.config.js
+module.exports = {
++  mode: 'production',
+-  plugins: [
+-    new UglifyJsPlugin(/* ... */),
+-    new webpack.DefinePlugin({ "process.env.NODE_ENV": JSON.stringify("production") }),
+-    new webpack.optimize.ModuleConcatenationPlugin(),
+-    new webpack.NoEmitOnErrorsPlugin()
+-  ]
+}
+{% endhighlight %}
