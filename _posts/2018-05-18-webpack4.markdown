@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "webpack-4-模式(mode)"
-date:   2018-05-15 10:49:42 +0800
+date:   2018-05-18 10:49:42 +0800
 description: "提供 mode 配置选项，告知 webpack 使用相应模式的内置优化。"
 categories: front article
 ---
