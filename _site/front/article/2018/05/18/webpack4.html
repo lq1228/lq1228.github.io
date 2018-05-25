@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>webpack-4-模式(mode)</title>
+  <meta name="description" content="提供 mode 配置选项，告知 webpack 使用相应模式的内置优化。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/05/18/webpack4.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/05/18/webpack4.html">webpack-4-模式(mode)</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">webpack-4-模式(mode)</h1>
+    <p class="post-meta"><time datetime="2018-05-18T10:49:42+08:00" itemprop="datePublished">May 18, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>提供 mode 配置选项，告知 webpack 使用相应模式的内置优化。</p>
+
+<p>string</p>
+
+<h4 id="section">用法</h4>
+
+<p>只在配置中提供 mode 选项：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="s1">'production'</span>
+<span class="p">};</span></code></pre></figure>
+
+<p>或者从 CLI 参数中传递：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">webpack</span> <span class="o">--</span><span class="nx">mode</span><span class="o">=</span><span class="nx">production</span></code></pre></figure>
+
+<p>支持以下字符串值：</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>选项</td>
+      <td>描述</td>
+    </tr>
+    <tr>
+      <td>development</td>
+      <td>会将 process.env.NODE_ENV 的值设为 development。启用 NamedChunksPlugin 和 NamedModulesPlugin。</td>
+    </tr>
+    <tr>
+      <td>production</td>
+      <td>会将 process.env.NODE_ENV 的值设为 production。启用 FlagDependencyUsagePlugin, FlagIncludedChunksPlugin, ModuleConcatenationPlugin, NoEmitOnErrorsPlugin, OccurrenceOrderPlugin, SideEffectsFlagPlugin 和 UglifyJsPlugin.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>记住，只设置 NODE_ENV，则不会自动设置 mode。
+</code></pre>
+</div>
+
+<h5 id="mode-development">mode: development</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// webpack.development.config.js</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">+</span> <span class="na">mode</span><span class="p">:</span> <span class="s1">'development'</span>
+<span class="o">-</span> <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span>
+<span class="o">-</span>   <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">NamedModulesPlugin</span><span class="p">(),</span>
+<span class="o">-</span>   <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">DefinePlugin</span><span class="p">({</span> <span class="s2">"process.env.NODE_ENV"</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="s2">"development"</span><span class="p">)</span> <span class="p">}),</span>
+<span class="o">-</span> <span class="p">]</span>
+<span class="p">}</span></code></pre></figure>
+
+<h5 id="mode-production">mode: production</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// webpack.production.config.js</span>
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">+</span>  <span class="na">mode</span><span class="p">:</span> <span class="s1">'production'</span><span class="p">,</span>
+<span class="o">-</span>  <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span>
+<span class="o">-</span>    <span class="k">new</span> <span class="nx">UglifyJsPlugin</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">),</span>
+<span class="o">-</span>    <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">DefinePlugin</span><span class="p">({</span> <span class="s2">"process.env.NODE_ENV"</span><span class="p">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="s2">"production"</span><span class="p">)</span> <span class="p">}),</span>
+<span class="o">-</span>    <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">optimize</span><span class="p">.</span><span class="nx">ModuleConcatenationPlugin</span><span class="p">(),</span>
+<span class="o">-</span>    <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">NoEmitOnErrorsPlugin</span><span class="p">()</span>
+<span class="o">-</span>  <span class="p">]</span>
+<span class="p">}</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/05/18/webpack4" data-title="webpack-4-模式(mode)" data-url="/front/article/2018/05/18/webpack4.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
