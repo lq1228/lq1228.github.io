@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "webpack-5-loader"
-date:   2018-05-24 10:49:42 +0800
+date:   2018-05-25 10:49:42 +0800
 description: "loader 用于对模块的源代码进行转换。loader 可以使你在 import 或 加载 模块时预处理文件。"
 categories: front article
 ---
@@ -37,9 +37,9 @@ module.exports = {
 在你的应用程序中，有三种使用 loader 的方式：
 
 <ul>
-	<li> 配置（推荐）：在 webpack.config.js 文件中指定 loader。 </li>
-	<li> 内联：在每个 import 语句中显式指定 loader。 </li>
-	<li> CLI：在 shell 命令中指定它们。 </li>
+  <li> 配置（推荐）：在 webpack.config.js 文件中指定 loader。 </li>
+  <li> 内联：在每个 import 语句中显式指定 loader。 </li>
+  <li> CLI：在 shell 命令中指定它们。 </li>
 </ul>
 
 ##### 配置[Configuration]
@@ -77,7 +77,7 @@ import Styles from 'style-loader!css-loader?modules!./styles.css';
 
 选项可以传递查询参数，例如 ?key=value&foo=bar，或者一个 JSON 对象，例如 ?{"key":"value","foo":"bar"}。
 
-	尽可能使用 module.rules，因为这样可以减少源码中的代码量，并且可以在出错时，更快地调试和定位 loader 中的问题。
+  尽可能使用 module.rules，因为这样可以减少源码中的代码量，并且可以在出错时，更快地调试和定位 loader 中的问题。
 
 ##### CLI
 
@@ -92,14 +92,14 @@ webpack --module-bind jade-loader --module-bind 'css=style-loader!css-loader'
 #### loader 特性
 
 <ul>
-	<li> loader 支持链式传递。能够对资源使用流水线(pipeline)。一组链式的 loader 将按照相反的顺序执行。loader 链中的第一个 loader 返回值给下一个 loader。在最后一个 loader，返回 webpack 所预期的 JavaScript。 </li>
-	<li> loader 可以是同步的，也可以是异步的。 </li>
-	<li> loader 运行在 Node.js 中，并且能够执行任何可能的操作。 </li>
-	<li> loader 接收查询参数。用于对 loader 传递配置。 </li>
-	<li> loader 也能够使用 options 对象进行配置。 </li>
-	<li> 除了使用 package.json 常见的 main 属性，还可以将普通的 npm 模块导出为 loader，做法是在 package.json 里定义一个 loader 字段。 </li>
-	<li> 插件(plugin)可以为 loader 带来更多特性。 </li>
-	<li> loader 能够产生额外的任意文件。 </li>
+  <li> loader 支持链式传递。能够对资源使用流水线(pipeline)。一组链式的 loader 将按照相反的顺序执行。loader 链中的第一个 loader 返回值给下一个 loader。在最后一个 loader，返回 webpack 所预期的 JavaScript。 </li>
+  <li> loader 可以是同步的，也可以是异步的。 </li>
+  <li> loader 运行在 Node.js 中，并且能够执行任何可能的操作。 </li>
+  <li> loader 接收查询参数。用于对 loader 传递配置。 </li>
+  <li> loader 也能够使用 options 对象进行配置。 </li>
+  <li> 除了使用 package.json 常见的 main 属性，还可以将普通的 npm 模块导出为 loader，做法是在 package.json 里定义一个 loader 字段。 </li>
+  <li> 插件(plugin)可以为 loader 带来更多特性。 </li>
+  <li> loader 能够产生额外的任意文件。 </li>
 </ul>
 
 loader 通过（loader）预处理函数，为 JavaScript 生态系统提供了更多能力。 用户现在可以更加灵活地引入细粒度逻辑，例如压缩、打包、语言翻译和[其他更多](https://webpack.docschina.org/loaders)。

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>webpack-5-loader</title>
+  <meta name="description" content="loader 用于对模块的源代码进行转换。loader 可以使你在 import 或 加载 模块时预处理文件。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/05/23/webpack5.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/05/23/webpack5.html">webpack-5-loader</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">webpack-5-loader</h1>
+    <p class="post-meta"><time datetime="2018-05-23T10:49:42+08:00" itemprop="datePublished">May 23, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>loader 用于对模块的源代码进行转换。loader 可以使你在 import 或”加载”模块时预处理文件。因此，loader 类似于其他构建工具中“任务(task)”，并提供了处理前端构建步骤的强大方法。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript，或将内联图像转换为 data URL。loader 甚至允许你直接在 JavaScript 模块中 import CSS文件！</p>
+
+<h4 id="section">示例</h4>
+
+<p>例如，你可以使用 loader 告诉 webpack 加载 CSS 文件，或者将 TypeScript 转为 JavaScript。为此，首先安装相对应的 loader：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">css</span><span class="o">-</span><span class="nx">loader</span>
+<span class="nx">npm</span> <span class="nx">install</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">ts</span><span class="o">-</span><span class="nx">loader</span></code></pre></figure>
+
+<p>然后指示 webpack 对每个 .css 使用 css-loader，以及对所有 .ts 文件使用 ts-loader：</p>
+
+<p>webpack.config.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">module</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">rules</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span> <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">css$/</span><span class="p">,</span> <span class="na">use</span><span class="p">:</span> <span class="s1">'css-loader'</span> <span class="p">},</span>
+      <span class="p">{</span> <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">ts$/</span><span class="p">,</span> <span class="na">use</span><span class="p">:</span> <span class="s1">'ts-loader'</span> <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="loader">使用 loader</h4>
+
+<p>在你的应用程序中，有三种使用 loader 的方式：</p>
+
+<ul>
+  <li> 配置（推荐）：在 webpack.config.js 文件中指定 loader。 </li>
+  <li> 内联：在每个 import 语句中显式指定 loader。 </li>
+  <li> CLI：在 shell 命令中指定它们。 </li>
+</ul>
+
+<h5 id="configuration">配置[Configuration]</h5>
+
+<p>module.rules 允许你在 webpack 配置中指定多个 loader。 这是展示 loader 的一种简明方式，并且有助于使代码变得简洁。同时让你对各个 loader 有个全局概览：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="nx">module</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nl">rules</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.</span><span class="sr">css$/</span><span class="p">,</span>
+        <span class="na">use</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span> <span class="na">loader</span><span class="p">:</span> <span class="s1">'style-loader'</span> <span class="p">},</span>
+          <span class="p">{</span>
+            <span class="na">loader</span><span class="p">:</span> <span class="s1">'css-loader'</span><span class="p">,</span>
+            <span class="na">options</span><span class="p">:</span> <span class="p">{</span>
+              <span class="na">modules</span><span class="p">:</span> <span class="kc">true</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">}</span></code></pre></figure>
+
+<h5 id="section-1">内联</h5>
+
+<p>可以在 import 语句或任何等效于 “import” 的方式中指定 loader。使用 ! 将资源中的 loader 分开。分开的每个部分都相对于当前目录解析。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">Styles</span> <span class="nx">from</span> <span class="s1">'style-loader!css-loader?modules!./styles.css'</span><span class="p">;</span></code></pre></figure>
+
+<p>通过前置所有规则及使用 !，可以对应覆盖到配置中的任意 loader。</p>
+
+<p>选项可以传递查询参数，例如 ?key=value&amp;foo=bar，或者一个 JSON 对象，例如 ?{“key”:”value”,”foo”:”bar”}。</p>
+
+<p>尽可能使用 module.rules，因为这样可以减少源码中的代码量，并且可以在出错时，更快地调试和定位 loader 中的问题。</p>
+
+<h5 id="cli">CLI</h5>
+
+<p>你也可以通过 CLI 使用 loader：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">webpack</span> <span class="o">--</span><span class="nx">module</span><span class="o">-</span><span class="nx">bind</span> <span class="nx">jade</span><span class="o">-</span><span class="nx">loader</span> <span class="o">--</span><span class="nx">module</span><span class="o">-</span><span class="nx">bind</span> <span class="s1">'css=style-loader!css-loader'</span></code></pre></figure>
+
+<p>这会对 .jade 文件使用 jade-loader，对 .css 文件使用 style-loader 和 css-loader。</p>
+
+<h4 id="loader-">loader 特性</h4>
+
+<ul>
+  <li> loader 支持链式传递。能够对资源使用流水线(pipeline)。一组链式的 loader 将按照相反的顺序执行。loader 链中的第一个 loader 返回值给下一个 loader。在最后一个 loader，返回 webpack 所预期的 JavaScript。 </li>
+  <li> loader 可以是同步的，也可以是异步的。 </li>
+  <li> loader 运行在 Node.js 中，并且能够执行任何可能的操作。 </li>
+  <li> loader 接收查询参数。用于对 loader 传递配置。 </li>
+  <li> loader 也能够使用 options 对象进行配置。 </li>
+  <li> 除了使用 package.json 常见的 main 属性，还可以将普通的 npm 模块导出为 loader，做法是在 package.json 里定义一个 loader 字段。 </li>
+  <li> 插件(plugin)可以为 loader 带来更多特性。 </li>
+  <li> loader 能够产生额外的任意文件。 </li>
+</ul>
+
+<p>loader 通过（loader）预处理函数，为 JavaScript 生态系统提供了更多能力。 用户现在可以更加灵活地引入细粒度逻辑，例如压缩、打包、语言翻译和<a href="https://webpack.docschina.org/loaders">其他更多</a>。</p>
+
+<h4 id="loader-1">解析 loader</h4>
+
+<p>loader 遵循标准的<a href="https://webpack.docschina.org/concepts/module-resolution/">模块解析</a>。多数情况下，loader 将从<a href="https://webpack.docschina.org/concepts/module-resolution/#module-paths">模块路径</a>（通常将模块路径认为是 npm install, node_modules）解析。</p>
+
+<p>loader 模块需要导出为一个函数，并且使用 Node.js 兼容的 JavaScript 编写。通常使用 npm 进行管理，但是也可以将自定义 loader 作为应用程序中的文件。按照约定，loader 通常被命名为 xxx-loader（例如 json-loader）。有关详细信息，请查看<a href="https://webpack.docschina.org/contribute/writing-a-loader/">如何编写 loader？</a>。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/05/23/webpack5" data-title="webpack-5-loader" data-url="/front/article/2018/05/23/webpack5.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
