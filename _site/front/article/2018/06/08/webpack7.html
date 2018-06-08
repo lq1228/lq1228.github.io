@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>webpack-7-配置(configuration)</title>
+  <meta name="description" content="webpack 的配置文件，是导出一个对象的 JavaScript 文件。此对象，由 webpack 根据对象定义的属性进行解析">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/06/08/webpack7.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/06/08/webpack7.html">webpack-7-配置(configuration)</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">webpack-7-配置(configuration)</h1>
+    <p class="post-meta"><time datetime="2018-06-08T01:00:42+08:00" itemprop="datePublished">Jun 8, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h3 id="configuration">配置(configuration)</h3>
+
+<p>你可能已经注意到，很少有 webpack 配置看起来很完全相同。这是因为 webpack 的配置文件，是导出一个对象的 JavaScript 文件。此对象，由 webpack 根据对象定义的属性进行解析。</p>
+
+<p>因为 webpack 配置是标准的 Node.js CommonJS 模块，你可以做到以下事情：</p>
+
+<ul>
+    <li> 通过 require(...) 导入其他文件 </li>
+    <li> 通过 require(...) 使用 npm 的工具函数 </li>
+    <li> 使用 JavaScript 控制流表达式，例如 ?: 操作符 </li>
+    <li> 对常用值使用常量或变量 </li>
+    <li> 编写并执行函数来生成部分配置 </li>
+</ul>
+
+<p>请在合适的时机使用这些特性。</p>
+
+<p>虽然技术上可行，但应避免以下做法：</p>
+
+<ul>
+    <li> 在使用 webpack 命令行接口(CLI)（应该编写自己的命令行接口(CLI)，或使用 --env）时，访问命令行接口(CLI)参数 </li>
+    <li> 导出不确定的值（调用 webpack 两次应该产生同样的输出文件） </li>
+    <li> 编写很长的配置（应该将配置拆分为多个文件） </li>
+</ul>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>你需要从这份文档中收获最大的点，就是你的 webpack 配置，可以有很多种的格式和风格。但为了你和你的团队能够易于理解和维护，你们要始终采取同一种用法、格式和风格。
+
+接下来的例子展示了 webpack 配置对象(webpack configuration object)如何即具有表现力，又具有可配置性，这是因为配置对象即是代码：
+</code></pre>
+</div>
+
+<h4 id="section">基本配置</h4>
+
+<p>webpack.config.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'path'</span><span class="p">);</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="s1">'development'</span><span class="p">,</span>
+  <span class="na">entry</span><span class="p">:</span> <span class="s1">'./foo.js'</span><span class="p">,</span>
+  <span class="na">output</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">path</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">'dist'</span><span class="p">),</span>
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'foo.bundle.js'</span>
+  <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
+
+<h4 id="configuration-types">多种配置类型(configuration types)</h4>
+
+<h5 id="section-1">导出为一个函数</h5>
+
+<p>最终，你会发现需要在开发和生产构建之间，消除 webpack.config.js 的差异。（至少）有两种选项：</p>
+
+<p>作为导出一个配置对象的替代，还有一种可选的导出方式是，从 webpack 配置文件中导出一个函数。该函数在调用时，可传入两个参数：</p>
+
+<p>环境对象(environment)作为第一个参数。有关语法示例，请查看CLI 文档的环境选项。 一个选项 map 对象（argv）作为第二个参数。这个对象描述了传递给 webpack 的选项，并且具有 output-filename 和 optimize-minimize 等 key。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="o">-</span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
+<span class="o">+</span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">env</span><span class="p">,</span> <span class="nx">argv</span><span class="p">)</span> <span class="p">{</span>
+<span class="o">+</span>  <span class="k">return</span> <span class="p">{</span>
+<span class="o">+</span>    <span class="na">mode</span><span class="p">:</span> <span class="nx">env</span><span class="p">.</span><span class="nx">production</span> <span class="p">?</span> <span class="s1">'production'</span> <span class="p">:</span> <span class="s1">'development'</span><span class="p">,</span>
+<span class="o">+</span>    <span class="na">devtool</span><span class="p">:</span> <span class="nx">env</span><span class="p">.</span><span class="nx">production</span> <span class="p">?</span> <span class="s1">'source-maps'</span> <span class="p">:</span> <span class="s1">'eval'</span><span class="p">,</span>
+     <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span>
+       <span class="k">new</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">optimize</span><span class="p">.</span><span class="nx">UglifyJsPlugin</span><span class="p">({</span>
+<span class="o">+</span>        <span class="na">compress</span><span class="p">:</span> <span class="nx">argv</span><span class="p">[</span><span class="s1">'optimize-minimize'</span><span class="p">]</span> <span class="c1">// 只有传入 -p 或 --optimize-minimize</span>
+       <span class="p">})</span>
+     <span class="p">]</span>
+<span class="o">+</span>  <span class="p">};</span>
+<span class="p">};</span></code></pre></figure>
+
+<h5 id="promise">导出一个 Promise</h5>
+
+<p>webpack 将运行由配置文件导出的函数，并且等待 Promise 返回。便于需要异步地加载所需的配置变量。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">((</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">reject</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">setTimeout</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+      <span class="nx">resolve</span><span class="p">({</span>
+        <span class="na">entry</span><span class="p">:</span> <span class="s1">'./app.js'</span><span class="p">,</span>
+        <span class="cm">/* ... */</span>
+      <span class="p">})</span>
+    <span class="p">},</span> <span class="mi">5000</span><span class="p">)</span>
+  <span class="p">})</span>
+<span class="p">}</span></code></pre></figure>
+
+<h5 id="section-2">导出多个配置对象</h5>
+
+<p>作为导出一个配置对象/配置函数的替代，你可能需要导出多个配置对象（从 webpack 3.1.0 开始支持导出多个函数）。当运行 webpack 时，所有的配置对象都会构建。例如，导出多个配置对象，对于针对多个构建目标（例如 AMD 和 CommonJS）打包一个 library 非常有用。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">[{</span>
+  <span class="na">output</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'./dist-amd.js'</span><span class="p">,</span>
+    <span class="na">libraryTarget</span><span class="p">:</span> <span class="s1">'amd'</span>
+  <span class="p">},</span>
+  <span class="na">entry</span><span class="p">:</span> <span class="s1">'./app.js'</span><span class="p">,</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="s1">'production'</span><span class="p">,</span>
+<span class="p">},</span> <span class="p">{</span>
+  <span class="na">output</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'./dist-commonjs.js'</span><span class="p">,</span>
+    <span class="na">libraryTarget</span><span class="p">:</span> <span class="s1">'commonjs'</span>
+  <span class="p">},</span>
+  <span class="na">entry</span><span class="p">:</span> <span class="s1">'./app.js'</span><span class="p">,</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="s1">'production'</span><span class="p">,</span>
+<span class="p">}]</span></code></pre></figure>
+
+<h4 id="configuration-languages">使用不同语言进行配置(configuration languages)</h4>
+
+<p>webpack 接受以多种编程和数据语言编写的配置文件。支持的文件扩展名列表，可以在 node-interpret 包中找到。使用 node-interpret，webpack 可以处理许多不同类型的配置文件。</p>
+
+<h5 id="typescript">TypeScript</h5>
+
+<p>为了用 TypeScript 书写 webpack 的配置文件，必须先安装相关依赖：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">typescript</span> <span class="nx">ts</span><span class="o">-</span><span class="nx">node</span> <span class="err">@</span><span class="nx">types</span><span class="o">/</span><span class="nx">node</span> <span class="err">@</span><span class="nx">types</span><span class="o">/</span><span class="nx">webpack</span></code></pre></figure>
+
+<p>之后就可以使用 TypeScript 书写 webpack 的配置文件了：</p>
+
+<p>webpack.config.ts</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">path</span> <span class="nx">from</span> <span class="s1">'path'</span><span class="p">;</span>
+<span class="kr">import</span> <span class="nx">webpack</span> <span class="nx">from</span> <span class="s1">'webpack'</span><span class="p">;</span>
+
+<span class="kr">const</span> <span class="nx">config</span><span class="err">:</span> <span class="nx">webpack</span><span class="p">.</span><span class="nx">Configuration</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">mode</span><span class="p">:</span> <span class="s1">'production'</span><span class="p">,</span>
+  <span class="na">entry</span><span class="p">:</span> <span class="s1">'./foo.js'</span><span class="p">,</span>
+  <span class="na">output</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">path</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">'dist'</span><span class="p">),</span>
+    <span class="na">filename</span><span class="p">:</span> <span class="s1">'foo.bundle.js'</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">config</span><span class="p">;</span></code></pre></figure>
+
+<p>以上示例假定 webpack 版本 &gt;= 2.7，或者，在 tsconfig.json 文件中，具有 esModuleInterop 和 allowSyntheticDefaultImports 这两个新的编译器选项的较新版本 TypeScript。</p>
+
+<p>注意，你还需要核对 tsconfig.json 文件。如果 tsconfig.json 中的 compilerOptions 中的 module 字段是 commonjs ，则配置是正确的，否则 webpack 将因为错误而构建失败。发生这种情况，是因为 ts-node 不支持 commonjs 以外的任何模块语法。</p>
+
+<p>这个问题有两种解决方案：</p>
+
+<ul>
+	<li> 修改 tsconfig.json。 </li>
+	<li> 安装 tsconfig-paths。 </li>
+</ul>
+
+<p>__第一个选项_是指，打开你的 tsconfig.json 文件并查找 compilerOptions。将 target 设置为 “ES5”，以及将 module 设置为 “CommonJS”（或者完全移除 module 选项）。</p>
+
+<p>__第二个选项_是指，安装 tsconfig-paths 包：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">tsconfig</span><span class="o">-</span><span class="nx">paths</span></code></pre></figure>
+
+<p>然后，为你的 webpack 配置，专门创建一个单独的 TypeScript 配置：</p>
+
+<p>tsconfig-for-webpack-config.json</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">"compilerOptions"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"module"</span><span class="err">:</span> <span class="s2">"commonjs"</span><span class="p">,</span>
+    <span class="s2">"target"</span><span class="err">:</span> <span class="s2">"es5"</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ts-node 可以使用 tsconfig-path 提供的环境变量来解析 tsconfig.json 文件。
+</code></pre>
+</div>
+
+<p>然后，设置 tsconfig-path 提供的环境变量 process.env.TS_NODE_PROJECT，如下所示：</p>
+
+<p>package.json</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">"scripts"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"build"</span><span class="err">:</span> <span class="s2">"TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack"</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h5 id="coffeescript">CoffeeScript</h5>
+
+<p>类似的，为了使用 CoffeeScript 来书写配置文件, 同样需要安装相关的依赖：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">coffee</span><span class="o">-</span><span class="nx">script</span></code></pre></figure>
+
+<p>之后就可以使用 Coffeecript 书写配置文件了：</p>
+
+<p>webpack.config.coffee</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">HtmlWebpackPlugin</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'html-webpack-plugin'</span><span class="p">)</span>
+<span class="nx">webpack</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'webpack'</span><span class="p">)</span>
+<span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'path'</span><span class="p">)</span>
+
+<span class="nx">config</span> <span class="o">=</span>
+  <span class="nx">mode</span><span class="err">:</span> <span class="s1">'production'</span>
+  <span class="nl">entry</span><span class="p">:</span> <span class="s1">'./path/to/my/entry/file.js'</span>
+  <span class="nl">output</span><span class="p">:</span>
+    <span class="nl">path</span><span class="p">:</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">'dist'</span><span class="p">)</span>
+    <span class="nl">filename</span><span class="p">:</span> <span class="s1">'my-first-webpack.bundle.js'</span>
+  <span class="nl">module</span><span class="p">:</span> <span class="nl">rules</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span>
+    <span class="na">test</span><span class="p">:</span> <span class="sr">/</span><span class="se">\.(</span><span class="sr">js|jsx</span><span class="se">)</span><span class="sr">$/</span>
+    <span class="na">use</span><span class="p">:</span> <span class="s1">'babel-loader'</span>
+  <span class="p">}</span> <span class="p">]</span>
+  <span class="nl">plugins</span><span class="p">:</span> <span class="p">[</span>
+    <span class="k">new</span> <span class="p">(</span><span class="nx">webpack</span><span class="p">.</span><span class="nx">optimize</span><span class="p">.</span><span class="nx">UglifyJsPlugin</span><span class="p">)</span>
+    <span class="k">new</span> <span class="nx">HtmlWebpackPlugin</span><span class="p">(</span><span class="nx">template</span><span class="err">:</span> <span class="s1">'./src/index.html'</span><span class="p">)</span>
+  <span class="p">]</span>
+
+<span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="nx">config</span></code></pre></figure>
+
+<h4 id="babel-and-jsx">Babel and JSX</h4>
+
+<p>在以下的例子中，使用了 JSX（React 形式的 javascript）以及 Babel 来创建 JSON 形式的 webpack 配置文件：</p>
+
+<p>首先安装依赖：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">--</span><span class="nx">save</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">babel</span><span class="o">-</span><span class="nx">register</span> <span class="nx">jsxobj</span> <span class="nx">babel</span><span class="o">-</span><span class="nx">preset</span><span class="o">-</span><span class="nx">es2015</span></code></pre></figure>
+
+<p>.babelrc</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">"presets"</span><span class="err">:</span> <span class="p">[</span> <span class="s2">"es2015"</span> <span class="p">]</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>webpack.config.babel.js</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">import</span> <span class="nx">jsxobj</span> <span class="nx">from</span> <span class="s1">'jsxobj'</span><span class="p">;</span>
+
+<span class="c1">// example of an imported plugin</span>
+<span class="kr">const</span> <span class="nx">CustomPlugin</span> <span class="o">=</span> <span class="nx">config</span> <span class="o">=&gt;</span> <span class="p">({</span>
+  <span class="p">...</span><span class="nx">config</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s1">'custom-plugin'</span>
+<span class="p">});</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="p">(</span>
+  <span class="o">&lt;</span><span class="nx">webpack</span> <span class="nx">target</span><span class="o">=</span><span class="s2">"web"</span> <span class="nx">watch</span> <span class="nx">mode</span><span class="o">=</span><span class="s2">"production"</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nx">entry</span> <span class="nx">path</span><span class="o">=</span><span class="s2">"src/index.js"</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="nx">resolve</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">alias</span> <span class="p">{...{</span>
+        <span class="nl">react</span><span class="p">:</span> <span class="s1">'preact-compat'</span><span class="p">,</span>
+        <span class="s1">'react-dom'</span><span class="err">:</span> <span class="s1">'preact-compat'</span>
+      <span class="p">}}</span> <span class="sr">/</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="sr">/resolve</span><span class="err">&gt;
+</span>    <span class="o">&lt;</span><span class="nx">plugins</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nx">uglify</span><span class="o">-</span><span class="nx">js</span> <span class="nx">opts</span><span class="o">=</span> <span class="sr">/</span><span class="err">&gt;
+</span>      <span class="o">&lt;</span><span class="nx">CustomPlugin</span> <span class="nx">foo</span><span class="o">=</span><span class="s2">"bar"</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;</span><span class="sr">/plugins</span><span class="err">&gt;
+</span>  <span class="o">&lt;</span><span class="sr">/webpack</span><span class="err">&gt;
+</span><span class="p">);</span></code></pre></figure>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>如果你在其他地方也使用了 Babel 并且把模块(modules)设置为了 false，那么你要么同时维护两份单独的 .babelrc 文件，要么使用 conts jsxobj = requrie('jsxobj'); 并且使用 moduel.exports 而不是新版本的 import 和 export 语法。这是因为尽管 Node.js 已经支持了许多 ES6 的新特性，然而还无法支持 ES6 模块语法。
+</code></pre>
+</div>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/06/08/webpack7" data-title="webpack-7-配置(configuration)" data-url="/front/article/2018/06/08/webpack7.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

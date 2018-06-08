@@ -1,0 +1,280 @@
+---
+layout: post
+title: "webpack-7-配置(configuration)"
+date: 2018-06-08 1:00:42 +0800
+description: "webpack 的配置文件，是导出一个对象的 JavaScript 文件。此对象，由 webpack 根据对象定义的属性进行解析"
+categories: front article
+---
+
+### 配置(configuration)
+
+你可能已经注意到，很少有 webpack 配置看起来很完全相同。这是因为 webpack 的配置文件，是导出一个对象的 JavaScript 文件。此对象，由 webpack 根据对象定义的属性进行解析。
+
+因为 webpack 配置是标准的 Node.js CommonJS 模块，你可以做到以下事情：
+
+<ul>
+    <li> 通过 require(...) 导入其他文件 </li>
+    <li> 通过 require(...) 使用 npm 的工具函数 </li>
+    <li> 使用 JavaScript 控制流表达式，例如 ?: 操作符 </li>
+    <li> 对常用值使用常量或变量 </li>
+    <li> 编写并执行函数来生成部分配置 </li>
+</ul>
+
+请在合适的时机使用这些特性。
+
+虽然技术上可行，但应避免以下做法：
+
+<ul>
+    <li> 在使用 webpack 命令行接口(CLI)（应该编写自己的命令行接口(CLI)，或使用 --env）时，访问命令行接口(CLI)参数 </li>
+    <li> 导出不确定的值（调用 webpack 两次应该产生同样的输出文件） </li>
+    <li> 编写很长的配置（应该将配置拆分为多个文件） </li>
+</ul>
+
+    你需要从这份文档中收获最大的点，就是你的 webpack 配置，可以有很多种的格式和风格。但为了你和你的团队能够易于理解和维护，你们要始终采取同一种用法、格式和风格。
+
+    接下来的例子展示了 webpack 配置对象(webpack configuration object)如何即具有表现力，又具有可配置性，这是因为配置对象即是代码：
+
+#### 基本配置
+
+webpack.config.js
+
+{% highlight javascript %}
+var path = require('path');
+
+module.exports = {
+  mode: 'development',
+  entry: './foo.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'foo.bundle.js'
+  }
+};
+{% endhighlight %}
+
+#### 多种配置类型(configuration types)
+
+##### 导出为一个函数
+
+最终，你会发现需要在开发和生产构建之间，消除 webpack.config.js 的差异。（至少）有两种选项：
+
+作为导出一个配置对象的替代，还有一种可选的导出方式是，从 webpack 配置文件中导出一个函数。该函数在调用时，可传入两个参数：
+
+环境对象(environment)作为第一个参数。有关语法示例，请查看CLI 文档的环境选项。 一个选项 map 对象（argv）作为第二个参数。这个对象描述了传递给 webpack 的选项，并且具有 output-filename 和 optimize-minimize 等 key。
+
+{% highlight javascript %}
+-module.exports = {
++module.exports = function(env, argv) {
++  return {
++    mode: env.production ? 'production' : 'development',
++    devtool: env.production ? 'source-maps' : 'eval',
+     plugins: [
+       new webpack.optimize.UglifyJsPlugin({
++        compress: argv['optimize-minimize'] // 只有传入 -p 或 --optimize-minimize
+       })
+     ]
++  };
+};
+{% endhighlight %}
+
+##### 导出一个 Promise
+
+webpack 将运行由配置文件导出的函数，并且等待 Promise 返回。便于需要异步地加载所需的配置变量。
+
+{% highlight javascript %}
+module.exports = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        entry: './app.js',
+        /* ... */
+      })
+    }, 5000)
+  })
+}
+{% endhighlight %}
+
+##### 导出多个配置对象
+
+作为导出一个配置对象/配置函数的替代，你可能需要导出多个配置对象（从 webpack 3.1.0 开始支持导出多个函数）。当运行 webpack 时，所有的配置对象都会构建。例如，导出多个配置对象，对于针对多个构建目标（例如 AMD 和 CommonJS）打包一个 library 非常有用。
+
+{% highlight javascript %}
+module.exports = [{
+  output: {
+    filename: './dist-amd.js',
+    libraryTarget: 'amd'
+  },
+  entry: './app.js',
+  mode: 'production',
+}, {
+  output: {
+    filename: './dist-commonjs.js',
+    libraryTarget: 'commonjs'
+  },
+  entry: './app.js',
+  mode: 'production',
+}]
+{% endhighlight %}
+
+#### 使用不同语言进行配置(configuration languages)
+
+webpack 接受以多种编程和数据语言编写的配置文件。支持的文件扩展名列表，可以在 node-interpret 包中找到。使用 node-interpret，webpack 可以处理许多不同类型的配置文件。
+
+##### TypeScript
+
+为了用 TypeScript 书写 webpack 的配置文件，必须先安装相关依赖：
+
+{% highlight javascript %}
+npm install --save-dev typescript ts-node @types/node @types/webpack
+{% endhighlight %}
+
+之后就可以使用 TypeScript 书写 webpack 的配置文件了：
+
+webpack.config.ts
+
+{% highlight javascript %}
+import path from 'path';
+import webpack from 'webpack';
+
+const config: webpack.Configuration = {
+  mode: 'production',
+  entry: './foo.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'foo.bundle.js'
+  }
+};
+
+export default config;
+{% endhighlight %}
+
+以上示例假定 webpack 版本 >= 2.7，或者，在 tsconfig.json 文件中，具有 esModuleInterop 和 allowSyntheticDefaultImports 这两个新的编译器选项的较新版本 TypeScript。
+
+注意，你还需要核对 tsconfig.json 文件。如果 tsconfig.json 中的 compilerOptions 中的 module 字段是 commonjs ，则配置是正确的，否则 webpack 将因为错误而构建失败。发生这种情况，是因为 ts-node 不支持 commonjs 以外的任何模块语法。
+
+这个问题有两种解决方案：
+
+<ul>
+	<li> 修改 tsconfig.json。 </li>
+	<li> 安装 tsconfig-paths。 </li>
+</ul>
+
+__第一个选项_是指，打开你的 tsconfig.json 文件并查找 compilerOptions。将 target 设置为 "ES5"，以及将 module 设置为 "CommonJS"（或者完全移除 module 选项）。
+
+__第二个选项_是指，安装 tsconfig-paths 包：
+
+{% highlight javascript %}
+npm install --save-dev tsconfig-paths
+{% endhighlight %}
+
+然后，为你的 webpack 配置，专门创建一个单独的 TypeScript 配置：
+
+tsconfig-for-webpack-config.json
+
+{% highlight javascript %}
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5"
+  }
+}
+{% endhighlight %}
+
+	ts-node 可以使用 tsconfig-path 提供的环境变量来解析 tsconfig.json 文件。
+
+然后，设置 tsconfig-path 提供的环境变量 process.env.TS_NODE_PROJECT，如下所示：
+
+package.json
+
+{% highlight javascript %}
+{
+  "scripts": {
+    "build": "TS_NODE_PROJECT=\"tsconfig-for-webpack-config.json\" webpack"
+  }
+}
+{% endhighlight %}
+
+##### CoffeeScript
+
+类似的，为了使用 CoffeeScript 来书写配置文件, 同样需要安装相关的依赖：
+
+{% highlight javascript %}
+npm install --save-dev coffee-script
+{% endhighlight %}
+
+之后就可以使用 Coffeecript 书写配置文件了：
+
+webpack.config.coffee
+
+{% highlight javascript %}
+HtmlWebpackPlugin = require('html-webpack-plugin')
+webpack = require('webpack')
+path = require('path')
+
+config =
+  mode: 'production'
+  entry: './path/to/my/entry/file.js'
+  output:
+    path: path.resolve(__dirname, 'dist')
+    filename: 'my-first-webpack.bundle.js'
+  module: rules: [ {
+    test: /\.(js|jsx)$/
+    use: 'babel-loader'
+  } ]
+  plugins: [
+    new (webpack.optimize.UglifyJsPlugin)
+    new HtmlWebpackPlugin(template: './src/index.html')
+  ]
+
+module.exports = config
+{% endhighlight %}
+
+#### Babel and JSX
+
+在以下的例子中，使用了 JSX（React 形式的 javascript）以及 Babel 来创建 JSON 形式的 webpack 配置文件：
+
+首先安装依赖：
+
+{% highlight javascript %}
+npm install --save-dev babel-register jsxobj babel-preset-es2015
+{% endhighlight %}
+
+.babelrc
+
+{% highlight javascript %}
+{
+  "presets": [ "es2015" ]
+}
+{% endhighlight %}
+
+webpack.config.babel.js
+
+{% highlight javascript %}
+import jsxobj from 'jsxobj';
+
+// example of an imported plugin
+const CustomPlugin = config => ({
+  ...config,
+  name: 'custom-plugin'
+});
+
+export default (
+  <webpack target="web" watch mode="production">
+    <entry path="src/index.js" />
+    <resolve>
+      <alias {...{
+        react: 'preact-compat',
+        'react-dom': 'preact-compat'
+      }} />
+    </resolve>
+    <plugins>
+      <uglify-js opts={{
+        compression: true,
+        mangle: false
+      }} />
+      <CustomPlugin foo="bar" />
+    </plugins>
+  </webpack>
+);
+{% endhighlight %}
+
+	如果你在其他地方也使用了 Babel 并且把模块(modules)设置为了 false，那么你要么同时维护两份单独的 .babelrc 文件，要么使用 conts jsxobj = requrie('jsxobj'); 并且使用 moduel.exports 而不是新版本的 import 和 export 语法。这是因为尽管 Node.js 已经支持了许多 ES6 的新特性，然而还无法支持 ES6 模块语法。
