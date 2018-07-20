@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>前端埋点知多少</title>
+  <meta name="description" content="在这个大数据时代，数据的收集所依赖的埋点显得格外重要">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/07/11/point.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/07/11/point.html">前端埋点知多少</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">前端埋点知多少</h1>
+    <p class="post-meta"><time datetime="2018-07-11T10:49:42+08:00" itemprop="datePublished">Jul 11, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>马云说过，大数据就是未来的石油。越来越多的互联网公司开始重视数据的应用。数据应用的一个过程是：数据收集——数据整理——数据分析——数据可视化。经济基础决定上层建筑，数据收集是数据应用的基础，数据收集的重要性不言而喻。数据不会撒谎，但生活中，我们往往被数据纯洁的外表所欺骗。所以我们也要注重数据的质量。那么互联网公司是如何收集数据的？这其中就不得不提出一个很关键的人物——「埋点」。</p>
+
+<h4 id="section">埋点技术</h4>
+
+<p>所谓「埋点」，就是在正常的功能逻辑中添加统计逻辑。</p>
+
+<p>目前常见的前端埋点技术有3类：</p>
+
+<ul>
+    <li> 代码埋点 </li>
+    <li> 可视化埋点 </li>
+    <li> 无埋点（无埋点属于埋点的一个子集） </li>
+</ul>
+
+<h5 id="section-1">代码埋点：</h5>
+
+<p>控件操作发生时通过预先写好的代码来发送数据。</p>
+
+<p>优点：控制发送数据时间，事件自定义属性详细记录</p>
+
+<p>缺点：时间、人力成本大，数据传输的时效性。</p>
+
+<h5 id="section-2">可视化埋点：</h5>
+
+<p>利用可视化交互手段，通过可视化界面配置控件操作与事件操作发生关系。通过后台截屏的方式采集数据。</p>
+
+<p>优点：成本低，速度快</p>
+
+<p>缺点：行为记录信息少，支持的分析方式少</p>
+
+<h5 id="section-3">无埋点：</h5>
+
+<p>Growing IO和Heap analytics，这2家是国内与国外的无埋点技术公司代表。用户展现界面元素时，通过控件绑定触发事件，事件被触发的时候系统会有相应的接口让开发者处理这些行为。现在市面上主流无埋点做法有两种，一种是预先跟踪所有的渲染信息，一种是滞后跟踪的渲染信息。</p>
+
+<p>优点：无需埋点，方便快捷</p>
+
+<p>缺点：行为记录信息少，传输压力大</p>
+
+<h4 id="section-4">总结</h4>
+
+<p>最后，关于埋点有无问题，可视化埋点和代码优劣问题，不管选择哪个都要从自身情况去考虑，自身分析场景来体验和对比，选择最适合自己的。适合自己的才是最好的。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/07/11/point" data-title="前端埋点知多少" data-url="/front/article/2018/07/11/point.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

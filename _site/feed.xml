@@ -6,9 +6,185 @@
 </description>
     <link>http://lq1228.github.io//</link>
     <atom:link href="http://lq1228.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 12 Jul 2018 14:01:49 +0800</pubDate>
-    <lastBuildDate>Thu, 12 Jul 2018 14:01:49 +0800</lastBuildDate>
+    <pubDate>Thu, 12 Jul 2018 17:36:04 +0800</pubDate>
+    <lastBuildDate>Thu, 12 Jul 2018 17:36:04 +0800</lastBuildDate>
     <generator>Jekyll v3.0.2</generator>
+    
+      <item>
+        <title>揭开JS无埋点技术的神秘面纱</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;一、背景&lt;/h4&gt;
+
+&lt;p&gt;相信很多人都接触过“埋点”这个概念，无论是前端还是后端开发，我们都可以使用这门技术来生产出一些运营性质的原始数据（接口耗时、程序安装/启动、用户交互行为等等），然后分析它们得到一些抽象指标（例如留存率、转化率），进而决定产品运营或者代码优化的方向。现在业界有许多比较知名数据平台，比如Google Analytics、Facebook Pixel、Mixpanel、GrowingIO、诸葛IO、TalkingData、神策数据等数不胜数一大票，这些平台有单纯做数据分析的，也有服务于特定领域例如广告监测转化的，都提供了多端（Android、iOS、Web、小程序、ReactNative）的埋点SDK和比较全面的BI服务。这一两年，不少平台都开始宣传一种叫“无埋点”的技术，下面以Web端为例，揭开它的神秘面纱。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;二、什么是无埋点？&lt;/h4&gt;
+
+&lt;p&gt;“无埋点”在国外一些平台被叫做Codeless Tracking，顾名思义就是可以写“更少”的埋点代码。而“代码埋点”一般需要开发人员编写代码，监听某个html元素的产生的事件，然后调用上报数据的接口，发送数据。而无埋点则可以由非技术人员（例如运营、产品），在可视化的工具中作出配置，然后就可以将html元素中产生的行为上报到后台。下面是Mixpanel平台的可视化工具的截图。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/point/point1.webp&quot; alt=&quot;无埋点&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在这个工具里，需要首先输入页面的url，页面加载完成后，会出现可视化配置的工具条。点击创建事件，就可以进入元素选择模式，用鼠标点击页面上的某个元素（例如button、a这些element），就可以在弹出的对话框里面，设置这个事件的名称（比如叫TEST）。保存这个配置之后，如果页面在浏览器中被浏览，刚才配置的那个按钮发生点击时，就会向后台上报一个TEST事件。我们还可以设置上报TEST事件的时候，带上一些属性（properties），这些属性同样也是在页面中用鼠标去选择，然后保存起来的。&lt;/p&gt;
+
+&lt;p&gt;看到这里，首先从产品层面上，我们比较具体的了解到“无埋点”到底是干什么的了，无埋点就是用可视化工具配置页面中需要被监测的元素，并设置这个元素产生行为的时候需要上报的数据。但是还有非常关键的一点必须提到，要让“无埋点”工作起来，页面里面还是必须嵌入了一段JS SDK的基础代码，只是不需要再去调用SDK具体的数据上报接口罢了。&lt;/p&gt;
+
+&lt;p&gt;所以，“无埋点”技术的关键是：&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt; 操作可视化配置工具，保存配置 &lt;/li&gt;
+    &lt;li&gt; SDK基础代码如何根据配置上报行为 &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下面介绍一下如何实现这两个关键。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;三、关键技术&lt;/h4&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;1. 基础代码&lt;/h5&gt;
+
+&lt;p&gt;和代码埋点一样，要让“无埋点”工作起来，网页里也必须有一段“基础代码”。&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!--&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Mixpanel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;--&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;text/javascript&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__SV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;RegExp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;=([^&amp;amp;]*)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))?&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;state&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;decodeURIComponent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;state&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))),&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mpeditor&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;===&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sessionStorage&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;_mpcehash&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;history&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;replaceState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;desiredHash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pathname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){}&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mixpanel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]],&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;concat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;call&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))}}&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;undefined&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]:&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mixpanel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;people&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;people&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mixpanel&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;mixpanel&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; (stub)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;people&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;.people (stub)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])};&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;__SV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;createElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;script&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;text/javascript&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;async&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=!&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;undefined&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;MIXPANEL_CUSTOM_LIB_URL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MIXPANEL_CUSTOM_LIB_URL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;file:&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;===&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;protocol&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;//cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/^&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\/\/&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)?&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;https://cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;//cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementsByTagName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;script&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parentNode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;insertBefore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}})(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mixpanel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;mixpanel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;46042714e64a7536dde6f02af1aec923&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/script&amp;gt;&amp;lt;!-- end Mixpanel --&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;上面是Mixpanel平台的基础代码，不同平台家的这段基础代码，大同小异，都是一段IIFE形式的、压缩过的js代码，执行完成之后，在head里面插入了一个新的script标签，异步去下载真正的核心SDK代码下来工作。所以并不是基础代码可以根据配置上报行为，而是基础代码会下载一段“更大”的SDK核心代码，这段代码才是SDK真正的功能实现。&lt;/p&gt;
+
+&lt;p&gt;这样子做的好处是，基础代码很短，加载的时候不会影响到网页的性能，而且核心SDK代码的更新也不需要用户去更新这段基础代码。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-4&quot;&gt;2. 页面的唯一标识&lt;/h5&gt;
+
+&lt;p&gt;在配置元素行为的时候，需要唯一标识一个页面，这样才能保证A页面的配置，不会下发给在B页面，不会导致B页面产生出A页面里配置的行为。在Web里面标识页面靠的是url，url由protocol、domain、port、path和参数组成，存储配置的时候要将url的参数提出来再存。而url的参数位置是可以变化的，比如urlA（http://a.b.com/c.html?pa=1&amp;amp;pb=2）和urlB（http://a.b.com/c.html?pb=2&amp;amp;pa=1）虽然urlA!== urlB，但是其实它们是一个页面。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-5&quot;&gt;3. 元素的唯一标识&lt;/h5&gt;
+
+&lt;p&gt;唯一标识页面后，接下来就要唯一标识页面里面的元素，这样才能保证A页面中配置的元素A1可以被SDK找到，从而监听它产生的事件。&lt;/p&gt;
+
+&lt;p&gt;在html里面，元素是以DOM Tree组织的，如果沿着元素A1出发，一直向上记录它的parent和它在parent中的index，直到根节点body，那么就可以得到元素A1在DOM Tree中的唯一路径。&lt;/p&gt;
+
+&lt;p&gt;html的元素还会拥有很多属性，例如css class、id可以用来定位元素。通过Chrome开发者工具可以看到Mixpanel的可视化工具在配置元素的时候，使用的是https://github.com/Autarc/optimal-select这个库来生成element的唯一标识的。而Github上还有https://github.com/rowthan/whats-element这样的库，也可以生成元素在DOMTree中的唯一标识。&lt;/p&gt;
+
+&lt;p&gt;此外，还有平台在标识元素的时候，采用了xpath，这也是一个思路。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-6&quot;&gt;4. 如何查找元素&lt;/h5&gt;
+
+&lt;p&gt;上面说到元素可以有唯一标识，那么有了唯一标识，就可以利用它的原理，找到这个元素。有一个很好用的API是document.querySelector()，这个API可以根据CSS选择器找到对应的元素。此外，根据元素的标识方法，还可以使用document.getElementById()、document.getElementByName()来实现元素的查找。&lt;/p&gt;
+
+&lt;p&gt;这里需要重点强调的是，如果页面在配置完成之后又发生了修改，导致DOM Tree发生变化，此时需要被监测的元素的唯一标识可能也会发生改变。很可能导致根据之前的配置无法找到该元素了，或者找到的并不是我们希望监测的元素，从而导致产生的事件数量发生比较明显的变化。为了数据的稳定性和准确性，应该设有相应的监测告警处理这种case，并提示用户去重新配置页面。我个人认为这是无埋点最大的缺点。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-7&quot;&gt;5. 标记元素时的高亮效果和可视化交互实现&lt;/h5&gt;
+
+&lt;p&gt;这是一个比较细节的点，其实熟悉js的大牛们都知道，有无数种方式去实现鼠标移动到元素上时的类hover效果，点击元素后弹出一个对话框，让用户输入配置的信息也so easy。但是我想说的是，一旦我们采用向页面中动态添加元素的方式去实现可视化工具的交互界面，那么有可能会破坏掉页面原来的DOM Tree结构。从而导致生成元素唯一标识的时候出现误差，所以这里必须要好好处理，保证生成的元素标识不会受到影响。&lt;/p&gt;
+
+&lt;p&gt;我看到Mixpanel采用了CustomElement和ShadowDOM，把可视化工具所有的功能都用自定义的Web Component实现了，虽然目前只有Chrome支持Web Component，但是真的有点叼。。这样自定义的元素和交互不会对用户的网页DOM产生影响。当然，如果你的可视化工具实现做的很轻，比如只是将用户的网页放在一个iframe里面，大部分交互都交给iframe的parent页面去处理，那也可以在配置的时候，最小程度的破坏用户的网页了。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-8&quot;&gt;6. 配置工具中如何控制页面的跳转&lt;/h5&gt;
+
+&lt;p&gt;当进入可视化配置状态时，我们可以让用户点击一个元素，然后弹一个对话框，让用户对这个元素进行配置。此时，如果这个元素本身的click行为是页面跳转呢？我们应该怎么处理？&lt;/p&gt;
+
+&lt;p&gt;这里本质上是一个交互设计的问题。在可视化配置工具中，应该有两种基本交互操作。一种是让用户选中某一个元素，进行配置；另一种，是让用户可以触发页面原有的行为。&lt;/p&gt;
+
+&lt;p&gt;为什么要有第二种交互？因为我们的工具肯定要支持用户进行二级页面的可视化配置对不对？或者说，用户的页面中可能会弹出一个对话框，对话框里面有一个按钮，用户对监测这个按钮，对它做配置，对不对？简单来说，就是用户页面中原有的点击行为，可能会导致页面结构产生变化，例如跳转，页面内弹出对话框等等。&lt;/p&gt;
+
+&lt;p&gt;那问题就好解了，除了点击，再设计一种交互来支持用户网页中原有的点击行为不就好了。用“右键点击”或者“按住shift+点击”之类都可以。反正不要再和网页默认的交互很容易产生冲突的方式就行。&lt;/p&gt;
+
+&lt;p&gt;最后再提一下，之前想很久没有想明白，如何能够能防止用户点击的时候页面产生跳转。后来才知道，DOM的事件流分三个阶段：捕获、目标、冒泡。所以为了避免用户的点击产身页面跳转，给document在捕获阶段加一个listener，拦截掉这个事件的继续分发就行了。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/point/point2.webp&quot; alt=&quot;无埋点&quot; /&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;addEventListener&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;click&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// 如果是按住shift的点击，那么保持原有的行为&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shiftKey&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// 如果是单纯的点击，那么拦截分发&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;preventDefault&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stopImmediatePropagation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;// 获取元素的唯一标识，然后让用户进行配置等等&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;_selectElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;target&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// useCapture必须为true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;四、总结&lt;/h4&gt;
+
+&lt;p&gt;可以看到“无埋点”并不是零侵入，用户的网页中依然需要加载SDK的代码（除非你是浏览器厂商，可以在加载网页的时候，给网页加inject基础代码）。只是每一个行为事件的上报代码不需要开发人员手动编写，而是由运营人员用可视化工具配置，所以叫它“可视化埋点”也许更加合适。我们知道数据采集是数据分析的基础和先决条件，数据采集做不好，其他的东西都是空中楼阁。&lt;/p&gt;
+
+&lt;p&gt;这里可以小结一下“无埋点”技术的优劣。无埋点的好处是技术成本低，对用户非常友好，不需要重新部署，配置完成就可以生效。但是其缺点也非常明显，不具有代码埋点的灵活性和深度，只能采集到用户肉眼可见的数据，无法获取内存里的数据，同时也无法适应页面结构的变化，所以在实际生产中，要选择性地在合适的地方使用无埋点技术。&lt;/p&gt;
+
+&lt;p&gt;多扯一点产品设计和技术方案的选择，产品上是否可以支持采集内存数据呢？当然可以，比如微信小程序的“自定义分析”，就可以支持上报页面data下面的属性，这时虽然同样是可视化配置，运营人员肯定不会知道代码里面的变量名字，必须得有开发人员参与配置才行。关于页面结构发生变化之后的数据丢失，也是有方案可以破的。比如Mixpanel平台的Codeless Tracking，实际上采集了页面中所有页面的点击事件上报，然后在后台再去根据用户的配置计算转化数量。这样做的好处就是如果页面变化后，用户接到告警，修改了配置，那么用于数据上报方案是全量的，所以平台是由能力将过去的数据回溯出来的。而上面我们说的根据配置下发，查找监测指定元素，再上报数据的方案属于按需上报，数据出现误差是无法回溯的。不过全量上报数据大家也知道，太不友好了，这个数据量太大，不仅前端消耗资源多，如果为了做数据回溯，后台的存储压力也会加大，而存储的数据大部分还是无效的，这个成本有点高了。&lt;/p&gt;
+
+&lt;h4 id=&quot;section-10&quot;&gt;五、参考资料&lt;/h4&gt;
+
+&lt;p&gt;JS埋点技术分析&lt;/p&gt;
+
+&lt;p&gt;https://github.com/Autarc/optimal-select&lt;/p&gt;
+
+&lt;p&gt;https://github.com/rowthan/whats-element&lt;/p&gt;
+
+&lt;p&gt;https://www.zhihu.com/question/38000812&lt;/p&gt;
+</description>
+        <pubDate>Thu, 12 Jul 2018 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2018/07/12/point2.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/07/12/point2.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
+    
+      <item>
+        <title>前端埋点知多少</title>
+        <description>&lt;p&gt;马云说过，大数据就是未来的石油。越来越多的互联网公司开始重视数据的应用。数据应用的一个过程是：数据收集——数据整理——数据分析——数据可视化。经济基础决定上层建筑，数据收集是数据应用的基础，数据收集的重要性不言而喻。数据不会撒谎，但生活中，我们往往被数据纯洁的外表所欺骗。所以我们也要注重数据的质量。那么互联网公司是如何收集数据的？这其中就不得不提出一个很关键的人物——「埋点」。&lt;/p&gt;
+
+&lt;h4 id=&quot;section&quot;&gt;埋点技术&lt;/h4&gt;
+
+&lt;p&gt;所谓「埋点」，就是在正常的功能逻辑中添加统计逻辑。&lt;/p&gt;
+
+&lt;p&gt;目前常见的前端埋点技术有3类：&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt; 代码埋点 &lt;/li&gt;
+    &lt;li&gt; 可视化埋点 &lt;/li&gt;
+    &lt;li&gt; 无埋点（无埋点属于埋点的一个子集） &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;section-1&quot;&gt;代码埋点：&lt;/h5&gt;
+
+&lt;p&gt;控件操作发生时通过预先写好的代码来发送数据。&lt;/p&gt;
+
+&lt;p&gt;优点：控制发送数据时间，事件自定义属性详细记录&lt;/p&gt;
+
+&lt;p&gt;缺点：时间、人力成本大，数据传输的时效性。&lt;/p&gt;
+
+&lt;h5 id=&quot;section-2&quot;&gt;可视化埋点：&lt;/h5&gt;
+
+&lt;p&gt;利用可视化交互手段，通过可视化界面配置控件操作与事件操作发生关系。通过后台截屏的方式采集数据。&lt;/p&gt;
+
+&lt;p&gt;优点：成本低，速度快&lt;/p&gt;
+
+&lt;p&gt;缺点：行为记录信息少，支持的分析方式少&lt;/p&gt;
+
+&lt;h5 id=&quot;section-3&quot;&gt;无埋点：&lt;/h5&gt;
+
+&lt;p&gt;Growing IO和Heap analytics，这2家是国内与国外的无埋点技术公司代表。用户展现界面元素时，通过控件绑定触发事件，事件被触发的时候系统会有相应的接口让开发者处理这些行为。现在市面上主流无埋点做法有两种，一种是预先跟踪所有的渲染信息，一种是滞后跟踪的渲染信息。&lt;/p&gt;
+
+&lt;p&gt;优点：无需埋点，方便快捷&lt;/p&gt;
+
+&lt;p&gt;缺点：行为记录信息少，传输压力大&lt;/p&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;总结&lt;/h4&gt;
+
+&lt;p&gt;最后，关于埋点有无问题，可视化埋点和代码优劣问题，不管选择哪个都要从自身情况去考虑，自身分析场景来体验和对比，选择最适合自己的。适合自己的才是最好的。&lt;/p&gt;
+</description>
+        <pubDate>Wed, 11 Jul 2018 10:49:42 +0800</pubDate>
+        <link>http://lq1228.github.io//front/article/2018/07/11/point1.html</link>
+        <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/07/11/point1.html</guid>
+        
+        
+        <category>front</category>
+        
+        <category>article</category>
+        
+      </item>
     
       <item>
         <title>webpack-10-依赖图(dependency graph)</title>
@@ -999,187 +1175,6 @@ webpack 根据构建目标(build target)为这些选项提供了合理的默认�
         <pubDate>Fri, 18 May 2018 10:49:42 +0800</pubDate>
         <link>http://lq1228.github.io//front/article/2018/05/18/webpack4.html</link>
         <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/05/18/webpack4.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>webpack-3-输出(Output)</title>
-        <description>&lt;p&gt;配置 output 选项可以控制 webpack 如何向硬盘写入编译文件。注意，即使可以存在多个入口起点，但只指定一个输出配置。&lt;/p&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;用法&lt;/h4&gt;
-
-&lt;p&gt;在 webpack 中配置 output 属性的最低要求是，将它的值设置为一个对象，包括以下两点：&lt;/p&gt;
-
-&lt;ul&gt;
-    &lt;li&gt; filename 用于输出文件的文件名。 &lt;/li&gt;
-    &lt;li&gt; 目标输出目录 path 的绝对路径。 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;webpack.config.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;bundle.js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;/home/proj/public/assets&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;此配置将一个单独的 bundle.js 文件输出到 /home/proj/public/assets 目录中。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;多个入口起点&lt;/h4&gt;
-
-&lt;p&gt;如果配置创建了多个单独的 “chunk”（例如，使用多个入口起点或使用像 CommonsChunkPlugin 这样的插件），则应该使用占位符(substitutions)来确保每个文件具有唯一的名称。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/app.js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;search&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/search.js&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nl&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;[name].js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__dirname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;/dist&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 写入到硬盘：./dist/app.js, ./dist/search.js&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;高级进阶&lt;/h4&gt;
-
-&lt;p&gt;以下是使用 CDN 和资源 hash 的复杂示例：&lt;/p&gt;
-
-&lt;p&gt;config.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nl&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/home/proj/cdn/assets/[hash]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;publicPath&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;http://cdn.example.com/assets/[hash]/&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;在编译时不知道最终输出文件的 publicPath 的情况下，publicPath 可以留空，并且在入口起点文件运行时动态设置。如果你在编译时不知道 publicPath，你可以先忽略它，并且在入口起点设置 &lt;strong&gt;webpack_public_path&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;__webpack_public_path__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;myRuntimePublicPath&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// 剩余的应用程序入口&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Fri, 11 May 2018 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2018/05/11/webpack3.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/05/11/webpack3.html</guid>
-        
-        
-        <category>front</category>
-        
-        <category>article</category>
-        
-      </item>
-    
-      <item>
-        <title>webpack-2-入口起点(Entry Points)</title>
-        <description>&lt;p&gt;正如我们在起步中提到的，在 webpack 配置中有多种方式定义 entry 属性。除了解释为什么它可能非常有用，我们还将向你展示如何去配置 entry 属性。&lt;/p&gt;
-
-&lt;h4 id=&quot;section&quot;&gt;单个入口（简写）语法&lt;/h4&gt;
-
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;用法：entry: string&lt;/td&gt;
-      &lt;td&gt;Array&lt;string&gt;&lt;/string&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;webpack.config.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./path/to/my/entry/file.js&#39;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;module&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exports&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;entry 属性的单个入口语法，是下面的简写：&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./path/to/my/entry/file.js&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;当你向 entry 传入一个数组时会发生什么？向 entry 属性传入「文件路径(file path)数组」将创建“多个主入口(multi-main entry)”。在你想要多个依赖文件一起注入，并且将它们的依赖导向(graph)到一个“chunk”时，传入数组的方式就很有用。&lt;/p&gt;
-
-&lt;p&gt;当你正在寻找为「只有一个入口起点的应用程序或工具（即 library）」快速设置 webpack 配置的时候，这会是个很不错的选择。然而，使用此语法在扩展配置时有失灵活性。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-1&quot;&gt;对象语法&lt;/h4&gt;
-
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;用法：entry: {[entryChunkName: string]: string&lt;/td&gt;
-      &lt;td&gt;Array&lt;string&gt;}&lt;/string&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;webpack.config.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/app.js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;vendors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/vendors.js&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;对象语法会比较繁琐。然而，这是应用程序中定义入口的最可扩展的方式。&lt;/p&gt;
-
-&lt;p&gt;“可扩展的 webpack 配置”是指，可重用并且可以与其他配置组合使用。这是一种流行的技术，用于将关注点(concern)从环境(environment)、构建目标(build target)、运行时(runtime)中分离。然后使用专门的工具（如 webpack-merge）将它们合并。&lt;/p&gt;
-
-&lt;h4 id=&quot;section-2&quot;&gt;常见场景&lt;/h4&gt;
-
-&lt;h5 id=&quot;app--vendor-&quot;&gt;分离 应用程序(app) 和 第三方库(vendor) 入口&lt;/h5&gt;
-
-&lt;p&gt;webpack.config.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/app.js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;vendors&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/vendors.js&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是什么？从表面上看，这告诉我们 webpack 从 app.js 和 vendors.js 开始创建依赖图(dependency graph)。这些依赖图是彼此完全分离、互相独立的（每个 bundle 中都有一个 webpack 引导(bootstrap)）。这种方式比较常见于，只有一个入口起点（不包括 vendor）的单页应用程序(single page application)中。&lt;/p&gt;
-
-&lt;p&gt;为什么？此设置允许你使用 CommonsChunkPlugin 从「应用程序 bundle」中提取 vendor 引用(vendor reference) 到 vendor bundle，并把引用 vendor 的部分替换为 &lt;strong&gt;webpack_require&lt;/strong&gt;() 调用。如果应用程序 bundle 中没有 vendor 代码，那么你可以在 webpack 中实现被称为长效缓存的通用模式。&lt;/p&gt;
-
-&lt;h5 id=&quot;section-3&quot;&gt;多页面应用程序&lt;/h5&gt;
-
-&lt;p&gt;webpack.config.js&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kr&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;config&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;entry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;pageOne&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/pageOne/index.js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;pageTwo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/pageTwo/index.js&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;pageThree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;./src/pageThree/index.js&#39;&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;这是什么？我们告诉 webpack 需要 3 个独立分离的依赖图（如上面的示例）。&lt;/p&gt;
-
-&lt;p&gt;为什么？在多页应用中，（译注：每当页面跳转时）服务器将为你获取一个新的 HTML 文档。页面重新加载新文档，并且资源被重新下载。然而，这给了我们特殊的机会去做很多事：&lt;/p&gt;
-
-&lt;ul&gt;
-	&lt;li&gt; 使用 CommonsChunkPlugin 为每个页面间的应用程序共享代码创建 bundle。由于入口起点增多，多页应用能够复用入口起点之间的大量代码/模块，从而可以极大地从这些技术中受益。 &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;根据经验：每个 HTML 文档只使用一个入口起点。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 04 May 2018 10:49:42 +0800</pubDate>
-        <link>http://lq1228.github.io//front/article/2018/05/04/webpack2.html</link>
-        <guid isPermaLink="true">http://lq1228.github.io//front/article/2018/05/04/webpack2.html</guid>
         
         
         <category>front</category>
