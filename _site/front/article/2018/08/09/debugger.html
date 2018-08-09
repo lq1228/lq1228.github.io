@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>JavaScript反调试技巧</title>
+  <meta name="description" content="我们主要针对的是如何给代码主动调试增加困难">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/08/09/debugger.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/08/09/debugger.html">JavaScript反调试技巧</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">JavaScript反调试技巧</h1>
+    <p class="post-meta"><time datetime="2018-08-09T10:49:42+08:00" itemprop="datePublished">Aug 9, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>我们所要介绍的技术方法大致如下：</p>
+
+<ul>
+    <li> 检测未知的执行环境（我们的代码只想在浏览器中被执行）； </li>
+    <li> 检测调试工具（例如DevTools）； </li>
+    <li> 代码完整性控制； </li>
+    <li> 流完整性控制； </li>
+    <li> 反模拟； </li>
+</ul>
+
+<p>如果我们检测到了“不正常”的情况，程序的运行流程将会改变，并跳转到伪造的代码块，并“隐藏”真正的功能代码。</p>
+
+<h4 id="section">一、函数重定义</h4>
+
+<p>这是一种最基本也是最常用的代码反调试技术了。在JavaScript中，我们可以对用于收集信息的函数进行重定义。比如说，console.log()函数可以用来收集函数和变量等信息，并将其显示在控制台中。如果我们重新定义了这个函数，我们就可以修改它的行为，并隐藏特定信息或显示伪造的信息。</p>
+
+<p>我们可以直接在DevTools中运行这个函数来了解其功能：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"HelloWorld"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">fake</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{};</span>
+<span class="nb">window</span><span class="p">[</span><span class="s1">'console'</span><span class="p">][</span><span class="s1">'log'</span><span class="p">]</span><span class="o">=</span> <span class="nx">fake</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Youcan't see me!"</span><span class="p">);</span></code></pre></figure>
+
+<p>运行后我们将会看到：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">VM48</span><span class="err">:</span><span class="mi">1</span> <span class="nx">HelloWorld</span></code></pre></figure>
+
+<p>你会发现第二条信息并没有显示，因为我们重新定义了这个函数，即“禁用”了它原本的功能。但是我们也可以让它显示伪造的信息。比如说这样：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Normalfunction"</span><span class="p">);</span>
+<span class="c1">//First we save a reference to the original console.log function</span>
+<span class="kd">var</span> <span class="nx">original</span> <span class="o">=</span> <span class="nb">window</span><span class="p">[</span><span class="s1">'console'</span><span class="p">][</span><span class="s1">'log'</span><span class="p">];</span>
+<span class="c1">//Next we create our fake function</span>
+<span class="c1">//Basicly we check the argument and if match we call original function with otherparam.</span>
+<span class="c1">// If there is no match pass the argument to the original function</span>
+<span class="kd">var</span> <span class="nx">fake</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">argument</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">argument</span> <span class="o">===</span> <span class="s2">"Ka0labs"</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">original</span><span class="p">(</span><span class="s2">"Spoofed!"</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">original</span><span class="p">(</span><span class="nx">argument</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="c1">// We redefine now console.log as our fake function</span>
+<span class="nb">window</span><span class="p">[</span><span class="s1">'console'</span><span class="p">][</span><span class="s1">'log'</span><span class="p">]</span><span class="o">=</span> <span class="nx">fake</span><span class="p">;</span>
+<span class="c1">//Then we call console.log with any argument</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Thisis unaltered"</span><span class="p">);</span>
+<span class="c1">//Now we should see other text in console different to "Ka0labs"</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Ka0labs"</span><span class="p">);</span>
+<span class="c1">//Aaaand everything still OK</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Byebye!"</span><span class="p">);</span></code></pre></figure>
+
+<p>如果一切正常的话：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">Normal</span> <span class="kd">function</span>
+<span class="nx">VM117</span><span class="err">:</span><span class="mi">11</span> <span class="nx">This</span> <span class="nx">is</span> <span class="nx">unaltered</span>
+<span class="nl">VM117</span><span class="p">:</span><span class="mi">9</span> <span class="nx">Spoofed</span><span class="o">!</span>
+<span class="nx">VM117</span><span class="err">:</span><span class="mi">11</span> <span class="nx">Bye</span> <span class="nx">bye</span><span class="o">!</span></code></pre></figure>
+
+<p>实际上，为了控制代码的执行方式，我们还能够以更加聪明的方式来修改函数的功能。比如说，我们可以基于上述代码来构建一个代码段，并重定义eval函数。我们可以把JavaScript代码传递给eval函数，接下来代码将会被计算并执行。如果我们重定义了这个函数，我们就可以运行不同的代码了：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//Just a normal eval</span>
+<span class="nb">eval</span><span class="p">(</span><span class="s2">"console.log('1337')"</span><span class="p">);</span>
+<span class="c1">//Now we repat the process...</span>
+<span class="kd">var</span> <span class="nx">original</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">fake</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">argument</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// If the code to be evaluated contains1337...</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">argument</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">"1337"</span><span class="p">)</span> <span class="o">!==-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// ... we just execute a different code</span>
+        <span class="nx">original</span><span class="p">(</span><span class="s2">"for (i = 0; i &lt; 10;i++) { console.log(i);}"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">original</span><span class="p">(</span><span class="nx">argument</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nb">eval</span><span class="o">=</span> <span class="nx">fake</span><span class="p">;</span>
+<span class="nb">eval</span><span class="p">(</span><span class="s2">"console.log('Weshould see this...')"</span><span class="p">);</span>
+<span class="c1">//Now we should see the execution of a for loop instead of what is expected</span>
+<span class="nb">eval</span><span class="p">(</span><span class="s2">"console.log('Too1337 for you!')"</span><span class="p">);</span></code></pre></figure>
+
+<p>运行结果如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="mi">1337</span>
+<span class="nl">VM146</span><span class="p">:</span><span class="mi">1</span><span class="nx">We</span> <span class="nx">should</span> <span class="nx">see</span> <span class="k">this</span><span class="err">…</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">10</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">11</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">12</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">13</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">14</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">15</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">16</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">17</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">18</span>
+<span class="nl">VM147</span><span class="p">:</span><span class="mi">19</span></code></pre></figure>
+
+<p>正如之前所说的那样，虽然这种方法非常巧妙，但这也是一种非常基础和常见的方法，所以比较容易被检测到。</p>
+
+<h4 id="section-1">二、断点</h4>
+
+<p>为了帮助我们了解代码的功能，JavaScript调试工具（例如DevTools）都可以通过设置断点的方式阻止脚本代码执行，而断点也是代码调试中最基本的了。</p>
+
+<p>如果你研究过调试器或者x86架构，你可能会比较熟悉0xCC指令。在JavaScript中，我们有一个名叫debugger的类似指令。当我们在代码中声明了debugger函数后，脚本代码将会在debugger指令这里停止运行。比如说：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Seeme!"</span><span class="p">);</span>
+<span class="kr">debugger</span><span class="p">;</span>
+<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Seeme!"</span><span class="p">);</span></code></pre></figure>
+
+<p>很多商业产品会在代码中定义一个无限循环的debugger指令，不过某些浏览器会屏蔽这种代码，而有些则不会。这种方法的主要目的就是让那些想要调试你代码的人感到厌烦，因为无限循环意味着代码会不断地弹出窗口来询问你是否要继续运行脚本代码：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+	<span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nb">eval</span><span class="p">(</span><span class="s2">"debugger"</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<h4 id="section-2">三、时间差异</h4>
+
+<p>这是一种从传统反逆向技术那里借鉴过来的基于时间的反调试技巧。当脚本在DevTools等工具环境下执行时，运行速度会非常慢（时间久），所以我们就可以根据运行时间来判断脚本当前是否正在被调试。比如说，我们可以通过测量代码中两个设置点之间的运行时间，然后用这个值作为参考，如果运行时间超过这个值，说明脚本当前在调试器中运行。</p>
+
+<p>演示代码如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">set</span> <span class="nx">Interval</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+  <span class="kd">var</span> <span class="nx">startTime</span> <span class="o">=</span> <span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">(),</span> <span class="nx">check</span><span class="p">,</span><span class="nx">diff</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="nx">check</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">check</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">check</span><span class="o">++</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">check</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+  <span class="p">}</span>
+  <span class="nx">diff</span> <span class="o">=</span> <span class="nx">performance</span><span class="p">.</span><span class="nx">now</span><span class="p">()</span> <span class="o">-</span> <span class="nx">startTime</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">diff</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">){</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">"Debugger detected!"</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">},</span><span class="mi">500</span><span class="p">);</span></code></pre></figure>
+
+<h4 id="devtoolschrome">四、DevTools检测（Chrome）</h4>
+
+<p>这项技术利用的是div元素中的id属性，当div元素被发送至控制台（例如console.log(div)）时，浏览器会自动尝试获取其中的元素id。如果代码在调用了console.log之后又调用了getter方法，说明控制台当前正在运行。</p>
+
+<p>简单的概念验证代码如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">div</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span>
+<span class="kd">let</span> <span class="nx">loop</span> <span class="o">=</span> <span class="nx">setInterval</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">div</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">clear</span><span class="p">();</span>
+<span class="p">});</span>
+<span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span><span class="nx">div</span><span class="p">,</span><span class="s2">"id"</span><span class="p">,</span> <span class="p">{</span><span class="na">get</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">clearInterval</span><span class="p">(</span><span class="nx">loop</span><span class="p">);</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s2">"Dev Tools detected!"</span><span class="p">);</span>
+<span class="p">}});</span></code></pre></figure>
+
+<h4 id="section-3">五、隐式流完整性控制</h4>
+
+<p>当我们尝试对代码进行反混淆处理时，我们首先会尝试重命名某些函数或变量，但是在JavaScript中我们可以检测函数名是否被修改过，或者说我们可以直接通过堆栈跟踪来获取其原始名称或调用顺序。</p>
+
+<p>arguments.callee.caller可以帮助我们创建一个堆栈跟踪来存储之前执行过的函数，演示代码如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">getCallStack</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">stack</span> <span class="o">=</span> <span class="s2">"#"</span><span class="p">,</span> <span class="nx">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">fn</span> <span class="o">=</span><span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span> <span class="p">(</span><span class="nx">fn</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">caller</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">stack</span> <span class="o">=</span> <span class="nx">stack</span> <span class="o">+</span> <span class="s2">""</span> <span class="o">+</span><span class="nx">fn</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+        <span class="nx">total</span><span class="o">++</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">stack</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">test1</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">getCallStack</span><span class="p">());</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">test2</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">test1</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">test3</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">test2</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="kd">function</span> <span class="nx">test4</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">test3</span><span class="p">();</span>
+<span class="p">}</span>
+<span class="nx">test4</span><span class="p">();</span></code></pre></figure>
+
+<p>注意：源代码的混淆程度越强，这个技术的效果就越好。</p>
+
+<h4 id="section-4">六、代理对象</h4>
+
+<p>代理对象是目前JavaScript中最有用的一个工具，这种对象可以帮助我们了解代码中的其他对象，包括修改其行为以及触发特定环境下的对象活动。比如说，我们可以创建一个嗲哩对象并跟踪每一次document.createElemen调用，然后记录下相关信息：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">handler</span> <span class="o">=</span> <span class="p">{</span> <span class="c1">// Our hook to keep the track</span>
+    <span class="na">apply</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">thisArg</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Intercepted a call tocreateElement with args: "</span> <span class="o">+</span> <span class="nx">args</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">target</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="o">=</span> <span class="k">new</span> <span class="nx">Proxy</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">,</span> <span class="nx">handler</span><span class="p">)</span> <span class="c1">// Create our proxy object withour hook ready to intercept</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span></code></pre></figure>
+
+<p>接下来，我们可以在控制台中记录下相关参数和信息：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">VM64</span><span class="err">:</span><span class="mi">3</span> <span class="nx">Intercepted</span> <span class="nx">a</span> <span class="nx">call</span> <span class="nx">to</span> <span class="nx">createElement</span> <span class="kd">with</span> <span class="nx">args</span><span class="err">:</span> <span class="nx">div</span></code></pre></figure>
+
+<p>我们可以利用这些信息并通过拦截某些特定函数来调试代码，但是本文的主要目的是为了介绍反调试技术，那么我们如何检测“对方”是否使用了代理对象呢？其实这就是一场“猫抓老鼠”的游戏，比如说，我们可以使用相同的代码段，然后尝试调用toString方法并捕获异常：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//Call a "virgin" createElement:</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+<span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"I saw your proxy!"</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>信息如下：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"function createElement() { [native code] }"</span></code></pre></figure>
+
+<p>但是当我们使用了代理之后：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">//Then apply the hook</span>
+<span class="nx">consthandler</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">apply</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">thisArg</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Intercepted a call tocreateElement with args: "</span> <span class="o">+</span> <span class="nx">args</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">target</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="o">=</span> <span class="k">new</span> <span class="nx">Proxy</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+<span class="c1">//Callour not-so-virgin-after-that-party createElement</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+<span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"I saw your proxy!"</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>没错，我们确实可以检测到代理：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">VM391</span><span class="err">:</span><span class="mi">13</span> <span class="nx">I</span> <span class="nx">saw</span> <span class="nx">your</span> <span class="nx">proxy</span><span class="o">!</span></code></pre></figure>
+
+<p>我们还可以添加toString方法：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">const</span> <span class="nx">handler</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">apply</span><span class="p">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">target</span><span class="p">,</span> <span class="nx">thisArg</span><span class="p">,</span> <span class="nx">args</span><span class="p">){</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Intercepted a call tocreateElement with args: "</span> <span class="o">+</span> <span class="nx">args</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nx">target</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="nx">thisArg</span><span class="p">,</span> <span class="nx">args</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="o">=</span> <span class="k">new</span> <span class="nx">Proxy</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">,</span> <span class="nx">handler</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="o">=</span> <span class="nb">Function</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">);</span> <span class="c1">//Add toString</span>
+<span class="c1">//Callour not-so-virgin-after-that-party createElement</span>
+<span class="k">try</span> <span class="p">{</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+<span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"I saw your proxy!"</span><span class="p">);</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>现在我们就没办法检测到了：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"function createElement() { [native code] }"</span></code></pre></figure>
+
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/08/09/debugger" data-title="JavaScript反调试技巧" data-url="/front/article/2018/08/09/debugger.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>揭开JS无埋点技术的神秘面纱</title>
+  <meta name="description" content="无埋点在国外一些平台被叫做Codeless Tracking，顾名思义就是可以写“更少”的埋点代码。">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/07/23/point2.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/07/23/point2.html">揭开JS无埋点技术的神秘面纱</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">揭开JS无埋点技术的神秘面纱</h1>
+    <p class="post-meta"><time datetime="2018-07-23T10:49:42+08:00" itemprop="datePublished">Jul 23, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h4 id="section">一、背景</h4>
+
+<p>相信很多人都接触过“埋点”这个概念，无论是前端还是后端开发，我们都可以使用这门技术来生产出一些运营性质的原始数据（接口耗时、程序安装/启动、用户交互行为等等），然后分析它们得到一些抽象指标（例如留存率、转化率），进而决定产品运营或者代码优化的方向。现在业界有许多比较知名数据平台，比如Google Analytics、Facebook Pixel、Mixpanel、GrowingIO、诸葛IO、TalkingData、神策数据等数不胜数一大票，这些平台有单纯做数据分析的，也有服务于特定领域例如广告监测转化的，都提供了多端（Android、iOS、Web、小程序、ReactNative）的埋点SDK和比较全面的BI服务。这一两年，不少平台都开始宣传一种叫“无埋点”的技术，下面以Web端为例，揭开它的神秘面纱。</p>
+
+<h4 id="section-1">二、什么是无埋点？</h4>
+
+<p>“无埋点”在国外一些平台被叫做Codeless Tracking，顾名思义就是可以写“更少”的埋点代码。而“代码埋点”一般需要开发人员编写代码，监听某个html元素的产生的事件，然后调用上报数据的接口，发送数据。而无埋点则可以由非技术人员（例如运营、产品），在可视化的工具中作出配置，然后就可以将html元素中产生的行为上报到后台。下面是Mixpanel平台的可视化工具的截图。</p>
+
+<p><img src="/images/point/point1.webp" alt="无埋点" /></p>
+
+<p>在这个工具里，需要首先输入页面的url，页面加载完成后，会出现可视化配置的工具条。点击创建事件，就可以进入元素选择模式，用鼠标点击页面上的某个元素（例如button、a这些element），就可以在弹出的对话框里面，设置这个事件的名称（比如叫TEST）。保存这个配置之后，如果页面在浏览器中被浏览，刚才配置的那个按钮发生点击时，就会向后台上报一个TEST事件。我们还可以设置上报TEST事件的时候，带上一些属性（properties），这些属性同样也是在页面中用鼠标去选择，然后保存起来的。</p>
+
+<p>看到这里，首先从产品层面上，我们比较具体的了解到“无埋点”到底是干什么的了，无埋点就是用可视化工具配置页面中需要被监测的元素，并设置这个元素产生行为的时候需要上报的数据。但是还有非常关键的一点必须提到，要让“无埋点”工作起来，页面里面还是必须嵌入了一段JS SDK的基础代码，只是不需要再去调用SDK具体的数据上报接口罢了。</p>
+
+<p>所以，“无埋点”技术的关键是：</p>
+
+<ul>
+    <li> 操作可视化配置工具，保存配置 </li>
+    <li> SDK基础代码如何根据配置上报行为 </li>
+</ul>
+
+<p>下面介绍一下如何实现这两个关键。</p>
+
+<h4 id="section-2">三、关键技术</h4>
+
+<h5 id="section-3">1. 基础代码</h5>
+
+<p>和代码埋点一样，要让“无埋点”工作起来，网页里也必须有一段“基础代码”。</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c">&lt;!--</span> <span class="nx">start</span> <span class="nx">Mixpanel</span> <span class="o">--&gt;&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">a</span><span class="p">){</span><span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">a</span><span class="p">.</span><span class="nx">__SV</span><span class="p">){</span><span class="kd">var</span> <span class="nx">b</span><span class="o">=</span><span class="nb">window</span><span class="p">;</span><span class="k">try</span><span class="p">{</span><span class="kd">var</span> <span class="nx">c</span><span class="p">,</span><span class="nx">l</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="o">=</span><span class="nx">b</span><span class="p">.</span><span class="nx">location</span><span class="p">,</span><span class="nx">g</span><span class="o">=</span><span class="nx">j</span><span class="p">.</span><span class="nx">hash</span><span class="p">;</span><span class="nx">c</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">){</span><span class="k">return</span><span class="p">(</span><span class="nx">l</span><span class="o">=</span><span class="nx">a</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nb">RegExp</span><span class="p">(</span><span class="nx">b</span><span class="o">+</span><span class="s2">"=([^&amp;]*)"</span><span class="p">)))?</span><span class="nx">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="kc">null</span><span class="p">};</span><span class="nx">g</span><span class="o">&amp;&amp;</span><span class="nx">c</span><span class="p">(</span><span class="nx">g</span><span class="p">,</span><span class="s2">"state"</span><span class="p">)</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nb">decodeURIComponent</span><span class="p">(</span><span class="nx">c</span><span class="p">(</span><span class="nx">g</span><span class="p">,</span><span class="s2">"state"</span><span class="p">))),</span><span class="s2">"mpeditor"</span><span class="o">===</span><span class="nx">i</span><span class="p">.</span><span class="nx">action</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">sessionStorage</span><span class="p">.</span><span class="nx">setItem</span><span class="p">(</span><span class="s2">"_mpcehash"</span><span class="p">,</span><span class="nx">g</span><span class="p">),</span><span class="nx">history</span><span class="p">.</span><span class="nx">replaceState</span><span class="p">(</span><span class="nx">i</span><span class="p">.</span><span class="nx">desiredHash</span><span class="o">||</span><span class="s2">""</span><span class="p">,</span><span class="nx">e</span><span class="p">.</span><span class="nx">title</span><span class="p">,</span><span class="nx">j</span><span class="p">.</span><span class="nx">pathname</span><span class="o">+</span><span class="nx">j</span><span class="p">.</span><span class="nx">search</span><span class="p">)))}</span><span class="k">catch</span><span class="p">(</span><span class="nx">m</span><span class="p">){}</span><span class="kd">var</span> <span class="nx">k</span><span class="p">,</span><span class="nx">h</span><span class="p">;</span><span class="nb">window</span><span class="p">.</span><span class="nx">mixpanel</span><span class="o">=</span><span class="nx">a</span><span class="p">;</span><span class="nx">a</span><span class="p">.</span><span class="nx">_i</span><span class="o">=</span><span class="p">[];</span><span class="nx">a</span><span class="p">.</span><span class="nx">init</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">f</span><span class="p">){</span><span class="kd">function</span> <span class="nx">e</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">a</span><span class="p">){</span><span class="kd">var</span> <span class="nx">c</span><span class="o">=</span><span class="nx">a</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">);</span><span class="mi">2</span><span class="o">==</span><span class="nx">c</span><span class="p">.</span><span class="nx">length</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">b</span><span class="o">=</span><span class="nx">b</span><span class="p">[</span><span class="nx">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span><span class="nx">a</span><span class="o">=</span><span class="nx">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span><span class="nx">b</span><span class="p">[</span><span class="nx">a</span><span class="p">]</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span><span class="nx">b</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">a</span><span class="p">].</span><span class="nx">concat</span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span>
+<span class="mi">0</span><span class="p">)))}}</span><span class="kd">var</span> <span class="nx">d</span><span class="o">=</span><span class="nx">a</span><span class="p">;</span><span class="s2">"undefined"</span><span class="o">!==</span><span class="k">typeof</span> <span class="nx">f</span><span class="p">?</span><span class="nx">d</span><span class="o">=</span><span class="nx">a</span><span class="p">[</span><span class="nx">f</span><span class="p">]</span><span class="o">=</span><span class="p">[]:</span><span class="nx">f</span><span class="o">=</span><span class="s2">"mixpanel"</span><span class="p">;</span><span class="nx">d</span><span class="p">.</span><span class="nx">people</span><span class="o">=</span><span class="nx">d</span><span class="p">.</span><span class="nx">people</span><span class="o">||</span><span class="p">[];</span><span class="nx">d</span><span class="p">.</span><span class="nx">toString</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">b</span><span class="p">){</span><span class="kd">var</span> <span class="nx">a</span><span class="o">=</span><span class="s2">"mixpanel"</span><span class="p">;</span><span class="s2">"mixpanel"</span><span class="o">!==</span><span class="nx">f</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">a</span><span class="o">+=</span><span class="s2">"."</span><span class="o">+</span><span class="nx">f</span><span class="p">);</span><span class="nx">b</span><span class="o">||</span><span class="p">(</span><span class="nx">a</span><span class="o">+=</span><span class="s2">" (stub)"</span><span class="p">);</span><span class="k">return</span> <span class="nx">a</span><span class="p">};</span><span class="nx">d</span><span class="p">.</span><span class="nx">people</span><span class="p">.</span><span class="nx">toString</span><span class="o">=</span><span class="kd">function</span><span class="p">(){</span><span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s2">".people (stub)"</span><span class="p">};</span><span class="nx">k</span><span class="o">=</span><span class="s2">"disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user"</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">);</span>
+<span class="k">for</span><span class="p">(</span><span class="nx">h</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">h</span><span class="o">&lt;</span><span class="nx">k</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="nx">h</span><span class="o">++</span><span class="p">)</span><span class="nx">e</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">k</span><span class="p">[</span><span class="nx">h</span><span class="p">]);</span><span class="nx">a</span><span class="p">.</span><span class="nx">_i</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">f</span><span class="p">])};</span><span class="nx">a</span><span class="p">.</span><span class="nx">__SV</span><span class="o">=</span><span class="mf">1.2</span><span class="p">;</span><span class="nx">b</span><span class="o">=</span><span class="nx">e</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s2">"script"</span><span class="p">);</span><span class="nx">b</span><span class="p">.</span><span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="p">;</span><span class="nx">b</span><span class="p">.</span><span class="nx">async</span><span class="o">=!</span><span class="mi">0</span><span class="p">;</span><span class="nx">b</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="s2">"undefined"</span><span class="o">!==</span><span class="k">typeof</span> <span class="nx">MIXPANEL_CUSTOM_LIB_URL</span><span class="p">?</span><span class="nx">MIXPANEL_CUSTOM_LIB_URL</span><span class="p">:</span><span class="s2">"file:"</span><span class="o">===</span><span class="nx">e</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span><span class="o">&amp;&amp;</span><span class="s2">"//cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js"</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="sr">/^</span><span class="se">\/\/</span><span class="sr">/</span><span class="p">)?</span><span class="s2">"https://cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js"</span><span class="p">:</span><span class="s2">"//cdn4.mxpnl.com/libs/mixpanel-2-latest.min.js"</span><span class="p">;</span><span class="nx">c</span><span class="o">=</span><span class="nx">e</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span><span class="s2">"script"</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span><span class="nx">c</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)}})(</span><span class="nb">document</span><span class="p">,</span><span class="nb">window</span><span class="p">.</span><span class="nx">mixpanel</span><span class="o">||</span><span class="p">[]);</span>
+<span class="nx">mixpanel</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="s2">"46042714e64a7536dde6f02af1aec923"</span><span class="p">);</span><span class="o">&lt;</span><span class="sr">/script&gt;&lt;!-- end Mixpanel --&gt;</span></code></pre></figure>
+
+<p>上面是Mixpanel平台的基础代码，不同平台家的这段基础代码，大同小异，都是一段IIFE形式的、压缩过的js代码，执行完成之后，在head里面插入了一个新的script标签，异步去下载真正的核心SDK代码下来工作。所以并不是基础代码可以根据配置上报行为，而是基础代码会下载一段“更大”的SDK核心代码，这段代码才是SDK真正的功能实现。</p>
+
+<p>这样子做的好处是，基础代码很短，加载的时候不会影响到网页的性能，而且核心SDK代码的更新也不需要用户去更新这段基础代码。</p>
+
+<h5 id="section-4">2. 页面的唯一标识</h5>
+
+<p>在配置元素行为的时候，需要唯一标识一个页面，这样才能保证A页面的配置，不会下发给在B页面，不会导致B页面产生出A页面里配置的行为。在Web里面标识页面靠的是url，url由protocol、domain、port、path和参数组成，存储配置的时候要将url的参数提出来再存。而url的参数位置是可以变化的，比如urlA（http://a.b.com/c.html?pa=1&amp;pb=2）和urlB（http://a.b.com/c.html?pb=2&amp;pa=1）虽然urlA!== urlB，但是其实它们是一个页面。</p>
+
+<h5 id="section-5">3. 元素的唯一标识</h5>
+
+<p>唯一标识页面后，接下来就要唯一标识页面里面的元素，这样才能保证A页面中配置的元素A1可以被SDK找到，从而监听它产生的事件。</p>
+
+<p>在html里面，元素是以DOM Tree组织的，如果沿着元素A1出发，一直向上记录它的parent和它在parent中的index，直到根节点body，那么就可以得到元素A1在DOM Tree中的唯一路径。</p>
+
+<p>html的元素还会拥有很多属性，例如css class、id可以用来定位元素。通过Chrome开发者工具可以看到Mixpanel的可视化工具在配置元素的时候，使用的是https://github.com/Autarc/optimal-select这个库来生成element的唯一标识的。而Github上还有https://github.com/rowthan/whats-element这样的库，也可以生成元素在DOMTree中的唯一标识。</p>
+
+<p>此外，还有平台在标识元素的时候，采用了xpath，这也是一个思路。</p>
+
+<h5 id="section-6">4. 如何查找元素</h5>
+
+<p>上面说到元素可以有唯一标识，那么有了唯一标识，就可以利用它的原理，找到这个元素。有一个很好用的API是document.querySelector()，这个API可以根据CSS选择器找到对应的元素。此外，根据元素的标识方法，还可以使用document.getElementById()、document.getElementByName()来实现元素的查找。</p>
+
+<p>这里需要重点强调的是，如果页面在配置完成之后又发生了修改，导致DOM Tree发生变化，此时需要被监测的元素的唯一标识可能也会发生改变。很可能导致根据之前的配置无法找到该元素了，或者找到的并不是我们希望监测的元素，从而导致产生的事件数量发生比较明显的变化。为了数据的稳定性和准确性，应该设有相应的监测告警处理这种case，并提示用户去重新配置页面。我个人认为这是无埋点最大的缺点。</p>
+
+<h5 id="section-7">5. 标记元素时的高亮效果和可视化交互实现</h5>
+
+<p>这是一个比较细节的点，其实熟悉js的大牛们都知道，有无数种方式去实现鼠标移动到元素上时的类hover效果，点击元素后弹出一个对话框，让用户输入配置的信息也so easy。但是我想说的是，一旦我们采用向页面中动态添加元素的方式去实现可视化工具的交互界面，那么有可能会破坏掉页面原来的DOM Tree结构。从而导致生成元素唯一标识的时候出现误差，所以这里必须要好好处理，保证生成的元素标识不会受到影响。</p>
+
+<p>我看到Mixpanel采用了CustomElement和ShadowDOM，把可视化工具所有的功能都用自定义的Web Component实现了，虽然目前只有Chrome支持Web Component，但是真的有点叼。。这样自定义的元素和交互不会对用户的网页DOM产生影响。当然，如果你的可视化工具实现做的很轻，比如只是将用户的网页放在一个iframe里面，大部分交互都交给iframe的parent页面去处理，那也可以在配置的时候，最小程度的破坏用户的网页了。</p>
+
+<h5 id="section-8">6. 配置工具中如何控制页面的跳转</h5>
+
+<p>当进入可视化配置状态时，我们可以让用户点击一个元素，然后弹一个对话框，让用户对这个元素进行配置。此时，如果这个元素本身的click行为是页面跳转呢？我们应该怎么处理？</p>
+
+<p>这里本质上是一个交互设计的问题。在可视化配置工具中，应该有两种基本交互操作。一种是让用户选中某一个元素，进行配置；另一种，是让用户可以触发页面原有的行为。</p>
+
+<p>为什么要有第二种交互？因为我们的工具肯定要支持用户进行二级页面的可视化配置对不对？或者说，用户的页面中可能会弹出一个对话框，对话框里面有一个按钮，用户对监测这个按钮，对它做配置，对不对？简单来说，就是用户页面中原有的点击行为，可能会导致页面结构产生变化，例如跳转，页面内弹出对话框等等。</p>
+
+<p>那问题就好解了，除了点击，再设计一种交互来支持用户网页中原有的点击行为不就好了。用“右键点击”或者“按住shift+点击”之类都可以。反正不要再和网页默认的交互很容易产生冲突的方式就行。</p>
+
+<p>最后再提一下，之前想很久没有想明白，如何能够能防止用户点击的时候页面产生跳转。后来才知道，DOM的事件流分三个阶段：捕获、目标、冒泡。所以为了避免用户的点击产身页面跳转，给document在捕获阶段加一个listener，拦截掉这个事件的继续分发就行了。</p>
+
+<p><img src="/images/point/point2.webp" alt="无埋点" /></p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nb">document</span><span class="p">.</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span> <span class="nx">e</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="c1">// 如果是按住shift的点击，那么保持原有的行为</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">shiftKey</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="c1">// 如果是单纯的点击，那么拦截分发</span>
+  <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+  <span class="nx">e</span><span class="p">.</span><span class="nx">stopImmediatePropagation</span><span class="p">();</span>
+  <span class="c1">// 获取元素的唯一标识，然后让用户进行配置等等</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">_selectElement</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">target</span><span class="p">);</span>
+<span class="p">},</span> <span class="kc">true</span><span class="p">);</span> <span class="c1">// useCapture必须为true</span></code></pre></figure>
+
+<h4 id="section-9">四、总结</h4>
+
+<p>可以看到“无埋点”并不是零侵入，用户的网页中依然需要加载SDK的代码（除非你是浏览器厂商，可以在加载网页的时候，给网页加inject基础代码）。只是每一个行为事件的上报代码不需要开发人员手动编写，而是由运营人员用可视化工具配置，所以叫它“可视化埋点”也许更加合适。我们知道数据采集是数据分析的基础和先决条件，数据采集做不好，其他的东西都是空中楼阁。</p>
+
+<p>这里可以小结一下“无埋点”技术的优劣。无埋点的好处是技术成本低，对用户非常友好，不需要重新部署，配置完成就可以生效。但是其缺点也非常明显，不具有代码埋点的灵活性和深度，只能采集到用户肉眼可见的数据，无法获取内存里的数据，同时也无法适应页面结构的变化，所以在实际生产中，要选择性地在合适的地方使用无埋点技术。</p>
+
+<p>多扯一点产品设计和技术方案的选择，产品上是否可以支持采集内存数据呢？当然可以，比如微信小程序的“自定义分析”，就可以支持上报页面data下面的属性，这时虽然同样是可视化配置，运营人员肯定不会知道代码里面的变量名字，必须得有开发人员参与配置才行。关于页面结构发生变化之后的数据丢失，也是有方案可以破的。比如Mixpanel平台的Codeless Tracking，实际上采集了页面中所有页面的点击事件上报，然后在后台再去根据用户的配置计算转化数量。这样做的好处就是如果页面变化后，用户接到告警，修改了配置，那么用于数据上报方案是全量的，所以平台是由能力将过去的数据回溯出来的。而上面我们说的根据配置下发，查找监测指定元素，再上报数据的方案属于按需上报，数据出现误差是无法回溯的。不过全量上报数据大家也知道，太不友好了，这个数据量太大，不仅前端消耗资源多，如果为了做数据回溯，后台的存储压力也会加大，而存储的数据大部分还是无效的，这个成本有点高了。</p>
+
+<h4 id="section-10">五、参考资料</h4>
+
+<p>JS埋点技术分析</p>
+
+<p>https://github.com/Autarc/optimal-select</p>
+
+<p>https://github.com/rowthan/whats-element</p>
+
+<p>https://www.zhihu.com/question/38000812</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/07/23/point2" data-title="揭开JS无埋点技术的神秘面纱" data-url="/front/article/2018/07/23/point2.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

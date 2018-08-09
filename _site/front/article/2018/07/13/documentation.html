@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>JavaScript代码的自文档化</title>
+  <meta name="description" content="为了使代码易读好维护，除了加注释之外，还可以让代码自文档化">
+
+  <link rel="stylesheet" href="/stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://lq1228.github.io//front/article/2018/07/13/documentation.html">
+  <link rel="alternate" type="application/rss+xml" title="lq1228.github.io" href="http://lq1228.github.io//feed.xml">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+</head>
+
+
+  <body>
+
+    <header class="main-header">
+    <div class="inner">
+        <h1>liqian</h1>
+        <blockquote>
+            <p>
+            <p>
+        </blockquote>
+        <a href="https://github.com/lq1228" class="button"><small>Follow me on</small> GitHub</a>
+    </div>
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <nav>当前位置：<a href="/">首页</a> &gt; <a href="/front/article/2018/07/13/documentation.html">JavaScript代码的自文档化</a></nav>
+<article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">JavaScript代码的自文档化</h1>
+    <p class="post-meta"><time datetime="2018-07-13T01:00:42+08:00" itemprop="datePublished">Jul 13, 2018</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>为了使代码易读好维护，除了加注释之外，还可以让代码自文档化，我们可以把自文档化代码归为三大类：</p>
+
+<ul>
+    <li> 结构类自文档化。使用代码的结构和目录来让代码变得清晰 </li>
+    <li> 命名自文档化。例如函数或变量命名让代码更易理解 </li>
+    <li> 语句相关自文档化。我们利用语言的特性来让代码变得清晰 </li>
+</ul>
+
+<h4 id="section">一、结构类自文档化</h4>
+
+<h5 id="section-1">将代码移动到函数里面</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="p">(</span><span class="nx">value</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span><span class="p">;</span>
+
+<span class="c1">//修改后</span>
+<span class="kd">var</span> <span class="nx">width</span> <span class="o">=</span> <span class="nx">emToPixels</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+<span class="kd">function</span> <span class="nx">emToPixels</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nx">ems</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>我们把计算放到函数里的好处：</p>
+
+<ul>
+    <li> 1. 函数的名称描述了代码的作用。 </li>
+    <li> 2. 这个函数也增强了代码复用性。 </li>
+</ul>
+
+<h5 id="section-2">用函数代替条件表达式</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">el</span><span class="p">.</span><span class="nx">offsetWidth</span> <span class="o">||</span> <span class="o">!</span><span class="nx">el</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">//修改后</span>
+<span class="kd">function</span> <span class="nx">isVisible</span> <span class="p">(</span><span class="nx">el</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">el</span><span class="p">.</span><span class="nx">offsetWidth</span> <span class="o">&amp;&amp;</span> <span class="nx">el</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isVisible</span><span class="p">(</span><span class="nx">el</span><span class="p">))</span> <span class="p">{</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>用函数代替含有多个操作运算的语句,代码会变得容易理解</p>
+
+<h5 id="section-3">使用变量代替表达式</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">el</span><span class="p">.</span><span class="nx">offsetWidth</span> <span class="o">||</span> <span class="o">!</span><span class="nx">el</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span>
+
+<span class="c1">//修改后</span>
+<span class="kd">var</span> <span class="nx">isVisible</span> <span class="o">=</span> <span class="nx">el</span><span class="p">.</span><span class="nx">offsetWidth</span> <span class="o">&amp;&amp;</span> <span class="nx">el</span><span class="p">.</span><span class="nx">offsetHeight</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">isVisible</span><span class="p">)</span> <span class="p">{</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>在数学表达式中，也可以将复杂的表达式换成变量，来给表达式代码添加本身的含义</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">return</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span> <span class="o">+</span> <span class="p">(</span><span class="nx">c</span> <span class="o">/</span> <span class="nx">d</span><span class="p">);</span>
+
+<span class="c1">//修改后</span>
+<span class="kd">var</span> <span class="nx">multiplier</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">*</span> <span class="nx">b</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">divisor</span> <span class="o">=</span> <span class="nx">c</span> <span class="o">/</span> <span class="nx">d</span><span class="p">;</span>
+<span class="k">return</span> <span class="nx">multiplier</span> <span class="o">+</span> <span class="nx">divisor</span><span class="p">;</span></code></pre></figure>
+
+<h5 id="section-4">类和模块接口</h5>
+
+<p>接口不仅是类或模块的公用方法和属性，而且在使用中能起到自文档化的作用。来看下这个例子：</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kr">class</span> <span class="nx">Box</span> <span class="p">{</span>
+    <span class="nx">setState</span><span class="p">(</span><span class="nx">state</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">state</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">getState</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//修改后</span>
+<span class="kr">class</span> <span class="nx">Box</span> <span class="p">{</span>
+    <span class="nx">open</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="s1">'open'</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">close</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="s1">'closed'</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">isOpen</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">===</span> <span class="s1">'open'</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>我们只改变了公用接口，内部生命仍然使用this.state,现在一眼就知道Box类怎么使用了。</p>
+
+<h5 id="section-5">代码分块</h5>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="nx">blah</span><span class="p">();</span>
+<span class="nx">xyz</span><span class="p">();</span>
+
+<span class="nx">bar</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span>
+<span class="nx">baz</span><span class="p">(</span><span class="mi">1337</span><span class="p">);</span>
+<span class="nx">quux</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span>
+
+<span class="c1">//修改后</span>
+<span class="kd">var</span> <span class="nx">foo</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="nx">bar</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span>
+<span class="nx">quux</span><span class="p">(</span><span class="nx">foo</span><span class="p">);</span>
+
+<span class="nx">blah</span><span class="p">();</span>
+<span class="nx">xyz</span><span class="p">();</span>
+
+<span class="nx">baz</span><span class="p">(</span><span class="mi">1337</span><span class="p">);</span></code></pre></figure>
+
+<h5 id="section-6">使用纯函数</h5>
+
+<p>什么是纯函数？当使用同样的参数调用，如果输出的内容相同，这就是所谓的”纯函数”。可以看下这篇文章《FunctionalProgramming: Pure Functions》。</p>
+
+<p>纯函数符合纯文档化的原因：</p>
+
+<p>很多影响他们输出结果的值都被明确制定了，我们不用研究某个东西到底从哪里来，或者什么东西会影响输出，可以信任它们的输出。</p>
+
+<h5 id="section-7">目录和文件结构</h5>
+
+<p>在文件或目录命名时，根据项目中的命名规范进行命名。如果没有明确的规范，那就根据你语言选择合适的标准。</p>
+
+<h4 id="section-8">二、命名自文档化</h4>
+
+<p>计算机科学领域有句名言：</p>
+
+<p>在计算机凌云有量大难题：缓存失效和命名。–PhilKarlton</p>
+
+<p>怎样使用命名来使我们的代码自文档化:</p>
+
+<h5 id="section-9">重命名函数</h5>
+
+<p>函数命名有一些简单的规则我们可以参考：</p>
+
+<ul>
+    <li> 1、避免使用想handle或manage这类词：handleObject，manageObject。这些什么意思。    </li>
+    <li> 2、使用主动词：cutGruss()，sendFile。根据函数的具体功能来决定。    </li>
+    <li> 3、使用返回值：getMagicBullet()，readFile。这种情况并不经常使用，但是在语义化方面很有作用    </li>
+    <li> 4、使用强类型语言编码能明确知道返回值是什么类型 </li>
+</ul>
+
+<h5 id="section-10">重命名变量</h5>
+
+<p>对于变量，有两个比较好的方法:</p>
+
+<ul>
+    <li> 1、指明单位：如果你含有数字参数，你可以带上单位。例如widthPx就比 width要好。    </li>
+    <li> 2、不要使用简写：例如a和b，这些是不能理解的变量，除非是在循环计数里面。 </li>
+</ul>
+
+<h5 id="section-11">遵循已有的命名规范</h5>
+
+<p>代码中尽量使用原有的规范。</p>
+
+<p>如果你遵循原有规范，任何一个读代码的人都能正确的认为某个东西在任何地方出现的含义都是相同的。</p>
+
+<h5 id="section-12">使用有含义的错误</h5>
+
+<p>Undefined is notan object。很多人都喜欢这样提示到页面上，所以让我们提示一些具有提示意义的内容给页面使用者。怎样让错误变得有含义：</p>
+
+<ul>
+    <li> 1、应该描述具体问题所在。   </li>
+    <li> 2、如果可能，应该包含是哪个变量或数据导致的问题。    </li>
+    <li> 3、关键一点：错误应该能帮助我们找到哪里出了问题。例如错误上报的方式收集解决问题。 </li>
+</ul>
+
+<h4 id="section-13">三、 声明类自文档化</h4>
+
+<ul>
+    <li> 使用命名常量。例如constMEANING_OF_LIFE = 42; </li>
+    <li> 避免bool值。例如 myThing.setData({ x: 1 }, true); </li>
+    <li> 使用编程语言的优势。 </li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">imTricky</span> <span class="o">&amp;&amp;</span> <span class="nx">doMagic</span><span class="p">();</span>
+
+<span class="c1">//尽量这样写</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">imTricky</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">doMagic</span><span class="p">();</span>
+<span class="p">}</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">ids</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">things</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">ids</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">things</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">id</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">//可修改为</span>
+<span class="kd">var</span> <span class="nx">ids</span> <span class="o">=</span> <span class="nx">things</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">thing</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">thing</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+<span class="p">});</span></code></pre></figure>
+
+<h4 id="section-14">四、反模式</h4>
+
+<ul>
+    <li> 提取更短的函数</li>
+    <li> 不要强迫去使用 </li>
+</ul>
+
+<p>通常，没有绝对正确的方式，所以，不强制使用任何方式，根据情况而定。</p>
+
+<h4 id="section-15">结论</h4>
+
+<p>消除代码注释是一件很好的事情,然而，自文档化代码并不能代替文档或注释。例如，代码在表达方面是有限的，所以你也需要很好的注释来补充。API文档对于代码库来说是很重要的，除非你的代码很小，否则自文档化的方式并不可行。</p>
+
+  </div>
+
+</article>
+<!-- 多说评论框 start -->
+    <div class="ds-thread" data-thread-key="/front/article/2018/07/13/documentation" data-title="JavaScript代码的自文档化" data-url="/front/article/2018/07/13/documentation.html"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"lq1228"};
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0] 
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+    </script>
+<!-- 多说公共JS代码 end -->
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <div class="friend-link">
+        <div class="friend-title">友情链接</div>
+        
+            <a href="https://bystep15.github.io/">
+		宝宝树前端团队博客
+	    </a>
+	
+            <a href="http://testudy.github.io/">
+		胡继伟
+	    </a>
+	
+            <a href="https://yj1438.github.io/">
+		尹杰
+	    </a>
+	
+            <a href="https://github.com/cnsnake11/blog">
+		曹楠
+	    </a>
+	
+            <a href="http://ushtml.com/">
+		武明礼
+	    </a>
+	
+            <a href="http://kouyun.me/">
+		寇云
+	    </a>
+	
+            <a href="http://brooch.me/">
+		郑星宬
+	    </a>
+	
+            <a href="http://zhanyouwei.com/">
+		占友伟
+	    </a>
+	
+            <a href="https://lilywei739.github.io">
+		魏莉
+	    </a>
+	
+            <a href="https://wangjiaoxia.github.io/">
+		王娇霞
+	    </a>
+	
+            <a href="http://www.apptranz.com/wk/">
+		梁恺韬
+	    </a>
+	
+    </div>
+
+    <div class="copyright">
+      <p>lq1228.github.io</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
